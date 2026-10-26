@@ -8,70 +8,59 @@
 <title>TengHisob</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;padding:24px 18px;font-family:Arial,sans-serif;background:#f3f7f4;color:#183b2b}
-.container{max-width:420px;margin:45px auto;text-align:center}
-h1{font-size:34px;color:#176b45;margin-bottom:10px}
-.subtitle{color:#607568;margin-bottom:30px}
-button{width:100%;padding:16px;margin:9px 0;border:0;border-radius:12px;background:#176b45;color:white;font-size:17px;font-weight:bold}
+body{margin:0;padding:20px;font-family:Arial,sans-serif;background:#f3f7f4;color:#183b2b}
+.container{max-width:440px;margin:25px auto}
+h1{text-align:center;color:#176b45;font-size:34px}
+.subtitle{text-align:center;color:#607568}
+button{width:100%;padding:15px;margin:7px 0;border:0;border-radius:12px;background:#176b45;color:white;font-size:16px;font-weight:bold}
 .secondary{background:white;color:#176b45;border:2px solid #176b45}
-input{width:100%;padding:14px;margin:8px 0;border:1px solid #cbd8cf;border-radius:10px;font-size:16px}
-.panel{display:none;text-align:left;background:white;padding:20px;border-radius:16px;margin-top:20px}
-.back{background:#e5eee8;color:#176b45}
+.panel{display:none;background:white;padding:18px;border-radius:15px;margin-top:20px}
+.item{background:#edf5ef;padding:15px;border-radius:10px;margin:10px 0}
 .note{font-size:13px;color:#607568;line-height:1.5}
 </style>
 </head>
 <body>
 <main class="container">
-  <h1>TengHisob</h1>
-  <p class="subtitle">Hisob-kitoblar oson va ishonchli</p>
+<h1>TengHisob</h1>
+<p class="subtitle">Hisob-kitoblar oson va ishonchli</p>
 
-  <section id="home">
-    <button onclick="openForm('Do‘kon egasi')">Do‘kon egasi</button>
-    <button class="secondary" onclick="openForm('Xaridor')">Xaridor</button>
-  </section>
+<section id="home">
+<button onclick="openPage('shop')">Do‘kon egasi</button>
+<button class="secondary" onclick="openPage('buyer')">Xaridor</button>
+</section>
 
-  <section id="register" class="panel">
-    <h2 id="formTitle">Ro‘yxatdan o‘tish</h2>
-    <label for="fullname">Ism va familiya</label>
-    <input id="fullname" type="text" placeholder="Ism va familiyangiz">
-    <label for="phone">Telefon raqami</label>
-    <input id="phone" type="tel" placeholder="+998 yoki +7 ...">
-    <button onclick="showNotice()">Davom etish</button>
-    <button class="back" onclick="goHome()">Orqaga</button>
-    <p class="note">Bu hozircha namuna. Ma’lumotlar saqlanmaydi va haqiqiy hisob hali yaratilmaydi.</p>
-    <p id="notice" class="note"></p>
-  </section>
+<section id="shop" class="panel">
+<h2>Do‘kon egasi</h2>
+<div class="item">Savdo va tushum</div>
+<div class="item">Xarajatlar</div>
+<div class="item">Mahsulotlar</div>
+<div class="item">Xaridorlar qarzi</div>
+<div class="item">Hisobotlar</div>
+<p class="note">Bu bo‘lim hozircha namuna. Ma’lumotlar hali saqlanmaydi.</p>
+<button class="secondary" onclick="goHome()">Orqaga</button>
+</section>
+
+<section id="buyer" class="panel">
+<h2>Xaridor</h2>
+<div class="item">Mening qarzlarim</div>
+<div class="item">To‘lovlar tarixi</div>
+<div class="item">To‘lov muddati</div>
+<p class="note">Bu bo‘lim hozircha namuna. Ma’lumotlar hali saqlanmaydi.</p>
+<button class="secondary" onclick="goHome()">Orqaga</button>
+</section>
 </main>
 
 <script>
-let selectedRole = "";
-
-function openForm(role) {
-  selectedRole = role;
-  document.getElementById("home").style.display = "none";
-  document.getElementById("register").style.display = "block";
-  document.getElementById("formTitle").textContent = role + " — ro‘yxatdan o‘tish";
-  document.getElementById("notice").textContent = "";
+function openPage(page){
+document.getElementById('home').style.display='none';
+document.getElementById('shop').style.display='none';
+document.getElementById('buyer').style.display='none';
+document.getElementById(page).style.display='block';
 }
-
-function goHome() {
-  document.getElementById("register").style.display = "none";
-  document.getElementById("home").style.display = "block";
-}
-
-function showNotice() {
-  const name = document.getElementById("fullname").value.trim();
-  const phone = document.getElementById("phone").value.trim();
-
-  if (!name || !phone) {
-    document.getElementById("notice").textContent =
-      "Iltimos, ism-familiya va telefon raqamini kiriting.";
-    return;
-  }
-
-  document.getElementById("notice").textContent =
-    "Namuna sahifa: " + selectedRole +
-    ". Haqiqiy ro‘yxatdan o‘tish tizimi keyin ulanadi.";
+function goHome(){
+document.getElementById('shop').style.display='none';
+document.getElementById('buyer').style.display='none';
+document.getElementById('home').style.display='block';
 }
 </script>
 </body>
