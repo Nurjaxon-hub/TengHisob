@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="uz">
 <head>
@@ -7,9 +8,7 @@
   <meta name="theme-color" content="#176B45">
   <title>TengHisob</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -58,12 +57,12 @@
     }
 
     #message {
+      display: none;
       margin-top: 24px;
       padding: 16px;
       border-radius: 12px;
       background: white;
       color: #176b45;
-      display: none;
     }
   </style>
 </head>
@@ -86,8 +85,7 @@
   <script>
     function showMessage(section) {
       const message = document.getElementById("message");
-      message.textContent =
-        section + " bo‘limi tez orada ochiladi.";
+      message.textContent = section + " bo‘limi tez orada ochiladi.";
       message.style.display = "block";
     }
   </script>
