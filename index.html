@@ -16,7 +16,14 @@ button{width:100%;padding:15px;margin:7px 0;border:0;border-radius:12px;backgrou
 .secondary{background:white;color:#176b45;border:2px solid #176b45}
 .panel{display:none;background:white;padding:18px;border-radius:15px;margin-top:20px}
 .item{background:#edf5ef;padding:15px;border-radius:10px;margin:10px 0}
+input{width:100%;padding:13px;margin:8px 0;border:1px solid #cbd8cf;border-radius:10px;font-size:16px}
+label{display:block;margin-top:12px;font-weight:bold}
 .note{font-size:13px;color:#607568;line-height:1.5}
+.total{background:#176b45;color:white;padding:18px;border-radius:12px;text-align:center;margin:15px 0}
+.total strong{display:block;font-size:25px;margin-top:8px}
+.sale{background:#edf5ef;padding:13px;border-radius:10px;margin:10px 0;overflow-wrap:anywhere}
+.sale small{color:#607568}
+.message{font-size:14px;color:#176b45}
 </style>
 </head>
 <body>
@@ -31,37 +38,141 @@ button{width:100%;padding:15px;margin:7px 0;border:0;border-radius:12px;backgrou
 
 <section id="shop" class="panel">
 <h2>Do‘kon egasi</h2>
-<div class="item">Savdo va tushum</div>
-<div class="item">Xarajatlar</div>
-<div class="item">Mahsulotlar</div>
-<div class="item">Xaridorlar qarzi</div>
-<div class="item">Hisobotlar</div>
-<p class="note">Bu bo‘lim hozircha namuna. Ma’lumotlar hali saqlanmaydi.</p>
-<button class="secondary" onclick="goHome()">Orqaga</button>
+<button onclick="openPage('sales')">Savdo va tushum</button>
+<div class="item">Xarajatlar — tez orada</div>
+<div class="item">Mahsulotlar — tez orada</div>
+<div class="item">Xaridorlar qarzi — tez orada</div>
+<div class="item">Hisobotlar — tez orada</div>
+<button class="secondary" onclick="openPage('home')">Orqaga</button>
+</section>
+
+<section id="sales" class="panel">
+<h2>Savdo va tushum</h2>
+
+<div class="total">
+Jami tushum
+<strong id="total">0 so‘m</strong>
+</div>
+
+<label for="saleName">Savdo nomi</label>
+<input id="saleName" type="text" placeholder="Masalan: oziq-ovqat">
+
+<label for="saleAmount">Savdo summasi (so‘m)</label>
+<input id="saleAmount" type="number" min="1" step="1" placeholder="Masalan: 150000">
+
+<button onclick="addSale()">Savdoni qo‘shish</button>
+
+<p id="message" class="message"></p>
+
+<h3>Saqlangan savdolar</h3>
+<div id="saleList"></div>
+
+<p class="note">Savdolar ushbu qurilmadagi brauzerda saqlanadi. Brauzer ma’lumotlari o‘chirilsa, yozuvlar yo‘qolishi mumkin.</p>
+
+<button class="secondary" onclick="openPage('shop')">Orqaga</button>
 </section>
 
 <section id="buyer" class="panel">
 <h2>Xaridor</h2>
-<div class="item">Mening qarzlarim</div>
-<div class="item">To‘lovlar tarixi</div>
-<div class="item">To‘lov muddati</div>
-<p class="note">Bu bo‘lim hozircha namuna. Ma’lumotlar hali saqlanmaydi.</p>
-<button class="secondary" onclick="goHome()">Orqaga</button>
+<div class="item">Mening qarzlarim — tez orada</div>
+<div class="item">To‘lovlar tarixi — tez orada</div>
+<div class="item">To‘lov muddati — tez orada</div>
+<button class="secondary" onclick="openPage('home')">Orqaga</button>
 </section>
 </main>
 
 <script>
 function openPage(page){
-document.getElementById('home').style.display='none';
-document.getElementById('shop').style.display='none';
-document.getElementById('buyer').style.display='none';
+['home','shop','buyer','sales'].forEach(function(id){
+document.getElementById(id).style.display='none';
+});
 document.getElementById(page).style.display='block';
+if(page==='sales') renderSales();
 }
-function goHome(){
-document.getElementById('shop').style.display='none';
-document.getElementById('buyer').style.display='none';
-document.getElementById('home').style.display='block';
+
+function loadSales(){
+try{
+return JSON.parse(localStorage.getItem('tenghisob_sales')||'[]');
+}catch(e){
+return [];
 }
+}
+
+function saveSales(sales){
+localStorage.setItem('tenghisob_sales',JSON.stringify(sales));
+}
+
+function money(amount){
+return Number(amount).toLocaleString('uz-UZ')+' so‘m';
+}
+
+function addSale(){
+const name=document.getElementById('saleName').value.trim();
+const amount=Number(document.getElementById('saleAmount').value);
+const message=document.getElementById('message');
+
+if(!Number.isSafeInteger(amount)||amount<=0){
+message.textContent='Savdo summasini to‘g‘ri kiriting.';
+return;
+}
+
+const sales=loadSales();
+sales.unshift({
+id:Date.now(),
+name:name||'Savdo',
+amount:amount,
+date:new Date().toLocaleString('uz-UZ')
+});
+
+try{
+saveSales(sales);
+}catch(e){
+message.textContent='Saqlash amalga oshmadi. Brauzer xotirasini tekshiring.';
+return;
+}
+
+document.getElementById('saleName').value='';
+document.getElementById('saleAmount').value='';
+message.textContent='Savdo muvaffaqiyatli qo‘shildi.';
+renderSales();
+}
+
+function renderSales(){
+const sales=loadSales();
+const total=sales.reduce(function(sum,sale){
+return sum+sale.amount;
+},0);
+
+document.getElementById('total').textContent=money(total);
+const list=document.getElementById('saleList');
+list.innerHTML='';
+
+if(sales.length===0){
+list.textContent='Hozircha savdolar yo‘q.';
+return;
+}
+
+sales.forEach(function(sale){
+const item=document.createElement('div');
+item.className='sale';
+
+const title=document.createElement('strong');
+title.textContent=sale.name;
+
+const amount=document.createElement('p');
+amount.textContent=money(sale.amount);
+
+const date=document.createElement('small');
+date.textContent=sale.date;
+
+item.appendChild(title);
+item.appendChild(amount);
+item.appendChild(date);
+list.appendChild(item);
+});
+}
+
+renderSales();
 </script>
 </body>
 </html>
