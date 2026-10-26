@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#176B45">
+  <title>TengHisob</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px 18px;
+      font-family: Arial, sans-serif;
+      background: #f3f7f4;
+      color: #183b2b;
+    }
+
+    .container {
+      max-width: 420px;
+      margin: 60px auto 0;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 34px;
+      margin-bottom: 10px;
+      color: #176b45;
+    }
+
+    .subtitle {
+      color: #607568;
+      margin-bottom: 36px;
+      font-size: 16px;
+    }
+
+    .choice {
+      display: block;
+      width: 100%;
+      padding: 18px;
+      margin: 16px 0;
+      border: none;
+      border-radius: 14px;
+      background: #176b45;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .choice.secondary {
+      background: white;
+      color: #176b45;
+      border: 2px solid #176b45;
+    }
+
+    #message {
+      margin-top: 24px;
+      padding: 16px;
+      border-radius: 12px;
+      background: white;
+      color: #176b45;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>TengHisob</h1>
+    <p class="subtitle">Hisob-kitoblar oson va ishonchli</p>
+
+    <button class="choice" onclick="showMessage('Do‘kon egasi')">
+      Do‘kon egasi
+    </button>
+
+    <button class="choice secondary" onclick="showMessage('Xaridor')">
+      Xaridor
+    </button>
+
+    <div id="message"></div>
+  </main>
+
+  <script>
+    function showMessage(section) {
+      const message = document.getElementById("message");
+      message.textContent =
+        section + " bo‘limi tez orada ochiladi.";
+      message.style.display = "block";
+    }
+  </script>
+</body>
+</html>
