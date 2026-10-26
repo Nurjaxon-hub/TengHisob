@@ -1,93 +1,78 @@
 
-
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#176B45">
-  <title>TengHisob</title>
-  <style>
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      padding: 24px 18px;
-      font-family: Arial, sans-serif;
-      background: #f3f7f4;
-      color: #183b2b;
-    }
-
-    .container {
-      max-width: 420px;
-      margin: 60px auto 0;
-      text-align: center;
-    }
-
-    h1 {
-      font-size: 34px;
-      margin-bottom: 10px;
-      color: #176b45;
-    }
-
-    .subtitle {
-      color: #607568;
-      margin-bottom: 36px;
-      font-size: 16px;
-    }
-
-    .choice {
-      display: block;
-      width: 100%;
-      padding: 18px;
-      margin: 16px 0;
-      border: none;
-      border-radius: 14px;
-      background: #176b45;
-      color: white;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .choice.secondary {
-      background: white;
-      color: #176b45;
-      border: 2px solid #176b45;
-    }
-
-    #message {
-      display: none;
-      margin-top: 24px;
-      padding: 16px;
-      border-radius: 12px;
-      background: white;
-      color: #176b45;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#176B45">
+<title>TengHisob</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:24px 18px;font-family:Arial,sans-serif;background:#f3f7f4;color:#183b2b}
+.container{max-width:420px;margin:45px auto;text-align:center}
+h1{font-size:34px;color:#176b45;margin-bottom:10px}
+.subtitle{color:#607568;margin-bottom:30px}
+button{width:100%;padding:16px;margin:9px 0;border:0;border-radius:12px;background:#176b45;color:white;font-size:17px;font-weight:bold}
+.secondary{background:white;color:#176b45;border:2px solid #176b45}
+input{width:100%;padding:14px;margin:8px 0;border:1px solid #cbd8cf;border-radius:10px;font-size:16px}
+.panel{display:none;text-align:left;background:white;padding:20px;border-radius:16px;margin-top:20px}
+.back{background:#e5eee8;color:#176b45}
+.note{font-size:13px;color:#607568;line-height:1.5}
+</style>
 </head>
 <body>
-  <main class="container">
-    <h1>TengHisob</h1>
-    <p class="subtitle">Hisob-kitoblar oson va ishonchli</p>
+<main class="container">
+  <h1>TengHisob</h1>
+  <p class="subtitle">Hisob-kitoblar oson va ishonchli</p>
 
-    <button class="choice" onclick="showMessage('Do‘kon egasi')">
-      Do‘kon egasi
-    </button>
+  <section id="home">
+    <button onclick="openForm('Do‘kon egasi')">Do‘kon egasi</button>
+    <button class="secondary" onclick="openForm('Xaridor')">Xaridor</button>
+  </section>
 
-    <button class="choice secondary" onclick="showMessage('Xaridor')">
-      Xaridor
-    </button>
+  <section id="register" class="panel">
+    <h2 id="formTitle">Ro‘yxatdan o‘tish</h2>
+    <label for="fullname">Ism va familiya</label>
+    <input id="fullname" type="text" placeholder="Ism va familiyangiz">
+    <label for="phone">Telefon raqami</label>
+    <input id="phone" type="tel" placeholder="+998 yoki +7 ...">
+    <button onclick="showNotice()">Davom etish</button>
+    <button class="back" onclick="goHome()">Orqaga</button>
+    <p class="note">Bu hozircha namuna. Ma’lumotlar saqlanmaydi va haqiqiy hisob hali yaratilmaydi.</p>
+    <p id="notice" class="note"></p>
+  </section>
+</main>
 
-    <div id="message"></div>
-  </main>
+<script>
+let selectedRole = "";
 
-  <script>
-    function showMessage(section) {
-      const message = document.getElementById("message");
-      message.textContent = section + " bo‘limi tez orada ochiladi.";
-      message.style.display = "block";
-    }
-  </script>
+function openForm(role) {
+  selectedRole = role;
+  document.getElementById("home").style.display = "none";
+  document.getElementById("register").style.display = "block";
+  document.getElementById("formTitle").textContent = role + " — ro‘yxatdan o‘tish";
+  document.getElementById("notice").textContent = "";
+}
+
+function goHome() {
+  document.getElementById("register").style.display = "none";
+  document.getElementById("home").style.display = "block";
+}
+
+function showNotice() {
+  const name = document.getElementById("fullname").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+
+  if (!name || !phone) {
+    document.getElementById("notice").textContent =
+      "Iltimos, ism-familiya va telefon raqamini kiriting.";
+    return;
+  }
+
+  document.getElementById("notice").textContent =
+    "Namuna sahifa: " + selectedRole +
+    ". Haqiqiy ro‘yxatdan o‘tish tizimi keyin ulanadi.";
+}
+</script>
 </body>
 </html>
