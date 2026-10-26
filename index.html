@@ -3,27 +3,34 @@
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#176B45">
 <title>TengHisob</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;padding:20px;font-family:Arial,sans-serif;background:#f3f7f4;color:#183b2b}
-.container{max-width:440px;margin:25px auto}
-h1{text-align:center;color:#176b45;font-size:34px}
-.subtitle{text-align:center;color:#607568}
-button{width:100%;padding:15px;margin:7px 0;border:0;border-radius:12px;background:#176b45;color:white;font-size:16px;font-weight:bold}
-.secondary{background:white;color:#176b45;border:2px solid #176b45}
-.panel{display:none;background:white;padding:18px;border-radius:15px;margin-top:20px}
-.item{background:#edf5ef;padding:15px;border-radius:10px;margin:10px 0}
-input{width:100%;padding:13px;margin:8px 0;border:1px solid #cbd8cf;border-radius:10px;font-size:16px}
-label{display:block;margin-top:12px;font-weight:bold}
-.note{font-size:13px;color:#607568;line-height:1.5}
-.total{background:#176b45;color:white;padding:18px;border-radius:12px;text-align:center;margin:15px 0}
-.total strong{display:block;font-size:25px;margin-top:8px}
-.sale{background:#edf5ef;padding:13px;border-radius:10px;margin:10px 0;overflow-wrap:anywhere}
-.sale small{color:#607568}
-.message{font-size:14px;color:#176b45}
+body{margin:0;background:#f3f7f4;color:#183b2b;font-family:Arial,sans-serif}
+.container{max-width:520px;margin:auto;padding:16px}
+h1{color:#176b45;text-align:center;margin-bottom:5px}
+.subtitle{text-align:center;color:#607568;margin-top:0}
+h2{font-size:22px}
+h3{font-size:17px}
+button{border:0;border-radius:10px;padding:13px;background:#176b45;color:white;font-size:15px;font-weight:bold;cursor:pointer}
+.mainbtn{width:100%;margin:6px 0}
+.secondary{background:white;color:#176b45;border:1px solid #176b45}
+.danger{background:#a83232}
+input,select{width:100%;padding:12px;margin:6px 0 12px;border:1px solid #cbd8cf;border-radius:9px;font-size:16px;background:white}
+label{font-size:14px;font-weight:bold;display:block;margin-top:8px}
+.panel{display:none;background:white;padding:16px;border-radius:14px;margin-top:15px}
+.card{background:#edf5ef;padding:13px;border-radius:10px;margin:10px 0;overflow-wrap:anywhere}
+.total{background:#176b45;color:white;padding:16px;border-radius:12px;margin:12px 0}
+.total strong{display:block;font-size:23px;margin-top:8px}
+.small{font-size:12px;color:#607568;line-height:1.5}
+.message{color:#176b45;font-size:14px}
+.nav{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.nav button{min-height:48px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row button{flex:1}
+hr{border:0;border-top:1px solid #e1e9e3;margin:15px 0}
 </style>
 </head>
 <body>
@@ -31,148 +38,330 @@ label{display:block;margin-top:12px;font-weight:bold}
 <h1>TengHisob</h1>
 <p class="subtitle">Hisob-kitoblar oson va ishonchli</p>
 
-<section id="home">
-<button onclick="openPage('shop')">Do‘kon egasi</button>
-<button class="secondary" onclick="openPage('buyer')">Xaridor</button>
+<section id="home" class="panel" style="display:block">
+<h2>Asosiy sahifa</h2>
+<button class="mainbtn" onclick="openPage('shop')">Do‘kon egasi</button>
+<button class="mainbtn secondary" onclick="openPage('buyer')">Xaridor</button>
+<p class="small">Namuna dastur. Haqiqiy hisoblar va foydalanuvchilar o‘rtasidagi aloqa keyinchalik umumiy ma’lumotlar bazasi orqali ulanadi.</p>
 </section>
 
 <section id="shop" class="panel">
 <h2>Do‘kon egasi</h2>
+<div class="total">Jami savdo <strong id="homeSales">0 so‘m</strong></div>
+<div class="total">Jami xarajat <strong id="homeExpenses">0 so‘m</strong></div>
+<div class="total">Olinishi kerak bo‘lgan qarz <strong id="homeDebt">0 so‘m</strong></div>
+<div class="nav">
 <button onclick="openPage('sales')">Savdo va tushum</button>
-<div class="item">Xarajatlar — tez orada</div>
-<div class="item">Mahsulotlar — tez orada</div>
-<div class="item">Xaridorlar qarzi — tez orada</div>
-<div class="item">Hisobotlar — tez orada</div>
-<button class="secondary" onclick="openPage('home')">Orqaga</button>
+<button onclick="openPage('expenses')">Xarajatlar</button>
+<button onclick="openPage('products')">Mahsulotlar</button>
+<button onclick="openPage('debts')">Xaridorlar qarzi</button>
+<button onclick="openPage('payments')">Qarz to‘lovlari</button>
+<button onclick="openPage('reports')">Hisobotlar</button>
+</div>
+<button class="mainbtn secondary" onclick="openPage('home')">Asosiy sahifa</button>
 </section>
 
 <section id="sales" class="panel">
 <h2>Savdo va tushum</h2>
-
-<div class="total">
-Jami tushum
-<strong id="total">0 so‘m</strong>
-</div>
-
 <label for="saleName">Savdo nomi</label>
-<input id="saleName" type="text" placeholder="Masalan: oziq-ovqat">
-
+<input id="saleName" placeholder="Masalan: kundalik savdo">
 <label for="saleAmount">Savdo summasi (so‘m)</label>
-<input id="saleAmount" type="number" min="1" step="1" placeholder="Masalan: 150000">
-
-<button onclick="addSale()">Savdoni qo‘shish</button>
-
-<p id="message" class="message"></p>
-
-<h3>Saqlangan savdolar</h3>
+<input id="saleAmount" type="number" min="1" placeholder="150000">
+<label for="saleType">To‘lov turi</label>
+<select id="saleType">
+<option value="naqd">Naqd pul</option>
+<option value="karta">Karta yoki o‘tkazma</option>
+<option value="qarz">Qarzga berildi</option>
+</select>
+<button class="mainbtn" onclick="addSale()">Savdoni saqlash</button>
+<p id="saleMsg" class="message"></p>
+<h3>Savdolar ro‘yxati</h3>
 <div id="saleList"></div>
+<button class="mainbtn secondary" onclick="openPage('shop')">Orqaga</button>
+</section>
 
-<p class="note">Savdolar ushbu qurilmadagi brauzerda saqlanadi. Brauzer ma’lumotlari o‘chirilsa, yozuvlar yo‘qolishi mumkin.</p>
+<section id="expenses" class="panel">
+<h2>Xarajatlar</h2>
+<label for="expenseName">Xarajat nomi</label>
+<input id="expenseName" placeholder="Masalan: ijara, elektr">
+<label for="expenseAmount">Summa (so‘m)</label>
+<input id="expenseAmount" type="number" min="1" placeholder="50000">
+<button class="mainbtn" onclick="addExpense()">Xarajatni saqlash</button>
+<p id="expenseMsg" class="message"></p>
+<h3>Xarajatlar ro‘yxati</h3>
+<div id="expenseList"></div>
+<button class="mainbtn secondary" onclick="openPage('shop')">Orqaga</button>
+</section>
 
-<button class="secondary" onclick="openPage('shop')">Orqaga</button>
+<section id="products" class="panel">
+<h2>Mahsulotlar</h2>
+<label for="productName">Mahsulot nomi</label>
+<input id="productName" placeholder="Masalan: non">
+<label for="productCost">Tannarxi (so‘m)</label>
+<input id="productCost" type="number" min="0" placeholder="3000">
+<label for="productPrice">Sotish narxi (so‘m)</label>
+<input id="productPrice" type="number" min="1" placeholder="5000">
+<label for="productStock">Miqdori</label>
+<input id="productStock" type="number" min="0" placeholder="20">
+<button class="mainbtn" onclick="addProduct()">Mahsulotni qo‘shish</button>
+<p id="productMsg" class="message"></p>
+<h3>Mahsulotlar ro‘yxati</h3>
+<div id="productList"></div>
+<button class="mainbtn secondary" onclick="openPage('shop')">Orqaga</button>
+</section>
+
+<section id="debts" class="panel">
+<h2>Xaridorlar qarzi</h2>
+<label for="debtBuyer">Xaridor ismi</label>
+<input id="debtBuyer" placeholder="Masalan: Ali Valiyev">
+<label for="debtPhone">Xaridor telefoni (ixtiyoriy)</label>
+<input id="debtPhone" type="tel" placeholder="+7 yoki +998">
+<label for="debtAmount">Qarz summasi (so‘m)</label>
+<input id="debtAmount" type="number" min="1" placeholder="200000">
+<label for="debtDue">To‘lov muddati</label>
+<input id="debtDue" type="date">
+<label for="debtNote">Izoh (ixtiyoriy)</label>
+<input id="debtNote" placeholder="Nima uchun qarz berildi">
+<button class="mainbtn" onclick="addDebt()">Qarzni qo‘shish</button>
+<p id="debtMsg" class="message"></p>
+<h3>Qarzlar ro‘yxati</h3>
+<div id="debtList"></div>
+<button class="mainbtn secondary" onclick="openPage('shop')">Orqaga</button>
+</section>
+
+<section id="payments" class="panel">
+<h2>Qarz to‘lovlari</h2>
+<label for="paymentDebt">Qarzdorni tanlang</label>
+<select id="paymentDebt"></select>
+<label for="paymentAmount">To‘langan summa (so‘m)</label>
+<input id="paymentAmount" type="number" min="1" placeholder="50000">
+<button class="mainbtn" onclick="addPayment()">To‘lovni qayd etish</button>
+<p id="paymentMsg" class="message"></p>
+<h3>To‘lovlar tarixi</h3>
+<div id="paymentList"></div>
+<button class="mainbtn secondary" onclick="openPage('shop')">Orqaga</button>
+</section>
+
+<section id="reports" class="panel">
+<h2>Hisobotlar</h2>
+<div class="card">Jami savdo <strong id="reportSales">0 so‘m</strong></div>
+<div class="card">Jami xarajat <strong id="reportExpenses">0 so‘m</strong></div>
+<div class="card">Naqd va karta savdosi <strong id="reportCash">0 so‘m</strong></div>
+<div class="card">Qarzga sotilgan <strong id="reportCredit">0 so‘m</strong></div>
+<div class="card">Qaytarilgan qarz <strong id="reportPaid">0 so‘m</strong></div>
+<div class="card">Hali olinmagan qarz <strong id="reportDebt">0 so‘m</strong></div>
+<div class="total">Savdo minus xarajatlar <strong id="reportDifference">0 so‘m</strong></div>
+<p class="small">Bu farq sof foyda emas. Mahsulot tannarxi, soliq va boshqa hisoblar kiritilgach, foyda aniqroq hisoblanadi.</p>
+<button class="mainbtn secondary" onclick="openPage('shop')">Orqaga</button>
 </section>
 
 <section id="buyer" class="panel">
-<h2>Xaridor</h2>
-<div class="item">Mening qarzlarim — tez orada</div>
-<div class="item">To‘lovlar tarixi — tez orada</div>
-<div class="item">To‘lov muddati — tez orada</div>
-<button class="secondary" onclick="openPage('home')">Orqaga</button>
+<h2>Xaridor bo‘limi</h2>
+<p class="small">Bu namuna rejimida barcha do‘konlar va xaridorlar ma’lumoti bitta qurilmada saqlanadi. Hozircha alohida shaxsiy hisob mavjud emas.</p>
+<label for="buyerSearch">Ismingizni kiriting</label>
+<input id="buyerSearch" placeholder="Qarz yozilgan ism">
+<button class="mainbtn" onclick="showBuyerDebts()">Qarzlarimni ko‘rish</button>
+<h3>Mening qarzlarim</h3>
+<div id="buyerDebtList"></div>
+<h3>To‘lovlar tarixi</h3>
+<div id="buyerPaymentList"></div>
+<button class="mainbtn secondary" onclick="openPage('home')">Asosiy sahifa</button>
 </section>
 </main>
 
 <script>
+const KEY='tenghisob_all_v2';
+function emptyData(){
+return {sales:[],expenses:[],products:[],debts:[],payments:[]};
+}
+function loadData(){
+try{
+const d=JSON.parse(localStorage.getItem(KEY)||'null');
+if(d&&Array.isArray(d.sales)&&Array.isArray(d.debts))return d;
+}catch(e){}
+return emptyData();
+}
+let data=loadData();
+function save(){
+try{
+localStorage.setItem(KEY,JSON.stringify(data));
+return true;
+}catch(e){
+alert('Ma’lumot saqlanmadi. Brauzer xotirasini tekshiring.');
+return false;
+}
+}
+function money(n){
+return Number(n||0).toLocaleString('uz-UZ')+' so‘m';
+}
+function sum(arr,fn){
+return arr.reduce((total,item)=>total+fn(item),0);
+}
+function remaining(debt){
+return Math.max(0,debt.amount-sum(data.payments.filter(p=>p.debtId===debt.id),p=>p.amount));
+}
+function el(id){return document.getElementById(id)}
+function val(id){return el(id).value.trim()}
+function num(id){return Number(el(id).value)}
+function clearFields(ids){ids.forEach(id=>el(id).value='')}
+function safeText(parent,text,tag='div'){
+const node=document.createElement(tag);
+node.textContent=text;
+parent.appendChild(node);
+return node;
+}
+function makeCard(title,lines){
+const card=document.createElement('div');
+card.className='card';
+safeText(card,title,'strong');
+lines.forEach(line=>safeText(card,line));
+return card;
+}
 function openPage(page){
-['home','shop','buyer','sales'].forEach(function(id){
-document.getElementById(id).style.display='none';
-});
-document.getElementById(page).style.display='block';
-if(page==='sales') renderSales();
+document.querySelectorAll('.panel').forEach(p=>p.style.display='none');
+el(page).style.display='block';
+if(page==='shop')renderHome();
+if(page==='sales')renderSales();
+if(page==='expenses')renderExpenses();
+if(page==='products')renderProducts();
+if(page==='debts')renderDebts();
+if(page==='payments')renderPayments();
+if(page==='reports')renderReports();
+if(page==='buyer')showBuyerDebts();
 }
-
-function loadSales(){
-try{
-return JSON.parse(localStorage.getItem('tenghisob_sales')||'[]');
-}catch(e){
-return [];
-}
-}
-
-function saveSales(sales){
-localStorage.setItem('tenghisob_sales',JSON.stringify(sales));
-}
-
-function money(amount){
-return Number(amount).toLocaleString('uz-UZ')+' so‘m';
-}
-
 function addSale(){
-const name=document.getElementById('saleName').value.trim();
-const amount=Number(document.getElementById('saleAmount').value);
-const message=document.getElementById('message');
-
+const name=val('saleName')||'Savdo';
+const amount=num('saleAmount');
+const type=val('saleType');
 if(!Number.isSafeInteger(amount)||amount<=0){
-message.textContent='Savdo summasini to‘g‘ri kiriting.';
-return;
+el('saleMsg').textContent='Summani to‘g‘ri kiriting.';return;
 }
-
-const sales=loadSales();
-sales.unshift({
-id:Date.now(),
-name:name||'Savdo',
-amount:amount,
-date:new Date().toLocaleString('uz-UZ')
-});
-
-try{
-saveSales(sales);
-}catch(e){
-message.textContent='Saqlash amalga oshmadi. Brauzer xotirasini tekshiring.';
-return;
-}
-
-document.getElementById('saleName').value='';
-document.getElementById('saleAmount').value='';
-message.textContent='Savdo muvaffaqiyatli qo‘shildi.';
+data.sales.unshift({id:Date.now(),name,amount,type,date:new Date().toLocaleString('uz-UZ')});
+if(save()){
+clearFields(['saleName','saleAmount']);
+el('saleMsg').textContent='Savdo saqlandi.';
 renderSales();
 }
-
+}
 function renderSales(){
-const sales=loadSales();
-const total=sales.reduce(function(sum,sale){
-return sum+sale.amount;
-},0);
-
-document.getElementById('total').textContent=money(total);
-const list=document.getElementById('saleList');
-list.innerHTML='';
-
-if(sales.length===0){
-list.textContent='Hozircha savdolar yo‘q.';
-return;
-}
-
-sales.forEach(function(sale){
-const item=document.createElement('div');
-item.className='sale';
-
-const title=document.createElement('strong');
-title.textContent=sale.name;
-
-const amount=document.createElement('p');
-amount.textContent=money(sale.amount);
-
-const date=document.createElement('small');
-date.textContent=sale.date;
-
-item.appendChild(title);
-item.appendChild(amount);
-item.appendChild(date);
-list.appendChild(item);
+const list=el('saleList');list.replaceChildren();
+if(!data.sales.length)safeText(list,'Hozircha savdolar yo‘q.');
+data.sales.forEach(s=>{
+const c=makeCard(s.name,[money(s.amount),s.type==='qarz'?'Qarzga':s.type==='karta'?'Karta yoki o‘tkazma':'Naqd pul',s.date]);
+const b=document.createElement('button');b.className='danger';b.textContent='O‘chirish';
+b.onclick=()=>{if(confirm('Ushbu savdoni o‘chirasizmi?')){data.sales=data.sales.filter(x=>x.id!==s.id);save();renderSales();}};
+c.appendChild(b);list.appendChild(c);
 });
 }
-
-renderSales();
+function addExpense(){
+const name=val('expenseName')||'Xarajat',amount=num('expenseAmount');
+if(!Number.isSafeInteger(amount)||amount<=0){el('expenseMsg').textContent='Summani to‘g‘ri kiriting.';return;}
+data.expenses.unshift({id:Date.now(),name,amount,date:new Date().toLocaleString('uz-UZ')});
+if(save()){clearFields(['expenseName','expenseAmount']);el('expenseMsg').textContent='Xarajat saqlandi.';renderExpenses();}
+}
+function renderExpenses(){
+const list=el('expenseList');list.replaceChildren();
+if(!data.expenses.length)safeText(list,'Hozircha xarajatlar yo‘q.');
+data.expenses.forEach(x=>{
+const c=makeCard(x.name,[money(x.amount),x.date]);
+const b=document.createElement('button');b.className='danger';b.textContent='O‘chirish';
+b.onclick=()=>{if(confirm('Xarajatni o‘chirasizmi?')){data.expenses=data.expenses.filter(y=>y.id!==x.id);save();renderExpenses();}};
+c.appendChild(b);list.appendChild(c);
+});
+}
+function addProduct(){
+const name=val('productName'),cost=num('productCost'),price=num('productPrice'),stock=num('productStock');
+if(!name||!Number.isSafeInteger(cost)||cost<0||!Number.isSafeInteger(price)||price<=0||!Number.isSafeInteger(stock)||stock<0){
+el('productMsg').textContent='Barcha maydonlarni to‘g‘ri to‘ldiring.';return;
+}
+data.products.unshift({id:Date.now(),name,cost,price,stock});
+if(save()){clearFields(['productName','productCost','productPrice','productStock']);el('productMsg').textContent='Mahsulot qo‘shildi.';renderProducts();}
+}
+function renderProducts(){
+const list=el('productList');list.replaceChildren();
+if(!data.products.length)safeText(list,'Hozircha mahsulotlar yo‘q.');
+data.products.forEach(p=>{
+const c=makeCard(p.name,['Tannarxi: '+money(p.cost),'Sotish narxi: '+money(p.price),'Qoldiq: '+p.stock+' dona','Bir donadan farq: '+money(p.price-p.cost)]);
+const b=document.createElement('button');b.className='danger';b.textContent='O‘chirish';
+b.onclick=()=>{if(confirm('Mahsulotni o‘chirasizmi?')){data.products=data.products.filter(x=>x.id!==p.id);save();renderProducts();}};
+c.appendChild(b);list.appendChild(c);
+});
+}
+function addDebt(){
+const buyer=val('debtBuyer'),amount=num('debtAmount'),due=val('debtDue');
+if(!buyer||!Number.isSafeInteger(amount)||amount<=0){
+el('debtMsg').textContent='Xaridor ismi va qarz summasini kiriting.';return;
+}
+data.debts.unshift({id:Date.now(),buyer,phone:val('debtPhone'),amount,due,note:val('debtNote'),date:new Date().toLocaleString('uz-UZ')});
+if(save()){clearFields(['debtBuyer','debtPhone','debtAmount','debtDue','debtNote']);el('debtMsg').textContent='Qarz saqlandi.';renderDebts();}
+}
+function renderDebts(){
+const list=el('debtList');list.replaceChildren();
+if(!data.debts.length)safeText(list,'Hozircha qarzlar yo‘q.');
+data.debts.forEach(d=>{
+const r=remaining(d);
+const c=makeCard(d.buyer,['Boshlang‘ich qarz: '+money(d.amount),'Qolgan qarz: '+money(r),'Telefon: '+(d.phone||'Kiritilmagan'),'Muddati: '+(d.due||'Belgilanmagan'),d.note||'', 'Yozilgan sana: '+d.date]);
+const b=document.createElement('button');b.className='danger';b.textContent='Qarzni o‘chirish';
+b.onclick=()=>{if(confirm('Qarzni o‘chirishni tasdiqlaysizmi?')){data.debts=data.debts.filter(x=>x.id!==d.id);data.payments=data.payments.filter(p=>p.debtId!==d.id);save();renderDebts();}};
+c.appendChild(b);list.appendChild(c);
+});
+}
+function renderPayments(){
+const select=el('paymentDebt');select.replaceChildren();
+const option=document.createElement('option');option.value='';option.textContent='Qarzdorni tanlang';select.appendChild(option);
+data.debts.filter(d=>remaining(d)>0).forEach(d=>{
+const o=document.createElement('option');o.value=String(d.id);
+o.textContent=d.buyer+' — '+money(remaining(d));select.appendChild(o);
+});
+const list=el('paymentList');list.replaceChildren();
+if(!data.payments.length)safeText(list,'Hozircha to‘lovlar yo‘q.');
+data.payments.forEach(p=>{
+const d=data.debts.find(x=>x.id===p.debtId);
+list.appendChild(makeCard(d?d.buyer:'O‘chirilgan qarz',[money(p.amount),p.date]));
+});
+}
+function addPayment(){
+const id=Number(val('paymentDebt')),amount=num('paymentAmount');
+const d=data.debts.find(x=>x.id===id);
+if(!d||!Number.isSafeInteger(amount)||amount<=0){el('paymentMsg').textContent='Qarzdor va to‘lov summasini to‘g‘ri kiriting.';return;}
+if(amount>remaining(d)){el('paymentMsg').textContent='To‘lov qolgan qarzdan ko‘p bo‘lishi mumkin emas.';return;}
+data.payments.unshift({id:Date.now(),debtId:id,amount,date:new Date().toLocaleString('uz-UZ')});
+if(save()){el('paymentAmount').value='';el('paymentMsg').textContent='To‘lov saqlandi.';renderPayments();}
+}
+function renderHome(){
+el('homeSales').textContent=money(sum(data.sales,s=>s.amount));
+el('homeExpenses').textContent=money(sum(data.expenses,x=>x.amount));
+el('homeDebt').textContent=money(sum(data.debts,remaining));
+}
+function renderReports(){
+const sales=sum(data.sales,s=>s.amount);
+const expenses=sum(data.expenses,x=>x.amount);
+const cash=sum(data.sales.filter(s=>s.type!=='qarz'),s=>s.amount);
+const credit=sum(data.sales.filter(s=>s.type==='qarz'),s=>s.amount);
+const paid=sum(data.payments,p=>p.amount);
+const debt=sum(data.debts,remaining);
+el('reportSales').textContent=money(sales);
+el('reportExpenses').textContent=money(expenses);
+el('reportCash').textContent=money(cash);
+el('reportCredit').textContent=money(credit);
+el('reportPaid').textContent=money(paid);
+el('reportDebt').textContent=money(debt);
+el('reportDifference').textContent=money(sales-expenses);
+}
+function showBuyerDebts(){
+const name=val('buyerSearch').toLocaleLowerCase();
+const debts=el('buyerDebtList');debts.replaceChildren();
+const payments=el('buyerPaymentList');payments.replaceChildren();
+if(!name){safeText(debts,'Qarzlaringizni ko‘rish uchun ism kiriting.');return;}
+const matched=data.debts.filter(d=>d.buyer.toLocaleLowerCase()===name);
+if(!matched.length)safeText(debts,'Bu ism bo‘yicha qarz topilmadi.');
+matched.forEach(d=>debts.appendChild(makeCard('Do‘kon qarzi',[ 'Qolgan qarz: '+money(remaining(d)),'To‘lov muddati: '+(d.due||'Belgilanmagan'),'Qarz yozilgan sana: '+d.date])));
+const ids=matched.map(d=>d.id);
+const history=data.payments.filter(p=>ids.includes(p.debtId));
+if(!history.length)safeText(payments,'To‘lovlar tarixi topilmadi.');
+history.forEach(p=>payments.appendChild(makeCard('To‘lov',[money(p.amount),p.date])));
+}
+renderHome();
 </script>
 </body>
 </html>
