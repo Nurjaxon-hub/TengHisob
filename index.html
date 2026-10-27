@@ -4,364 +4,368 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#176B45">
 <title>TengHisob</title>
 <style>
+:root{--g:#16845b;--bg:#f3f7f4;--card:#fff;--txt:#183329;--muted:#687a70;--red:#c0392b}
 *{box-sizing:border-box}
-body{margin:0;background:#f3f7f4;color:#183b2b;font-family:Arial,sans-serif}
-.container{max-width:520px;margin:auto;padding:16px}
-h1{color:#176b45;text-align:center;margin-bottom:5px}
-.subtitle{text-align:center;color:#607568;margin-top:0}
-h2{font-size:22px}
-h3{font-size:17px}
-button{border:0;border-radius:10px;padding:13px;background:#176b45;color:white;font-size:15px;font-weight:bold;cursor:pointer}
-.mainbtn{width:100%;margin:6px 0}
-.secondary{background:white;color:#176b45;border:1px solid #176b45}
-.danger{background:#a83232}
-input,select{width:100%;padding:12px;margin:6px 0 12px;border:1px solid #cbd8cf;border-radius:9px;font-size:16px;background:white}
-label{font-size:14px;font-weight:bold;display:block;margin-top:8px}
-.panel{display:none;background:white;padding:16px;border-radius:14px;margin-top:15px}
-.card{background:#edf5ef;padding:13px;border-radius:10px;margin:10px 0;overflow-wrap:anywhere}
-.total{background:#176b45;color:white;padding:16px;border-radius:12px;margin:12px 0}
-.total strong{display:block;font-size:23px;margin-top:8px}
-.small{font-size:12px;color:#607568;line-height:1.5}
-.message{color:#176b45;font-size:14px}
-.nav{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.nav button{min-height:48px}
+body{margin:0;background:var(--bg);font-family:Arial,sans-serif;color:var(--txt)}
+header{background:var(--g);color:white;padding:20px 16px;text-align:center}
+header h1{margin:0;font-size:27px}
+header p{margin:6px 0 0;font-size:14px}
+main{max-width:760px;margin:auto;padding:14px}
+.card{background:var(--card);padding:16px;margin:0 0 13px;border-radius:14px;box-shadow:0 2px 8px #0000000a}
+h2{font-size:20px;margin:0 0 14px}
+h3{font-size:16px;margin:12px 0}
+label{display:block;font-size:14px;margin:10px 0 5px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #ccd9d0;border-radius:9px;font-size:16px;background:white;color:var(--txt)}
+button{border:0;border-radius:10px;padding:12px 14px;font-size:15px;font-weight:bold;cursor:pointer}
+.primary{background:var(--g);color:white;width:100%;margin-top:12px}
+.secondary{background:#e6f2eb;color:#176846}
+.danger{background:#fdecea;color:var(--red)}
+.nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.nav button{background:#e5f3eb;color:#176846;text-align:left;min-height:54px}
+.nav button.active{background:var(--g);color:white}
 .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.row button{flex:1}
-hr{border:0;border-top:1px solid #e1e9e3;margin:15px 0}
+.row>*{flex:1}
+.item{padding:12px 0;border-bottom:1px solid #e7eee9}
+.item:last-child{border-bottom:0}
+.small{font-size:13px;color:var(--muted)}
+.amount{font-size:22px;font-weight:bold}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.stat{background:#eaf5ee;padding:13px;border-radius:10px}
+.stat span{display:block;font-size:13px;color:var(--muted)}
+.stat b{display:block;margin-top:7px;font-size:20px;overflow-wrap:anywhere}
+.hidden{display:none!important}
+.notice{padding:12px;background:#fff5d9;border-radius:9px;font-size:13px;line-height:1.5}
+.topline{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.topline button{padding:9px 12px}
+@media(max-width:380px){.nav{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.stat b{font-size:17px}}
 </style>
 </head>
 <body>
-<main class="container">
+<header>
 <h1>TengHisob</h1>
-<p class="subtitle">Hisob-kitoblar oson va ishonchli</p>
-
-<section id="home" class="panel" style="display:block">
-<h2>Asosiy sahifa</h2>
-<button class="mainbtn" onclick="openPage('shop')">Do‘kon egasi</button>
-<button class="mainbtn secondary" onclick="openPage('buyer')">Xaridor</button>
-<p class="small">Namuna dastur. Haqiqiy hisoblar va foydalanuvchilar o‘rtasidagi aloqa keyinchalik umumiy ma’lumotlar bazasi orqali ulanadi.</p>
+<p>Do‘kon va xaridor hisob-kitoblari</p>
+</header>
+<main>
+<section id="auth" class="card">
+<h2 id="authTitle">Hisobga kirish</h2>
+<div id="signupFields" class="hidden">
+<label>To‘liq ism</label>
+<input id="fullName" placeholder="Ism va familiya" autocomplete="name">
+<label>Telefon raqami</label>
+<input id="phone" placeholder="+998..." type="tel" autocomplete="tel">
+<label>Hisob turi</label>
+<select id="role">
+<option value="shop">Do‘kon egasi</option>
+<option value="buyer">Xaridor</option>
+</select>
+</div>
+<label>Elektron pochta</label>
+<input id="email" type="email" placeholder="email@example.com" autocomplete="email">
+<label>Parol</label>
+<input id="password" type="password" placeholder="Kamida 6 ta belgi" autocomplete="current-password">
+<button class="primary" id="authButton" onclick="authenticate()">Kirish</button>
+<button class="secondary" style="width:100%;margin-top:9px" id="switchAuth" onclick="toggleAuth()">Yangi hisob yaratish</button>
+<p id="authMessage" class="small"></p>
+<div class="notice">Hisobingizni yaratganingizdan so‘ng elektron pochtangizni tasdiqlash talab qilinishi mumkin.</div>
 </section>
 
-<section id="shop" class="panel">
-<h2>Do‘kon egasi</h2>
-<div class="total">Jami savdo <strong id="homeSales">0 so‘m</strong></div>
-<div class="total">Jami xarajat <strong id="homeExpenses">0 so‘m</strong></div>
-<div class="total">Olinishi kerak bo‘lgan qarz <strong id="homeDebt">0 so‘m</strong></div>
+<section id="app" class="hidden">
+<div class="card">
+<div class="topline">
+<div><div class="small">Tizimga kirdingiz</div><b id="userLabel"></b></div>
+<button class="danger" onclick="logout()">Chiqish</button>
+</div>
+</div>
+<section id="home" class="card">
+<h2>Asosiy sahifa</h2>
 <div class="nav">
-<button onclick="openPage('sales')">Savdo va tushum</button>
+<button onclick="openPage('shop')">Do‘kon egasi</button>
+<button onclick="openPage('buyer')">Xaridor</button>
+</div>
+</section>
+
+<section id="shop" class="page card hidden">
+<h2>Do‘kon egasi</h2>
+<div class="stats">
+<div class="stat"><span>Jami savdo</span><b id="totalSales">0 ₽</b></div>
+<div class="stat"><span>Xarajatlar</span><b id="totalExpenses">0 ₽</b></div>
+<div class="stat"><span>Qarzlar</span><b id="totalDebt">0 ₽</b></div>
+<div class="stat"><span>Qarzdan tushgan</span><b id="totalPaid">0 ₽</b></div>
+</div>
+<div class="nav" style="margin-top:14px">
+<button onclick="openPage('sales')">Savdo</button>
 <button onclick="openPage('expenses')">Xarajatlar</button>
 <button onclick="openPage('products')">Mahsulotlar</button>
 <button onclick="openPage('debts')">Xaridorlar qarzi</button>
 <button onclick="openPage('payments')">Qarz to‘lovlari</button>
 <button onclick="openPage('reports')">Hisobotlar</button>
 </div>
-<button class="mainbtn secondary" onclick="openPage('home')">Asosiy sahifa</button>
+<button class="secondary" style="width:100%;margin-top:12px" onclick="openPage('home')">Orqaga</button>
 </section>
 
-<section id="sales" class="panel">
-<h2>Savdo va tushum</h2>
-<label for="saleName">Savdo nomi</label>
-<input id="saleName" placeholder="Masalan: kundalik savdo">
-<label for="saleAmount">Savdo summasi (so‘m)</label>
-<input id="saleAmount" type="number" min="1" placeholder="150000">
-<label for="saleType">To‘lov turi</label>
-<select id="saleType">
-<option value="naqd">Naqd pul</option>
-<option value="karta">Karta yoki o‘tkazma</option>
-<option value="qarz">Qarzga berildi</option>
-</select>
-<button class="mainbtn" onclick="addSale()">Savdoni saqlash</button>
-<p id="saleMsg" class="message"></p>
-<h3>Savdolar ro‘yxati</h3>
-<div id="saleList"></div>
-<button class="mainbtn secondary" onclick="openPage('shop')">Orqaga</button>
+<section id="sales" class="page card hidden">
+<h2>Savdo kiritish</h2>
+<label>Mahsulot yoki savdo nomi</label><input id="saleName" placeholder="Masalan, non">
+<label>Summa (₽)</label><input id="saleAmount" type="number" min="0.01" step="0.01">
+<label>To‘lov turi</label>
+<select id="saleType"><option value="naqd">Naqd</option><option value="karta">Karta</option><option value="qarz">Qarzga</option></select>
+<button class="primary" onclick="addSale()">Savdoni saqlash</button>
+<div id="salesList"></div>
+<button class="secondary" style="width:100%;margin-top:12px" onclick="openPage('shop')">Orqaga</button>
 </section>
 
-<section id="expenses" class="panel">
-<h2>Xarajatlar</h2>
-<label for="expenseName">Xarajat nomi</label>
-<input id="expenseName" placeholder="Masalan: ijara, elektr">
-<label for="expenseAmount">Summa (so‘m)</label>
-<input id="expenseAmount" type="number" min="1" placeholder="50000">
-<button class="mainbtn" onclick="addExpense()">Xarajatni saqlash</button>
-<p id="expenseMsg" class="message"></p>
-<h3>Xarajatlar ro‘yxati</h3>
-<div id="expenseList"></div>
-<button class="mainbtn secondary" onclick="openPage('shop')">Orqaga</button>
+<section id="expenses" class="page card hidden">
+<h2>Xarajat kiritish</h2>
+<label>Xarajat nomi</label><input id="expenseName" placeholder="Masalan, ijara">
+<label>Summa (₽)</label><input id="expenseAmount" type="number" min="0.01" step="0.01">
+<button class="primary" onclick="addExpense()">Xarajatni saqlash</button>
+<div id="expensesList"></div>
+<button class="secondary" style="width:100%;margin-top:12px" onclick="openPage('shop')">Orqaga</button>
 </section>
 
-<section id="products" class="panel">
+<section id="products" class="page card hidden">
 <h2>Mahsulotlar</h2>
-<label for="productName">Mahsulot nomi</label>
-<input id="productName" placeholder="Masalan: non">
-<label for="productCost">Tannarxi (so‘m)</label>
-<input id="productCost" type="number" min="0" placeholder="3000">
-<label for="productPrice">Sotish narxi (so‘m)</label>
-<input id="productPrice" type="number" min="1" placeholder="5000">
-<label for="productStock">Miqdori</label>
-<input id="productStock" type="number" min="0" placeholder="20">
-<button class="mainbtn" onclick="addProduct()">Mahsulotni qo‘shish</button>
-<p id="productMsg" class="message"></p>
-<h3>Mahsulotlar ro‘yxati</h3>
-<div id="productList"></div>
-<button class="mainbtn secondary" onclick="openPage('shop')">Orqaga</button>
+<label>Mahsulot nomi</label><input id="productName" placeholder="Mahsulot nomi">
+<div class="row">
+<div><label>Tan narxi (₽)</label><input id="productCost" type="number" min="0" step="0.01"></div>
+<div><label>Sotuv narxi (₽)</label><input id="productPrice" type="number" min="0.01" step="0.01"></div>
+</div>
+<label>Miqdori</label><input id="productQty" type="number" min="0" step="0.01">
+<button class="primary" onclick="addProduct()">Mahsulotni saqlash</button>
+<div id="productsList"></div>
+<button class="secondary" style="width:100%;margin-top:12px" onclick="openPage('shop')">Orqaga</button>
 </section>
 
-<section id="debts" class="panel">
-<h2>Xaridorlar qarzi</h2>
-<label for="debtBuyer">Xaridor ismi</label>
-<input id="debtBuyer" placeholder="Masalan: Ali Valiyev">
-<label for="debtPhone">Xaridor telefoni (ixtiyoriy)</label>
-<input id="debtPhone" type="tel" placeholder="+7 yoki +998">
-<label for="debtAmount">Qarz summasi (so‘m)</label>
-<input id="debtAmount" type="number" min="1" placeholder="200000">
-<label for="debtDue">To‘lov muddati</label>
-<input id="debtDue" type="date">
-<label for="debtNote">Izoh (ixtiyoriy)</label>
-<input id="debtNote" placeholder="Nima uchun qarz berildi">
-<button class="mainbtn" onclick="addDebt()">Qarzni qo‘shish</button>
-<p id="debtMsg" class="message"></p>
-<h3>Qarzlar ro‘yxati</h3>
-<div id="debtList"></div>
-<button class="mainbtn secondary" onclick="openPage('shop')">Orqaga</button>
+<section id="debts" class="page card hidden">
+<h2>Xaridor qarzini kiritish</h2>
+<label>Xaridor ismi</label><input id="debtBuyer" placeholder="Ism va familiya">
+<label>Telefon raqami</label><input id="debtPhone" type="tel" placeholder="+998...">
+<label>Qarz summasi (₽)</label><input id="debtAmount" type="number" min="0.01" step="0.01">
+<label>To‘lash muddati</label><input id="debtDate" type="date">
+<label>Izoh</label><input id="debtNote" placeholder="Nima uchun qarz berildi">
+<button class="primary" onclick="addDebt()">Qarzni saqlash</button>
+<div id="debtsList"></div>
+<button class="secondary" style="width:100%;margin-top:12px" onclick="openPage('shop')">Orqaga</button>
 </section>
 
-<section id="payments" class="panel">
-<h2>Qarz to‘lovlari</h2>
-<label for="paymentDebt">Qarzdorni tanlang</label>
-<select id="paymentDebt"></select>
-<label for="paymentAmount">To‘langan summa (so‘m)</label>
-<input id="paymentAmount" type="number" min="1" placeholder="50000">
-<button class="mainbtn" onclick="addPayment()">To‘lovni qayd etish</button>
-<p id="paymentMsg" class="message"></p>
-<h3>To‘lovlar tarixi</h3>
-<div id="paymentList"></div>
-<button class="mainbtn secondary" onclick="openPage('shop')">Orqaga</button>
+<section id="payments" class="page card hidden">
+<h2>Qarz to‘lovi</h2>
+<label>Qarz</label><select id="paymentDebt"></select>
+<label>To‘langan summa (₽)</label><input id="paymentAmount" type="number" min="0.01" step="0.01">
+<button class="primary" onclick="addPayment()">To‘lovni saqlash</button>
+<div id="paymentsList"></div>
+<button class="secondary" style="width:100%;margin-top:12px" onclick="openPage('shop')">Orqaga</button>
 </section>
 
-<section id="reports" class="panel">
+<section id="reports" class="page card hidden">
 <h2>Hisobotlar</h2>
-<div class="card">Jami savdo <strong id="reportSales">0 so‘m</strong></div>
-<div class="card">Jami xarajat <strong id="reportExpenses">0 so‘m</strong></div>
-<div class="card">Naqd va karta savdosi <strong id="reportCash">0 so‘m</strong></div>
-<div class="card">Qarzga sotilgan <strong id="reportCredit">0 so‘m</strong></div>
-<div class="card">Qaytarilgan qarz <strong id="reportPaid">0 so‘m</strong></div>
-<div class="card">Hali olinmagan qarz <strong id="reportDebt">0 so‘m</strong></div>
-<div class="total">Savdo minus xarajatlar <strong id="reportDifference">0 so‘m</strong></div>
-<p class="small">Bu farq sof foyda emas. Mahsulot tannarxi, soliq va boshqa hisoblar kiritilgach, foyda aniqroq hisoblanadi.</p>
-<button class="mainbtn secondary" onclick="openPage('shop')">Orqaga</button>
+<div id="reportContent"></div>
+<button class="secondary" style="width:100%;margin-top:12px" onclick="openPage('shop')">Orqaga</button>
 </section>
 
-<section id="buyer" class="panel">
-<h2>Xaridor bo‘limi</h2>
-<p class="small">Bu namuna rejimida barcha do‘konlar va xaridorlar ma’lumoti bitta qurilmada saqlanadi. Hozircha alohida shaxsiy hisob mavjud emas.</p>
-<label for="buyerSearch">Ismingizni kiriting</label>
-<input id="buyerSearch" placeholder="Qarz yozilgan ism">
-<button class="mainbtn" onclick="showBuyerDebts()">Qarzlarimni ko‘rish</button>
-<h3>Mening qarzlarim</h3>
-<div id="buyerDebtList"></div>
-<h3>To‘lovlar tarixi</h3>
-<div id="buyerPaymentList"></div>
-<button class="mainbtn secondary" onclick="openPage('home')">Asosiy sahifa</button>
+<section id="buyer" class="page card hidden">
+<h2>Xaridor</h2>
+<p class="small">Bu bo‘lim hozircha shu qurilmada saqlangan qarzlarni ko‘rsatadi.</p>
+<label>Ismingiz bo‘yicha qidirish</label><input id="buyerSearch" placeholder="Ismingizni kiriting">
+<button class="primary" onclick="searchBuyerDebts()">Qarzlarimni ko‘rish</button>
+<div id="buyerDebtsList"></div>
+<button class="secondary" style="width:100%;margin-top:12px" onclick="openPage('home')">Orqaga</button>
+</section>
+<div class="notice">Eslatma: hozirgi savdo, qarz, mahsulot va xarajat yozuvlari faqat ushbu qurilmada saqlanadi. Boshqa qurilmalar bilan umumiy sinxronlash hali ulanmagan.</div>
 </section>
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const KEY='tenghisob_all_v2';
-function emptyData(){
-return {sales:[],expenses:[],products:[],debts:[],payments:[]};
-}
+const SUPABASE_URL='https://edyaxwkpvlqdtdyvldfp.supabase.co';
+const SUPABASE_KEY='sb_publishable_SNmQNm7Zw4FbS4yrATu3pw_LV4lfiNX';
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const $=id=>document.getElementById(id);
+let signupMode=false;
+let currentUser=null;
+let data={sales:[],expenses:[],products:[],debts:[],payments:[]};
+const STORAGE='tenghisob_all_v2';
+
 function loadData(){
-try{
-const d=JSON.parse(localStorage.getItem(KEY)||'null');
-if(d&&Array.isArray(d.sales)&&Array.isArray(d.debts))return d;
-}catch(e){}
-return emptyData();
+ try{
+  const saved=JSON.parse(localStorage.getItem(STORAGE)||'{}');
+  data={sales:saved.sales||[],expenses:saved.expenses||[],products:saved.products||[],debts:saved.debts||[],payments:saved.payments||[]};
+ }catch(e){}
+ renderAll();
 }
-let data=loadData();
-function save(){
-try{
-localStorage.setItem(KEY,JSON.stringify(data));
-return true;
-}catch(e){
-alert('Ma’lumot saqlanmadi. Brauzer xotirasini tekshiring.');
-return false;
+function saveData(){localStorage.setItem(STORAGE,JSON.stringify(data));renderAll()}
+function money(n){return (Number(n)||0).toLocaleString('ru-RU',{maximumFractionDigits:2})+' ₽'}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function val(id){return $(id).value.trim()}
+function numberVal(id){return Number($(id).value)}
+function msg(t){$('authMessage').textContent=t}
+function toggleAuth(){
+ signupMode=!signupMode;
+ $('signupFields').classList.toggle('hidden',!signupMode);
+ $('authTitle').textContent=signupMode?'Yangi hisob yaratish':'Hisobga kirish';
+ $('authButton').textContent=signupMode?'Ro‘yxatdan o‘tish':'Kirish';
+ $('switchAuth').textContent=signupMode?'Hisobim bor — kirish':'Yangi hisob yaratish';
+ $('password').autocomplete=signupMode?'new-password':'current-password';
+ msg('');
 }
+async function authenticate(){
+ const email=val('email'),password=$('password').value;
+ if(!email||!password){msg('Elektron pochta va parolni kiriting.');return}
+ if(password.length<6){msg('Parol kamida 6 ta belgidan iborat bo‘lsin.');return}
+ $('authButton').disabled=true;
+ msg('Tekshirilmoqda...');
+ try{
+  if(signupMode){
+   const fullName=val('fullName'),phone=val('phone'),role=$('role').value;
+   if(!fullName){msg('Ismingizni kiriting.');return}
+   const {data:result,error}=await supabaseClient.auth.signUp({
+    email,password,
+    options:{data:{full_name:fullName,phone,role}}
+   });
+   if(error)throw error;
+   if(result.session){
+    currentUser=result.user;
+    await showApp();
+    msg('');
+   }else{
+    msg('Ro‘yxatdan o‘tish so‘rovi yuborildi. Elektron pochtangizni tekshiring, keyin hisobga kiring.');
+   }
+  }else{
+   const {data:result,error}=await supabaseClient.auth.signInWithPassword({email,password});
+   if(error)throw error;
+   currentUser=result.user;
+   await showApp();
+   msg('');
+  }
+ }catch(e){msg('Xatolik: '+(e.message||'Qayta urinib ko‘ring.'))}
+ finally{$('authButton').disabled=false}
 }
-function money(n){
-return Number(n||0).toLocaleString('uz-UZ')+' so‘m';
+async function showApp(){
+ $('auth').classList.add('hidden');
+ $('app').classList.remove('hidden');
+ const {data:profile}=await supabaseClient.from('profiles').select('full_name,role').eq('id',currentUser.id).maybeSingle();
+ const name=profile?.full_name||currentUser.user_metadata?.full_name||currentUser.email;
+ const role=profile?.role||currentUser.user_metadata?.role||'buyer';
+ $('userLabel').textContent=name+' · '+(role==='shop'?'Do‘kon egasi':'Xaridor');
+ loadData();
+ openPage('home');
 }
-function sum(arr,fn){
-return arr.reduce((total,item)=>total+fn(item),0);
+async function logout(){
+ await supabaseClient.auth.signOut();
+ currentUser=null;
+ $('app').classList.add('hidden');
+ $('auth').classList.remove('hidden');
+ msg('Hisobdan chiqdingiz.');
 }
-function remaining(debt){
-return Math.max(0,debt.amount-sum(data.payments.filter(p=>p.debtId===debt.id),p=>p.amount));
+async function checkSession(){
+ const {data:result}=await supabaseClient.auth.getSession();
+ if(result.session){currentUser=result.session.user;await showApp()}
 }
-function el(id){return document.getElementById(id)}
-function val(id){return el(id).value.trim()}
-function num(id){return Number(el(id).value)}
-function clearFields(ids){ids.forEach(id=>el(id).value='')}
-function safeText(parent,text,tag='div'){
-const node=document.createElement(tag);
-node.textContent=text;
-parent.appendChild(node);
-return node;
-}
-function makeCard(title,lines){
-const card=document.createElement('div');
-card.className='card';
-safeText(card,title,'strong');
-lines.forEach(line=>safeText(card,line));
-return card;
-}
-function openPage(page){
-document.querySelectorAll('.panel').forEach(p=>p.style.display='none');
-el(page).style.display='block';
-if(page==='shop')renderHome();
-if(page==='sales')renderSales();
-if(page==='expenses')renderExpenses();
-if(page==='products')renderProducts();
-if(page==='debts')renderDebts();
-if(page==='payments')renderPayments();
-if(page==='reports')renderReports();
-if(page==='buyer')showBuyerDebts();
+function openPage(id){
+ document.querySelectorAll('.page').forEach(e=>e.classList.add('hidden'));
+ $('home').classList.add('hidden');
+ if(id==='home')$('home').classList.remove('hidden');
+ else $(id).classList.remove('hidden');
+ if(id==='payments')renderPaymentOptions();
+ if(id==='reports')renderReports();
+ if(id==='buyer')$('buyerSearch').value='';
 }
 function addSale(){
-const name=val('saleName')||'Savdo';
-const amount=num('saleAmount');
-const type=val('saleType');
-if(!Number.isSafeInteger(amount)||amount<=0){
-el('saleMsg').textContent='Summani to‘g‘ri kiriting.';return;
-}
-data.sales.unshift({id:Date.now(),name,amount,type,date:new Date().toLocaleString('uz-UZ')});
-if(save()){
-clearFields(['saleName','saleAmount']);
-el('saleMsg').textContent='Savdo saqlandi.';
-renderSales();
-}
-}
-function renderSales(){
-const list=el('saleList');list.replaceChildren();
-if(!data.sales.length)safeText(list,'Hozircha savdolar yo‘q.');
-data.sales.forEach(s=>{
-const c=makeCard(s.name,[money(s.amount),s.type==='qarz'?'Qarzga':s.type==='karta'?'Karta yoki o‘tkazma':'Naqd pul',s.date]);
-const b=document.createElement('button');b.className='danger';b.textContent='O‘chirish';
-b.onclick=()=>{if(confirm('Ushbu savdoni o‘chirasizmi?')){data.sales=data.sales.filter(x=>x.id!==s.id);save();renderSales();}};
-c.appendChild(b);list.appendChild(c);
-});
+ const name=val('saleName'),amount=numberVal('saleAmount'),type=$('saleType').value;
+ if(!name||amount<=0)return alert('Savdo nomi va to‘g‘ri summani kiriting.');
+ data.sales.unshift({id:crypto.randomUUID(),name,amount,type,date:new Date().toISOString()});
+ $('saleName').value='';$('saleAmount').value='';
+ saveData();
 }
 function addExpense(){
-const name=val('expenseName')||'Xarajat',amount=num('expenseAmount');
-if(!Number.isSafeInteger(amount)||amount<=0){el('expenseMsg').textContent='Summani to‘g‘ri kiriting.';return;}
-data.expenses.unshift({id:Date.now(),name,amount,date:new Date().toLocaleString('uz-UZ')});
-if(save()){clearFields(['expenseName','expenseAmount']);el('expenseMsg').textContent='Xarajat saqlandi.';renderExpenses();}
-}
-function renderExpenses(){
-const list=el('expenseList');list.replaceChildren();
-if(!data.expenses.length)safeText(list,'Hozircha xarajatlar yo‘q.');
-data.expenses.forEach(x=>{
-const c=makeCard(x.name,[money(x.amount),x.date]);
-const b=document.createElement('button');b.className='danger';b.textContent='O‘chirish';
-b.onclick=()=>{if(confirm('Xarajatni o‘chirasizmi?')){data.expenses=data.expenses.filter(y=>y.id!==x.id);save();renderExpenses();}};
-c.appendChild(b);list.appendChild(c);
-});
+ const title=val('expenseName'),amount=numberVal('expenseAmount');
+ if(!title||amount<=0)return alert('Xarajat nomi va to‘g‘ri summani kiriting.');
+ data.expenses.unshift({id:crypto.randomUUID(),title,amount,date:new Date().toISOString()});
+ $('expenseName').value='';$('expenseAmount').value='';
+ saveData();
 }
 function addProduct(){
-const name=val('productName'),cost=num('productCost'),price=num('productPrice'),stock=num('productStock');
-if(!name||!Number.isSafeInteger(cost)||cost<0||!Number.isSafeInteger(price)||price<=0||!Number.isSafeInteger(stock)||stock<0){
-el('productMsg').textContent='Barcha maydonlarni to‘g‘ri to‘ldiring.';return;
-}
-data.products.unshift({id:Date.now(),name,cost,price,stock});
-if(save()){clearFields(['productName','productCost','productPrice','productStock']);el('productMsg').textContent='Mahsulot qo‘shildi.';renderProducts();}
-}
-function renderProducts(){
-const list=el('productList');list.replaceChildren();
-if(!data.products.length)safeText(list,'Hozircha mahsulotlar yo‘q.');
-data.products.forEach(p=>{
-const c=makeCard(p.name,['Tannarxi: '+money(p.cost),'Sotish narxi: '+money(p.price),'Qoldiq: '+p.stock+' dona','Bir donadan farq: '+money(p.price-p.cost)]);
-const b=document.createElement('button');b.className='danger';b.textContent='O‘chirish';
-b.onclick=()=>{if(confirm('Mahsulotni o‘chirasizmi?')){data.products=data.products.filter(x=>x.id!==p.id);save();renderProducts();}};
-c.appendChild(b);list.appendChild(c);
-});
+ const name=val('productName'),cost=numberVal('productCost'),price=numberVal('productPrice'),quantity=numberVal('productQty');
+ if(!name||cost<0||price<=0||quantity<0||$('productQty').value==='')return alert('Mahsulot ma’lumotlarini to‘g‘ri kiriting.');
+ data.products.unshift({id:crypto.randomUUID(),name,cost,price,quantity});
+ $('productName').value='';$('productCost').value='';$('productPrice').value='';$('productQty').value='';
+ saveData();
 }
 function addDebt(){
-const buyer=val('debtBuyer'),amount=num('debtAmount'),due=val('debtDue');
-if(!buyer||!Number.isSafeInteger(amount)||amount<=0){
-el('debtMsg').textContent='Xaridor ismi va qarz summasini kiriting.';return;
+ const buyer=val('debtBuyer'),phone=val('debtPhone'),amount=numberVal('debtAmount');
+ if(!buyer||amount<=0)return alert('Xaridor ismi va to‘g‘ri qarz summasini kiriting.');
+ data.debts.unshift({id:crypto.randomUUID(),buyer,phone,amount,due:val('debtDate'),note:val('debtNote'),date:new Date().toISOString()});
+ $('debtBuyer').value='';$('debtPhone').value='';$('debtAmount').value='';$('debtDate').value='';$('debtNote').value='';
+ saveData();
 }
-data.debts.unshift({id:Date.now(),buyer,phone:val('debtPhone'),amount,due,note:val('debtNote'),date:new Date().toLocaleString('uz-UZ')});
-if(save()){clearFields(['debtBuyer','debtPhone','debtAmount','debtDue','debtNote']);el('debtMsg').textContent='Qarz saqlandi.';renderDebts();}
-}
-function renderDebts(){
-const list=el('debtList');list.replaceChildren();
-if(!data.debts.length)safeText(list,'Hozircha qarzlar yo‘q.');
-data.debts.forEach(d=>{
-const r=remaining(d);
-const c=makeCard(d.buyer,['Boshlang‘ich qarz: '+money(d.amount),'Qolgan qarz: '+money(r),'Telefon: '+(d.phone||'Kiritilmagan'),'Muddati: '+(d.due||'Belgilanmagan'),d.note||'', 'Yozilgan sana: '+d.date]);
-const b=document.createElement('button');b.className='danger';b.textContent='Qarzni o‘chirish';
-b.onclick=()=>{if(confirm('Qarzni o‘chirishni tasdiqlaysizmi?')){data.debts=data.debts.filter(x=>x.id!==d.id);data.payments=data.payments.filter(p=>p.debtId!==d.id);save();renderDebts();}};
-c.appendChild(b);list.appendChild(c);
-});
-}
-function renderPayments(){
-const select=el('paymentDebt');select.replaceChildren();
-const option=document.createElement('option');option.value='';option.textContent='Qarzdorni tanlang';select.appendChild(option);
-data.debts.filter(d=>remaining(d)>0).forEach(d=>{
-const o=document.createElement('option');o.value=String(d.id);
-o.textContent=d.buyer+' — '+money(remaining(d));select.appendChild(o);
-});
-const list=el('paymentList');list.replaceChildren();
-if(!data.payments.length)safeText(list,'Hozircha to‘lovlar yo‘q.');
-data.payments.forEach(p=>{
-const d=data.debts.find(x=>x.id===p.debtId);
-list.appendChild(makeCard(d?d.buyer:'O‘chirilgan qarz',[money(p.amount),p.date]));
-});
-}
+function paidFor(id){return data.payments.filter(p=>p.debtId===id).reduce((s,p)=>s+p.amount,0)}
+function remaining(d){return Math.max(0,d.amount-paidFor(d.id))}
 function addPayment(){
-const id=Number(val('paymentDebt')),amount=num('paymentAmount');
-const d=data.debts.find(x=>x.id===id);
-if(!d||!Number.isSafeInteger(amount)||amount<=0){el('paymentMsg').textContent='Qarzdor va to‘lov summasini to‘g‘ri kiriting.';return;}
-if(amount>remaining(d)){el('paymentMsg').textContent='To‘lov qolgan qarzdan ko‘p bo‘lishi mumkin emas.';return;}
-data.payments.unshift({id:Date.now(),debtId:id,amount,date:new Date().toLocaleString('uz-UZ')});
-if(save()){el('paymentAmount').value='';el('paymentMsg').textContent='To‘lov saqlandi.';renderPayments();}
+ const id=$('paymentDebt').value,amount=numberVal('paymentAmount'),debt=data.debts.find(d=>d.id===id);
+ if(!debt)return alert('Avval qarzni tanlang.');
+ if(amount<=0||amount>remaining(debt))return alert('To‘lov summasini qarz qoldig‘iga mos kiriting.');
+ data.payments.unshift({id:crypto.randomUUID(),debtId:id,amount,date:new Date().toISOString()});
+ $('paymentAmount').value='';
+ saveData();
 }
-function renderHome(){
-el('homeSales').textContent=money(sum(data.sales,s=>s.amount));
-el('homeExpenses').textContent=money(sum(data.expenses,x=>x.amount));
-el('homeDebt').textContent=money(sum(data.debts,remaining));
+function removeItem(kind,id){
+ if(!confirm('Bu yozuvni o‘chirmoqchimisiz?'))return;
+ data[kind]=data[kind].filter(x=>x.id!==id);
+ if(kind==='debts')data.payments=data.payments.filter(p=>p.debtId!==id);
+ saveData();
+}
+function renderList(id,items,html){
+ $(id).innerHTML=items.length?items.map(html).join(''):'<p class="small">Hozircha ma’lumot yo‘q.</p>';
+}
+function renderAll(){
+ const sum=(arr,key)=>arr.reduce((s,x)=>s+(Number(x[key])||0),0);
+ $('totalSales').textContent=money(sum(data.sales,'amount'));
+ $('totalExpenses').textContent=money(sum(data.expenses,'amount'));
+ $('totalDebt').textContent=money(data.debts.reduce((s,d)=>s+remaining(d),0));
+ $('totalPaid').textContent=money(sum(data.payments,'amount'));
+ renderList('salesList',data.sales,x=>`<div class="item"><b>${esc(x.name)}</b><div>${money(x.amount)} · ${esc(({naqd:'Naqd',karta:'Karta',qarz:'Qarz'})[x.type]||x.type)}</div><div class="small">${new Date(x.date).toLocaleString('uz-UZ')}</div><button class="danger" onclick="removeItem('sales','${x.id}')">O‘chirish</button></div>`);
+ renderList('expensesList',data.expenses,x=>`<div class="item"><b>${esc(x.title)}</b><div>${money(x.amount)}</div><button class="danger" onclick="removeItem('expenses','${x.id}')">O‘chirish</button></div>`);
+ renderList('productsList',data.products,x=>`<div class="item"><b>${esc(x.name)}</b><div>Tan narxi: ${money(x.cost)} · Sotuv: ${money(x.price)}</div><div>Miqdori: ${esc(x.quantity)} · Bir donadan foyda: ${money(x.price-x.cost)}</div><button class="danger" onclick="removeItem('products','${x.id}')">O‘chirish</button></div>`);
+ renderList('debtsList',data.debts,x=>`<div class="item"><b>${esc(x.buyer)}</b><div>Telefon: ${esc(x.phone||'Kiritilmagan')}</div><div>Qarz: ${money(x.amount)} · To‘langan: ${money(paidFor(x.id))}</div><b>Qoldiq: ${money(remaining(x))}</b><div class="small">Muddat: ${esc(x.due||'Belgilanmagan')} ${x.note?'· '+esc(x.note):''}</div><button class="danger" onclick="removeItem('debts','${x.id}')">O‘chirish</button></div>`);
+ renderList('paymentsList',data.payments,p=>{const d=data.debts.find(x=>x.id===p.debtId);return `<div class="item">${esc(d?.buyer||'Xaridor')} — <b>${money(p.amount)}</b><div class="small">${new Date(p.date).toLocaleString('uz-UZ')}</div></div>`});
+ renderPaymentOptions();
+ renderReports();
+}
+function renderPaymentOptions(){
+ const select=$('paymentDebt'),old=select.value;
+ const list=data.debts.filter(d=>remaining(d)>0);
+ select.innerHTML=list.map(d=>`<option value="${d.id}">${esc(d.buyer)} — qoldiq ${money(remaining(d))}</option>`).join('');
+ if(list.some(d=>d.id===old))select.value=old;
+ if(!list.length)select.innerHTML='<option value="">To‘lanmagan qarz yo‘q</option>';
 }
 function renderReports(){
-const sales=sum(data.sales,s=>s.amount);
-const expenses=sum(data.expenses,x=>x.amount);
-const cash=sum(data.sales.filter(s=>s.type!=='qarz'),s=>s.amount);
-const credit=sum(data.sales.filter(s=>s.type==='qarz'),s=>s.amount);
-const paid=sum(data.payments,p=>p.amount);
-const debt=sum(data.debts,remaining);
-el('reportSales').textContent=money(sales);
-el('reportExpenses').textContent=money(expenses);
-el('reportCash').textContent=money(cash);
-el('reportCredit').textContent=money(credit);
-el('reportPaid').textContent=money(paid);
-el('reportDebt').textContent=money(debt);
-el('reportDifference').textContent=money(sales-expenses);
+ const sum=(arr,key)=>arr.reduce((s,x)=>s+(Number(x[key])||0),0);
+ const sales=sum(data.sales,'amount'),expenses=sum(data.expenses,'amount');
+ const cash=data.sales.filter(x=>x.type==='naqd').reduce((s,x)=>s+x.amount,0);
+ const card=data.sales.filter(x=>x.type==='karta').reduce((s,x)=>s+x.amount,0);
+ const credit=data.sales.filter(x=>x.type==='qarz').reduce((s,x)=>s+x.amount,0);
+ const paid=sum(data.payments,'amount'),debt=data.debts.reduce((s,d)=>s+remaining(d),0);
+ $('reportContent').innerHTML=`<div class="stats">
+ <div class="stat"><span>Jami savdo</span><b>${money(sales)}</b></div>
+ <div class="stat"><span>Xarajatlar</span><b>${money(expenses)}</b></div>
+ <div class="stat"><span>Naqd savdo</span><b>${money(cash)}</b></div>
+ <div class="stat"><span>Karta savdosi</span><b>${money(card)}</b></div>
+ <div class="stat"><span>Qarzga savdo</span><b>${money(credit)}</b></div>
+ <div class="stat"><span>Qarzdan tushgan</span><b>${money(paid)}</b></div>
+ <div class="stat"><span>Qarz qoldig‘i</span><b>${money(debt)}</b></div>
+ <div class="stat"><span>Savdo minus xarajat</span><b>${money(sales-expenses)}</b></div>
+ </div><p class="small">Bu hisobotlar faqat ushbu qurilmaga kiritilgan ma’lumotlar asosida hisoblanadi.</p>`;
 }
-function showBuyerDebts(){
-const name=val('buyerSearch').toLocaleLowerCase();
-const debts=el('buyerDebtList');debts.replaceChildren();
-const payments=el('buyerPaymentList');payments.replaceChildren();
-if(!name){safeText(debts,'Qarzlaringizni ko‘rish uchun ism kiriting.');return;}
-const matched=data.debts.filter(d=>d.buyer.toLocaleLowerCase()===name);
-if(!matched.length)safeText(debts,'Bu ism bo‘yicha qarz topilmadi.');
-matched.forEach(d=>debts.appendChild(makeCard('Do‘kon qarzi',[ 'Qolgan qarz: '+money(remaining(d)),'To‘lov muddati: '+(d.due||'Belgilanmagan'),'Qarz yozilgan sana: '+d.date])));
-const ids=matched.map(d=>d.id);
-const history=data.payments.filter(p=>ids.includes(p.debtId));
-if(!history.length)safeText(payments,'To‘lovlar tarixi topilmadi.');
-history.forEach(p=>payments.appendChild(makeCard('To‘lov',[money(p.amount),p.date])));
+function searchBuyerDebts(){
+ const name=val('buyerSearch').toLocaleLowerCase('uz');
+ if(!name)return alert('Ismingizni kiriting.');
+ const found=data.debts.filter(d=>d.buyer.toLocaleLowerCase('uz').includes(name));
+ renderList('buyerDebtsList',found,d=>`<div class="item"><b>${esc(d.buyer)}</b><div>Qarz: ${money(d.amount)}</div><div>To‘langan: ${money(paidFor(d.id))}</div><b>Qoldiq: ${money(remaining(d))}</b><div class="small">Muddat: ${esc(d.due||'Belgilanmagan')}</div><h3>To‘lovlar tarixi</h3>${data.payments.filter(p=>p.debtId===d.id).map(p=>`<div>${money(p.amount)} — ${new Date(p.date).toLocaleDateString('uz-UZ')}</div>`).join('')||'<div class="small">To‘lov kiritilmagan.</div>'}</div>`);
+ if(!found.length)$('buyerDebtsList').innerHTML='<p class="small">Mos qarz topilmadi. Bu qidiruv faqat shu qurilmadagi yozuvlarni tekshiradi.</p>';
 }
-renderHome();
+checkSession();
 </script>
 </body>
 </html>
