@@ -1,0 +1,9 @@
+
+{
+  "appId": "uz.tenghisob.app",
+  "appName": "TengHisob",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
