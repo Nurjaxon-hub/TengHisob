@@ -4,43 +4,58 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#16845b">
 <title>TengHisob</title>
 <style>
 :root{--g:#16845b;--bg:#f3f7f4;--txt:#183329}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);font-family:Arial,sans-serif;color:var(--txt)}
 header{background:var(--g);color:white;padding:20px;text-align:center}
-header h1{margin:0}main{max-width:760px;margin:auto;padding:14px}
+header h1{margin:0}
+main{max-width:760px;margin:auto;padding:14px}
 .card{background:white;padding:16px;margin-bottom:13px;border-radius:14px;box-shadow:0 2px 8px #0000000a}
 h2{font-size:20px;margin-top:0}
 label{display:block;font-size:14px;margin:10px 0 5px}
-input,select{width:100%;padding:12px;border:1px solid #ccd9d0;border-radius:9px;font-size:16px;background:white}
+input,select,textarea{width:100%;padding:12px;border:1px solid #ccd9d0;border-radius:9px;font-size:16px;background:white}
 button{border:0;border-radius:9px;padding:12px;font-size:15px;font-weight:bold;cursor:pointer}
+button:disabled{opacity:.5}
 .primary{background:var(--g);color:white;width:100%;margin-top:12px}
 .secondary{background:#e6f2eb;color:#176846}
 .danger{background:#fdecea;color:#c0392b}
+.good{background:#dff5e7;color:#176846}
 .nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
 .nav button{background:#e5f3eb;color:#176846;text-align:left;min-height:48px}
-.row{display:flex;gap:8px}.row>*{flex:1;min-width:0}
+.row{display:flex;gap:8px}
+.row>*{flex:1;min-width:0}
 .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .stat{background:#eaf5ee;padding:12px;border-radius:10px}
-.stat span{display:block;font-size:13px}.stat b{display:block;margin-top:6px;font-size:19px;overflow-wrap:anywhere}
-.item{padding:12px 0;border-bottom:1px solid #e7eee9}
-.small{font-size:13px;color:#687a70}.hidden{display:none!important}
+.stat span{display:block;font-size:13px}
+.stat b{display:block;margin-top:6px;font-size:19px;overflow-wrap:anywhere}
+.item{padding:12px 0;border-bottom:1px solid #e7eee9;overflow-wrap:anywhere}
+.small{font-size:13px;color:#687a70}
+.hidden{display:none!important}
 .topline{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .notice{background:#fff5d9;padding:12px;border-radius:9px;font-size:13px;line-height:1.5}
-@media(max-width:380px){.nav{grid-template-columns:1fr}}
+.tag{display:inline-block;padding:5px 8px;border-radius:7px;background:#edf1ee;font-size:12px;margin:5px 0}
+@media(max-width:380px){.nav{grid-template-columns:1fr}.row{display:block}}
 </style>
 </head>
 <body>
-<header><h1>TengHisob</h1><p>Do‘kon va xaridor hisob-kitoblari</p></header>
+<header>
+<h1>TengHisob</h1>
+<p>Do‘kon va xaridor hisob-kitoblari</p>
+</header>
 <main>
 <section id="auth" class="card">
 <h2 id="authTitle">Hisobga kirish</h2>
 <div id="signupFields" class="hidden">
 <label>To‘liq ism</label><input id="fullName" placeholder="Ism va familiya">
 <label>Telefon raqami</label><input id="phone" type="tel" placeholder="+998...">
-<label>Hisob turi</label><select id="role"><option value="shop">Do‘kon egasi</option><option value="buyer">Xaridor</option></select>
+<label>Hisob turi</label>
+<select id="role">
+<option value="shop">Do‘kon egasi</option>
+<option value="buyer">Xaridor</option>
+</select>
 </div>
 <label>Elektron pochta</label><input id="email" type="email" autocomplete="email">
 <label>Parol</label><input id="password" type="password" autocomplete="current-password">
@@ -48,32 +63,113 @@ button{border:0;border-radius:9px;padding:12px;font-size:15px;font-weight:bold;c
 <button class="secondary" style="width:100%;margin-top:9px" id="switchAuth" onclick="toggleAuth()">Yangi hisob yaratish</button>
 <p id="authMessage" class="small"></p>
 </section>
+
 <section id="app" class="hidden">
-<div class="card topline"><div><div class="small">Hisob</div><b id="userLabel"></b></div><button class="danger" onclick="logout()">Chiqish</button></div>
-<section id="home" class="card"><h2>Asosiy sahifa</h2><div class="nav"><button onclick="openPage('shop')">Do‘kon egasi</button><button onclick="openPage('buyer')">Xaridor</button></div></section>
+<div class="card topline">
+<div><div class="small">Hisob</div><b id="userLabel"></b></div>
+<button class="danger" onclick="logout()">Chiqish</button>
+</div>
+
+<section id="home" class="card">
+<h2>Asosiy sahifa</h2>
+<div class="nav">
+<button onclick="openPage('shop')">Do‘kon egasi</button>
+<button onclick="openPage('buyer')">Xaridor</button>
+</div>
+</section>
+
 <section id="shop" class="card page hidden">
-<h2>Do‘kon egasi</h2><label>Do‘kon nomi</label><input id="shopName" placeholder="Do‘kon nomi"><button class="secondary" onclick="saveShopName()">Do‘kon nomini saqlash</button>
+<h2>Do‘kon egasi</h2>
+<label>Do‘kon nomi</label><input id="shopName" placeholder="Do‘kon nomi">
+<button class="secondary" onclick="saveShopName()">Do‘kon nomini saqlash</button>
 <div class="stats" style="margin-top:12px">
 <div class="stat"><span>Jami savdo</span><b id="totalSales">0 so‘m</b></div>
 <div class="stat"><span>Xarajatlar</span><b id="totalExpenses">0 so‘m</b></div>
 <div class="stat"><span>Qarz qoldig‘i</span><b id="totalDebt">0 so‘m</b></div>
-<div class="stat"><span>Qarzdan tushgan</span><b id="totalPaid">0 so‘m</b></div></div>
+<div class="stat"><span>Qarzdan tushgan</span><b id="totalPaid">0 so‘m</b></div>
+</div>
 <div class="nav" style="margin-top:14px">
-<button onclick="openPage('sales')">Savdo</button><button onclick="openPage('expenses')">Xarajatlar</button><button onclick="openPage('products')">Mahsulotlar</button><button onclick="openPage('debts')">Xaridorlar qarzi</button><button onclick="openPage('payments')">Qarz to‘lovlari</button><button onclick="openPage('reports')">Hisobotlar</button></div>
+<button onclick="openPage('sales')">Savdo</button>
+<button onclick="openPage('expenses')">Xarajatlar</button>
+<button onclick="openPage('products')">Mahsulotlar</button>
+<button onclick="openPage('debts')">Xaridorlar qarzi</button>
+<button onclick="openPage('payments')">Qarz to‘lovlari</button>
+<button onclick="openPage('reports')">Hisobotlar</button>
+</div>
 <button class="secondary" style="width:100%;margin-top:12px" onclick="openPage('home')">Orqaga</button>
 </section>
-<section id="sales" class="card page hidden"><h2>Savdo kiritish</h2>
-<label>Savdo nomi</label><input id="saleName" placeholder="Masalan, non"><label>Summa (so‘m)</label><input id="saleAmount" type="number" min=".01" step=".01"><label>To‘lov turi</label><select id="saleType"><option value="naqd">Naqd</option><option value="karta">Karta</option><option value="qarz">Qarzga</option></select>
-<button class="primary" onclick="addSale()">Savdoni saqlash</button><div id="salesList"></div><button class="secondary" style="width:100%" onclick="openPage('shop')">Orqaga</button></section>
-<section id="expenses" class="card page hidden"><h2>Xarajat</h2><label>Xarajat nomi</label><input id="expenseName"><label>Summa (so‘m)</label><input id="expenseAmount" type="number" min=".01" step=".01"><button class="primary" onclick="addExpense()">Xarajatni saqlash</button><div id="expensesList"></div><button class="secondary" style="width:100%" onclick="openPage('shop')">Orqaga</button></section>
-<section id="products" class="card page hidden"><h2>Mahsulotlar</h2><label>Mahsulot nomi</label><input id="productName"><div class="row"><div><label>Tan narxi (so‘m)</label><input id="productCost" type="number" min="0" step=".01"></div><div><label>Sotuv narxi (so‘m)</label><input id="productPrice" type="number" min=".01" step=".01"></div></div><label>Miqdori</label><input id="productQty" type="number" min="0" step=".01"><button class="primary" onclick="addProduct()">Mahsulotni saqlash</button><div id="productsList"></div><button class="secondary" style="width:100%" onclick="openPage('shop')">Orqaga</button></section>
-<section id="debts" class="card page hidden"><h2>Xaridor qarzi</h2><label>Xaridor ismi</label><input id="debtBuyer"><label>Telefon raqami</label><input id="debtPhone" type="tel" placeholder="+998..."><label>Qarz summasi (so‘m)</label><input id="debtAmount" type="number" min=".01" step=".01"><label>To‘lash muddati</label><input id="debtDate" type="date"><label>Izoh</label><input id="debtNote"><button class="primary" onclick="addDebt()">Qarzni saqlash</button><div id="debtsList"></div><button class="secondary" style="width:100%" onclick="openPage('shop')">Orqaga</button></section>
-<section id="payments" class="card page hidden"><h2>Qarz to‘lovi</h2><label>Qarz</label><select id="paymentDebt"></select><label>To‘langan summa (so‘m)</label><input id="paymentAmount" type="number" min=".01" step=".01"><button class="primary" onclick="addPayment()">To‘lovni saqlash</button><div id="paymentsList"></div><button class="secondary" style="width:100%" onclick="openPage('shop')">Orqaga</button></section>
-<section id="reports" class="card page hidden"><h2>Hisobotlar</h2><div id="reportContent"></div><button class="secondary" style="width:100%" onclick="openPage('shop')">Orqaga</button></section>
-<section id="buyer" class="card page hidden"><h2>Xaridor</h2><p class="small">Hisobingizga biriktirilgan qarzlar ko‘rsatiladi.</p><button class="primary" onclick="loadBuyerDebts()">Qarzlarimni yangilash</button><div id="buyerDebtsList"></div><button class="secondary" style="width:100%" onclick="openPage('home')">Orqaga</button></section>
+
+<section id="sales" class="card page hidden">
+<h2>Savdo kiritish</h2>
+<label>Savdo nomi</label><input id="saleName" placeholder="Masalan, non">
+<label>Summa (so‘m)</label><input id="saleAmount" type="number" min=".01" step=".01">
+<label>To‘lov turi</label>
+<select id="saleType"><option value="naqd">Naqd</option><option value="karta">Karta</option><option value="qarz">Qarzga</option></select>
+<button class="primary" onclick="addSale()">Savdoni saqlash</button>
+<div id="salesList"></div>
+<button class="secondary" style="width:100%" onclick="openPage('shop')">Orqaga</button>
+</section>
+
+<section id="expenses" class="card page hidden">
+<h2>Xarajat</h2>
+<label>Xarajat nomi</label><input id="expenseName">
+<label>Summa (so‘m)</label><input id="expenseAmount" type="number" min=".01" step=".01">
+<button class="primary" onclick="addExpense()">Xarajatni saqlash</button>
+<div id="expensesList"></div>
+<button class="secondary" style="width:100%" onclick="openPage('shop')">Orqaga</button>
+</section>
+
+<section id="products" class="card page hidden">
+<h2>Mahsulotlar</h2>
+<label>Mahsulot nomi</label><input id="productName">
+<div class="row">
+<div><label>Tan narxi (so‘m)</label><input id="productCost" type="number" min="0" step=".01"></div>
+<div><label>Sotuv narxi (so‘m)</label><input id="productPrice" type="number" min=".01" step=".01"></div>
+</div>
+<label>Miqdori</label><input id="productQty" type="number" min="0" step=".01">
+<button class="primary" onclick="addProduct()">Mahsulotni saqlash</button>
+<div id="productsList"></div>
+<button class="secondary" style="width:100%" onclick="openPage('shop')">Orqaga</button>
+</section>
+
+<section id="debts" class="card page hidden">
+<h2>Xaridor qarzi</h2>
+<label>Xaridor ismi</label><input id="debtBuyer">
+<label>Telefon raqami</label><input id="debtPhone" type="tel" placeholder="+998...">
+<label>Qarz summasi (so‘m)</label><input id="debtAmount" type="number" min=".01" step=".01">
+<label>To‘lash muddati</label><input id="debtDate" type="date">
+<label>Izoh</label><input id="debtNote">
+<button class="primary" onclick="addDebt()">Qarzni saqlash</button>
+<div id="debtsList"></div>
+<button class="secondary" style="width:100%" onclick="openPage('shop')">Orqaga</button>
+</section>
+
+<section id="payments" class="card page hidden">
+<h2>Qarz to‘lovi</h2>
+<label>Qarz</label><select id="paymentDebt"></select>
+<label>To‘langan summa (so‘m)</label><input id="paymentAmount" type="number" min=".01" step=".01">
+<button class="primary" onclick="addPayment()">To‘lovni saqlash</button>
+<div id="paymentsList"></div>
+<button class="secondary" style="width:100%" onclick="openPage('shop')">Orqaga</button>
+</section>
+
+<section id="reports" class="card page hidden">
+<h2>Hisobotlar</h2><div id="reportContent"></div>
+<button class="secondary" style="width:100%" onclick="openPage('shop')">Orqaga</button>
+</section>
+
+<section id="buyer" class="card page hidden">
+<h2>Xaridor</h2>
+<p class="small">Sizga biriktirilgan qarzlarni ko‘rish, tasdiqlash yoki nizolash mumkin.</p>
+<button class="primary" onclick="loadBuyerDebts()">Qarzlarimni yangilash</button>
+<div id="buyerDebtsList"></div>
+<button class="secondary" style="width:100%" onclick="openPage('home')">Orqaga</button>
+</section>
+
 <div id="status" class="notice">Ma’lumotlar bazasi yuklanmoqda…</div>
 </section>
 </main>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL='https://edyaxwkpvlqdtdyvldfp.supabase.co';
@@ -86,9 +182,17 @@ const money=n=>(Number(n)||0).toLocaleString('uz-UZ',{maximumFractionDigits:2})+
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let user=null,profile=null,shop=null,mode=false;
 let data={sales:[],expenses:[],products:[],debts:[],payments:[]};
+
 function say(t){$('status').textContent=t}
 function authMsg(t){$('authMessage').textContent=t}
-function toggleAuth(){mode=!mode;$('signupFields').classList.toggle('hidden',!mode);$('authTitle').textContent=mode?'Yangi hisob yaratish':'Hisobga kirish';$('authButton').textContent=mode?'Ro‘yxatdan o‘tish':'Kirish';$('switchAuth').textContent=mode?'Hisobim bor — kirish':'Yangi hisob yaratish';authMsg('')}
+function toggleAuth(){
+ mode=!mode;
+ $('signupFields').classList.toggle('hidden',!mode);
+ $('authTitle').textContent=mode?'Yangi hisob yaratish':'Hisobga kirish';
+ $('authButton').textContent=mode?'Ro‘yxatdan o‘tish':'Kirish';
+ $('switchAuth').textContent=mode?'Hisobim bor — kirish':'Yangi hisob yaratish';
+ authMsg('');
+}
 async function authenticate(){
  let email=val('email'),password=$('password').value;
  if(!email||password.length<6)return authMsg('Elektron pochta va kamida 6 belgili parolni kiriting.');
@@ -98,10 +202,11 @@ async function authenticate(){
    if(!val('fullName'))throw Error('Ismingizni kiriting.');
    const {data:r,error}=await db.auth.signUp({email,password,options:{data:{full_name:val('fullName'),phone:val('phone'),role:$('role').value}}});
    if(error)throw error;
-   if(!r.session){authMsg('Hisob yaratildi. Elektron pochta tasdig‘i talab qilinsa, hisob sozlamalarini tekshirish kerak.');return}
+   if(!r.session){authMsg('Hisob yaratildi, lekin kirish sessiyasi berilmadi. Supabase email tasdig‘i sozlamalarini tekshiring.');return}
    user=r.user;
   }else{
-   const {data:r,error}=await db.auth.signInWithPassword({email,password});if(error)throw error;user=r.user;
+   const {data:r,error}=await db.auth.signInWithPassword({email,password});
+   if(error)throw error;user=r.user;
   }
   await startApp();
  }catch(e){authMsg('Xatolik: '+e.message)}
@@ -113,10 +218,12 @@ async function startApp(){
  profile=p||{id:user.id,full_name:user.user_metadata?.full_name||user.email,role:user.user_metadata?.role||'buyer',phone:user.user_metadata?.phone||null};
  const {data:existing,error:se}=await db.from('shops').select('*').eq('owner_id',user.id).limit(1);
  if(se)throw se;
+ shop=null;
  if(profile.role==='shop'){
   shop=existing?.[0]||null;
   if(!shop){
-   const {data:s,error}=await db.from('shops').insert({owner_id:user.id,name:(profile.full_name||'Yangi')+' do‘koni',shop_name:(profile.full_name||'Yangi')+' do‘koni'}).select().single();
+   const name=(profile.full_name||'Yangi')+' do‘koni';
+   const {data:s,error}=await db.from('shops').insert({owner_id:user.id,name,shop_name:name}).select().single();
    if(error)throw error;shop=s;
   }
  }
@@ -125,57 +232,205 @@ async function startApp(){
  if(shop)$('shopName').value=shop.shop_name||shop.name||'';
  await reloadData();openPage('home');
 }
-async function logout(){await db.auth.signOut();user=null;shop=null;profile=null;$('app').classList.add('hidden');$('auth').classList.remove('hidden');authMsg('Hisobdan chiqdingiz.')}
+async function logout(){
+ await db.auth.signOut();user=null;shop=null;profile=null;
+ $('app').classList.add('hidden');$('auth').classList.remove('hidden');
+ authMsg('Hisobdan chiqdingiz.');
+}
 async function reloadData(){
- if(profile.role!=='shop'){data={sales:[],expenses:[],products:[],debts:[],payments:[]};renderAll();say('Xaridor hisobi ulandi.');return}
+ if(profile.role!=='shop'){
+  data={sales:[],expenses:[],products:[],debts:[],payments:[]};
+  renderAll();say('Xaridor hisobi ulandi.');return;
+ }
  if(!shop)throw Error('Do‘kon topilmadi.');
  const jobs=[
   db.from('sales').select('*').eq('shop_id',shop.id).order('created_at',{ascending:false}),
   db.from('expenses').select('*').eq('shop_id',shop.id).order('created_at',{ascending:false}),
   db.from('products').select('*').eq('shop_id',shop.id).order('name'),
-  db.from('debts').select('*').eq('shop_id',shop.id).order('created_at',{ascending:false}),
+  db.from('debts').select('*').eq('shop_id',shop.id).order('created_at',{ascending:false})
  ];
- const r=await Promise.all(jobs);for(const x of r)if(x.error)throw x.error;
- const ids=r[3].data.map(d=>d.id);
- let pays=[];
- if(ids.length){const pr=await db.from('payments').select('*').in('debt_id',ids).order('created_at',{ascending:false});if(pr.error)throw pr.error;pays=pr.data}
+ const r=await Promise.all(jobs);
+ for(const x of r)if(x.error)throw x.error;
+ const ids=r[3].data.map(d=>d.id);let pays=[];
+ if(ids.length){
+  const pr=await db.from('payments').select('*').in('debt_id',ids).order('created_at',{ascending:false});
+  if(pr.error)throw pr.error;pays=pr.data;
+ }
  data.sales=r[0].data.map(x=>({id:x.id,name:x.name,amount:Number(x.amount),type:x.payment_type,date:x.created_at}));
  data.expenses=r[1].data.map(x=>({id:x.id,title:x.name,amount:Number(x.amount),date:x.created_at}));
  data.products=r[2].data.map(x=>({id:x.id,name:x.name,cost:Number(x.cost_price??x.cost??0),price:Number(x.sale_price??x.price??0),quantity:Number(x.quantity||0)}));
- data.debts=r[3].data.map(x=>({id:x.id,buyer:x.buyer_name||x.buyer||'Xaridor',phone:x.buyer_phone||x.phone||'',buyer_id:x.buyer_id,amount:Number(x.amount),due:x.due_date||x.due||'',note:x.note||'',date:x.created_at}));
+ data.debts=r[3].data.map(x=>({id:x.id,buyer:x.buyer_name||x.buyer||'Xaridor',phone:x.buyer_phone||x.phone||'',buyer_id:x.buyer_id,amount:Number(x.amount),due:x.due_date||x.due||'',note:x.note||'',date:x.created_at,status:x.status||'pending',response:x.buyer_response_note||''}));
  data.payments=pays.map(x=>({id:x.id,debtId:x.debt_id,amount:Number(x.amount),date:x.created_at}));
  renderAll();say('Bazadagi ma’lumotlar yangilandi.');
 }
-async function saveShopName(){if(!shop)return;const name=val('shopName');if(!name)return alert('Do‘kon nomini kiriting.');const {data:r,error}=await db.from('shops').update({name,shop_name:name}).eq('id',shop.id).select().single();if(error)return alert('Xatolik: '+error.message);shop=r;say('Do‘kon nomi saqlandi.')}
-function openPage(id){document.querySelectorAll('.page').forEach(x=>x.classList.add('hidden'));$('home').classList.add('hidden');$(id).classList.remove('hidden');if(id==='payments')renderPaymentOptions();if(id==='reports')renderReports();if(id==='buyer')loadBuyerDebts().catch(e=>say('Xatolik: '+e.message))}
-async function addSale(){try{if(!shop)return alert('Bu amal do‘kon egasi uchun.');let name=val('saleName'),amount=num('saleAmount'),type=$('saleType').value;if(!name||amount<=0)return alert('Savdo nomi va summani kiriting.');const {error}=await db.from('sales').insert({shop_id:shop.id,name,amount,payment_type:type});if(error)throw error;$('saleName').value='';$('saleAmount').value='';await reloadData()}catch(e){alert('Xatolik: '+e.message)}}
-async function addExpense(){try{let name=val('expenseName'),amount=num('expenseAmount');if(!name||amount<=0)return alert('Xarajat nomi va summani kiriting.');const {error}=await db.from('expenses').insert({shop_id:shop.id,name,amount});if(error)throw error;$('expenseName').value='';$('expenseAmount').value='';await reloadData()}catch(e){alert('Xatolik: '+e.message)}}
-async function addProduct(){try{let name=val('productName'),cost=num('productCost'),price=num('productPrice'),quantity=num('productQty');if(!name||cost<0||price<=0||$('productQty').value==='')return alert('Mahsulot ma’lumotlarini to‘g‘ri kiriting.');const {error}=await db.from('products').insert({shop_id:shop.id,name,cost_price:cost,sale_price:price,quantity});if(error)throw error;$('productName').value='';$('productCost').value='';$('productPrice').value='';$('productQty').value='';await reloadData()}catch(e){alert('Xatolik: '+e.message)}}
-async function addDebt(){try{let buyer=val('debtBuyer'),phone=val('debtPhone'),amount=num('debtAmount');if(!buyer||amount<=0)return alert('Xaridor ismi va summani kiriting.');let buyer_id=null;
- if(phone){const {data:r,error}=await db.rpc('find_buyer_by_phone',{p_phone:phone});if(error)throw error;if(r?.length)buyer_id=r[0].buyer_id}
- const {error}=await db.from('debts').insert({shop_id:shop.id,buyer_id,buyer_name:buyer,buyer_phone:phone,amount,due_date:val('debtDate')||null,note:val('debtNote')||null});if(error)throw error;
- ['debtBuyer','debtPhone','debtAmount','debtDate','debtNote'].forEach(id=>$(id).value='');await reloadData();
- if(!buyer_id)alert('Qarz saqlandi. Xaridor telefon raqami uning hisobidagi raqam bilan mos bo‘lsa, qarz hisobiga biriktiriladi.');
- }catch(e){alert('Xatolik: '+e.message)}}
+async function saveShopName(){
+ if(!shop)return;
+ const name=val('shopName');if(!name)return alert('Do‘kon nomini kiriting.');
+ const {data:r,error}=await db.from('shops').update({name,shop_name:name}).eq('id',shop.id).select().single();
+ if(error)return alert('Xatolik: '+error.message);
+ shop=r;say('Do‘kon nomi saqlandi.');
+}
+function openPage(id){
+ document.querySelectorAll('.page').forEach(x=>x.classList.add('hidden'));
+ $('home').classList.add('hidden');$(id).classList.remove('hidden');
+ if(id==='payments')renderPaymentOptions();
+ if(id==='reports')renderReports();
+ if(id==='buyer')loadBuyerDebts();
+}
+async function addSale(){
+ try{
+  if(!shop)return alert('Bu amal do‘kon egasi uchun.');
+  let name=val('saleName'),amount=num('saleAmount'),type=$('saleType').value;
+  if(!name||amount<=0)return alert('Savdo nomi va summani kiriting.');
+  const {error}=await db.from('sales').insert({shop_id:shop.id,name,amount,payment_type:type});
+  if(error)throw error;
+  $('saleName').value='';$('saleAmount').value='';await reloadData();
+ }catch(e){alert('Xatolik: '+e.message)}
+}
+async function addExpense(){
+ try{
+  let name=val('expenseName'),amount=num('expenseAmount');
+  if(!name||amount<=0)return alert('Xarajat nomi va summani kiriting.');
+  const {error}=await db.from('expenses').insert({shop_id:shop.id,name,amount});
+  if(error)throw error;
+  $('expenseName').value='';$('expenseAmount').value='';await reloadData();
+ }catch(e){alert('Xatolik: '+e.message)}
+}
+async function addProduct(){
+ try{
+  let name=val('productName'),cost=num('productCost'),price=num('productPrice'),quantity=num('productQty');
+  if(!name||cost<0||price<=0||$('productQty').value==='')return alert('Mahsulot ma’lumotlarini to‘g‘ri kiriting.');
+  const {error}=await db.from('products').insert({shop_id:shop.id,name,cost_price:cost,sale_price:price,quantity});
+  if(error)throw error;
+  $('productName').value='';$('productCost').value='';$('productPrice').value='';$('productQty').value='';
+  await reloadData();
+ }catch(e){alert('Xatolik: '+e.message)}
+}
+async function addDebt(){
+ try{
+  let buyer=val('debtBuyer'),phone=val('debtPhone'),amount=num('debtAmount');
+  if(!buyer||amount<=0)return alert('Xaridor ismi va summani kiriting.');
+  let buyer_id=null;
+  if(phone){
+   const {data:r,error}=await db.rpc('find_buyer_by_phone',{p_phone:phone});
+   if(error)throw error;if(r?.length)buyer_id=r[0].buyer_id;
+  }
+  const {error}=await db.from('debts').insert({
+   shop_id:shop.id,buyer_id,buyer_name:buyer,buyer_phone:phone,
+   amount,due_date:val('debtDate')||null,note:val('debtNote')||null,
+   status:'pending'
+  });
+  if(error)throw error;
+  ['debtBuyer','debtPhone','debtAmount','debtDate','debtNote'].forEach(id=>$(id).value='');
+  await reloadData();
+  if(!buyer_id)alert('Qarz saqlandi, lekin xaridor hisobiga biriktirilmadi. Xaridor ro‘yxatdan o‘tgan bo‘lishi va telefon raqami mos kelishi kerak.');
+ }catch(e){alert('Xatolik: '+e.message)}
+}
 function paidFor(id){return data.payments.filter(p=>p.debtId===id).reduce((s,p)=>s+p.amount,0)}
 function remaining(d){return Math.max(0,d.amount-paidFor(d.id))}
-async function addPayment(){try{let id=$('paymentDebt').value,amount=num('paymentAmount'),d=data.debts.find(x=>x.id===id);if(!d)return alert('Qarzni tanlang.');if(amount<=0||amount>remaining(d))return alert('To‘lov summasini qarz qoldig‘iga mos kiriting.');const {error}=await db.from('payments').insert({debt_id:id,amount});if(error)throw error;$('paymentAmount').value='';await reloadData()}catch(e){alert('Xatolik: '+e.message)}}
-async function removeItem(kind,id){if(!confirm('Bu yozuvni o‘chirmoqchimisiz?'))return;try{let table={sales:'sales',expenses:'expenses',products:'products',debts:'debts'}[kind];const {error}=await db.from(table).delete().eq('id',id).eq('shop_id',shop.id);if(error)throw error;await reloadData()}catch(e){alert('Xatolik: '+e.message)}}
-function list(id,items,html){$(id).innerHTML=items.length?items.map(html).join(''):'<p class="small">Hozircha ma’lumot yo‘q.</p>'}
-function renderPaymentOptions(){let s=$('paymentDebt'),old=s.value,a=data.debts.filter(d=>remaining(d)>0);s.innerHTML=a.map(d=>`<option value="${d.id}">${esc(d.buyer)} — ${money(remaining(d))}</option>`).join('');if(a.some(d=>d.id===old))s.value=old;if(!a.length)s.innerHTML='<option value="">To‘lanmagan qarz yo‘q</option>'}
+function statusText(s){
+ return ({pending:'Xaridor javobi kutilmoqda',confirmed:'Xaridor tasdiqladi',disputed:'Xaridor nizoladi'})[s]||'Holat noma’lum';
+}
+async function addPayment(){
+ try{
+  let id=$('paymentDebt').value,amount=num('paymentAmount'),d=data.debts.find(x=>x.id===id);
+  if(!d)return alert('Qarzni tanlang.');
+  if(amount<=0||amount>remaining(d))return alert('To‘lov summasini qarz qoldig‘iga mos kiriting.');
+  const {error}=await db.from('payments').insert({debt_id:id,amount});
+  if(error)throw error;
+  $('paymentAmount').value='';await reloadData();
+ }catch(e){alert('Xatolik: '+e.message)}
+}
+async function removeItem(kind,id){
+ if(!confirm('Bu yozuvni o‘chirmoqchimisiz?'))return;
+ try{
+  let table={sales:'sales',expenses:'expenses',products:'products',debts:'debts'}[kind];
+  const {error}=await db.from(table).delete().eq('id',id).eq('shop_id',shop.id);
+  if(error)throw error;await reloadData();
+ }catch(e){alert('Xatolik: '+e.message)}
+}
+function list(id,items,html){
+ $(id).innerHTML=items.length?items.map(html).join(''):'<p class="small">Hozircha ma’lumot yo‘q.</p>';
+}
+function renderPaymentOptions(){
+ let s=$('paymentDebt'),old=s.value,a=data.debts.filter(d=>remaining(d)>0);
+ s.innerHTML=a.map(d=>`<option value="${d.id}">${esc(d.buyer)} — ${money(remaining(d))}</option>`).join('');
+ if(a.some(d=>d.id===old))s.value=old;
+ if(!a.length)s.innerHTML='<option value="">To‘lanmagan qarz yo‘q</option>';
+}
 function renderAll(){
  const sum=(a,k)=>a.reduce((s,x)=>s+(Number(x[k])||0),0);
- $('totalSales').textContent=money(sum(data.sales,'amount'));$('totalExpenses').textContent=money(sum(data.expenses,'amount'));$('totalDebt').textContent=money(data.debts.reduce((s,d)=>s+remaining(d),0));$('totalPaid').textContent=money(sum(data.payments,'amount'));
+ $('totalSales').textContent=money(sum(data.sales,'amount'));
+ $('totalExpenses').textContent=money(sum(data.expenses,'amount'));
+ $('totalDebt').textContent=money(data.debts.reduce((s,d)=>s+remaining(d),0));
+ $('totalPaid').textContent=money(sum(data.payments,'amount'));
  list('salesList',data.sales,x=>`<div class="item"><b>${esc(x.name)}</b><div>${money(x.amount)} · ${esc(({naqd:'Naqd',karta:'Karta',qarz:'Qarz'})[x.type]||x.type)}</div><div class="small">${new Date(x.date).toLocaleString('uz-UZ')}</div><button class="danger" onclick="removeItem('sales','${x.id}')">O‘chirish</button></div>`);
  list('expensesList',data.expenses,x=>`<div class="item"><b>${esc(x.title)}</b><div>${money(x.amount)}</div><button class="danger" onclick="removeItem('expenses','${x.id}')">O‘chirish</button></div>`);
- list('productsList',data.products,x=>`<div class="item"><b>${esc(x.name)}</b><div>Tan narxi: ${money(x.cost)} · Sotuv: ${money(x.price)}</div><div>Miqdori: ${esc(x.quantity)} · Foyda: ${money(x.price-x.cost)}</div><button class="danger" onclick="removeItem('products','${x.id}')">O‘chirish</button></div>`);
- list('debtsList',data.debts,x=>`<div class="item"><b>${esc(x.buyer)}</b><div>Telefon: ${esc(x.phone||'Kiritilmagan')}</div><div>Qarz: ${money(x.amount)} · To‘langan: ${money(paidFor(x.id))}</div><b>Qoldiq: ${money(remaining(x))}</b><div class="small">Muddat: ${esc(x.due||'Belgilanmagan')} ${esc(x.note||'')}</div><button class="danger" onclick="removeItem('debts','${x.id}')">O‘chirish</button></div>`);
+ list('productsList',data.products,x=>`<div class="item"><b>${esc(x.name)}</b><div>Tan narxi: ${money(x.cost)} · Sotuv: ${money(x.price)}</div><div>Miqdori: ${esc(x.quantity)} · Bir donadan foyda: ${money(x.price-x.cost)}</div><button class="danger" onclick="removeItem('products','${x.id}')">O‘chirish</button></div>`);
+ list('debtsList',data.debts,x=>`<div class="item"><b>${esc(x.buyer)}</b><div>Telefon: ${esc(x.phone||'Kiritilmagan')}</div><div>Qarz: ${money(x.amount)} · To‘langan: ${money(paidFor(x.id))}</div><b>Qoldiq: ${money(remaining(x))}</b><div class="tag">${esc(statusText(x.status))}</div>${x.response?`<div class="small">Xaridor izohi: ${esc(x.response)}</div>`:''}<div class="small">Muddat: ${esc(x.due||'Belgilanmagan')} ${esc(x.note||'')}</div><button class="danger" onclick="removeItem('debts','${x.id}')">O‘chirish</button></div>`);
  list('paymentsList',data.payments,p=>{let d=data.debts.find(x=>x.id===p.debtId);return `<div class="item">${esc(d?.buyer||'Xaridor')} — <b>${money(p.amount)}</b><div class="small">${new Date(p.date).toLocaleString('uz-UZ')}</div></div>`});
  renderPaymentOptions();renderReports();
 }
-function renderReports(){let sales=data.sales.reduce((s,x)=>s+x.amount,0),expenses=data.expenses.reduce((s,x)=>s+x.amount,0),paid=data.payments.reduce((s,x)=>s+x.amount,0),debt=data.debts.reduce((s,d)=>s+remaining(d),0);$('reportContent').innerHTML=`<div class="stats"><div class="stat"><span>Jami savdo</span><b>${money(sales)}</b></div><div class="stat"><span>Xarajat</span><b>${money(expenses)}</b></div><div class="stat"><span>Qarz qoldig‘i</span><b>${money(debt)}</b></div><div class="stat"><span>Qarzdan tushgan</span><b>${money(paid)}</b></div><div class="stat"><span>Savdo minus xarajat</span><b>${money(sales-expenses)}</b></div></div>`}
-async function loadBuyerDebts(){if(!user)return;try{const {data:r,error}=await db.from('debts').select('*').eq('buyer_id',user.id).order('created_at',{ascending:false});if(error)throw error;let ds=r||[],ids=ds.map(d=>d.id),ps=[];if(ids.length){const p=await db.from('payments').select('*').in('debt_id',ids);if(p.error)throw p.error;ps=p.data}list('buyerDebtsList',ds,d=>{let paid=ps.filter(p=>p.debt_id===d.id).reduce((s,p)=>s+Number(p.amount),0);return `<div class="item"><b>${esc(d.buyer_name||'Qarz')}</b><div>Qarz: ${money(d.amount)}</div><div>To‘langan: ${money(paid)}</div><b>Qoldiq: ${money(Math.max(0,Number(d.amount)-paid))}</b><div class="small">Muddat: ${esc(d.due_date||'Belgilanmagan')}</div><div class="small">Do‘kon: ${esc(d.shop_id)}</div></div>`});}catch(e){say('Qarzlarni yuklashda xatolik: '+e.message)}}
-async function boot(){try{const {data:r,error}=await db.auth.getSession();if(error)throw error;if(r.session){user=r.session.user;await startApp()}}catch(e){authMsg('Xatolik: '+e.message)}}
+function renderReports(){
+ let sales=data.sales.reduce((s,x)=>s+x.amount,0);
+ let expenses=data.expenses.reduce((s,x)=>s+x.amount,0);
+ let paid=data.payments.reduce((s,x)=>s+x.amount,0);
+ let debt=data.debts.reduce((s,d)=>s+remaining(d),0);
+ let productProfit=data.products.reduce((s,p)=>s+(p.price-p.cost)*p.quantity,0);
+ $('reportContent').innerHTML=`<div class="stats">
+ <div class="stat"><span>Jami savdo</span><b>${money(sales)}</b></div>
+ <div class="stat"><span>Xarajat</span><b>${money(expenses)}</b></div>
+ <div class="stat"><span>Qarz qoldig‘i</span><b>${money(debt)}</b></div>
+ <div class="stat"><span>Qarzdan tushgan</span><b>${money(paid)}</b></div>
+ <div class="stat"><span>Savdo minus xarajat</span><b>${money(sales-expenses)}</b></div>
+ <div class="stat"><span>Mahsulot zaxirasidagi taxminiy foyda</span><b>${money(productProfit)}</b></div>
+ </div><p class="small">Bu hisobot kiritilgan ma’lumotlarga asoslanadi. Mahsulot zaxirasidagi foyda haqiqiy sotilgan mahsulot foydasi bilan bir xil emas.</p>`;
+}
+async function loadBuyerDebts(){
+ if(!user)return;
+ try{
+  const {data:r,error}=await db.from('debts').select('*').eq('buyer_id',user.id).order('created_at',{ascending:false});
+  if(error)throw error;
+  let ds=r||[],ids=ds.map(d=>d.id),ps=[];
+  if(ids.length){
+   const p=await db.from('payments').select('*').in('debt_id',ids).order('created_at',{ascending:false});
+   if(p.error)throw p.error;ps=p.data;
+  }
+  list('buyerDebtsList',ds,d=>{
+   let paid=ps.filter(p=>p.debt_id===d.id).reduce((s,p)=>s+Number(p.amount),0);
+   let left=Math.max(0,Number(d.amount)-paid),status=d.status||'pending';
+   let controls=status==='pending'?`
+    <button class="good" onclick="respondDebt('${d.id}','confirmed')">Qarzni tasdiqlash</button>
+    <button class="danger" onclick="respondDebt('${d.id}','disputed')">Qarzga e’tiroz bildirish</button>`:'';
+   let noteBox=status==='pending'?`<label>E’tiroz sababi (ixtiyoriy)</label><textarea id="note-${d.id}" rows="2" placeholder="Nima bilan rozi emassiz?"></textarea>`:'';
+   return `<div class="item"><b>Qarz yozuvi</b>
+    <div>Qarz: ${money(d.amount)}</div>
+    <div>To‘langan: ${money(paid)}</div>
+    <b>Qoldiq: ${money(left)}</b>
+    <div class="tag">${esc(statusText(status))}</div>
+    <div class="small">Muddat: ${esc(d.due_date||'Belgilanmagan')}</div>
+    ${d.buyer_response_note?`<div class="small">E’tiroz izohi: ${esc(d.buyer_response_note)}</div>`:''}
+    ${noteBox}<div class="row">${controls}</div>
+   </div>`;
+  });
+ }catch(e){say('Qarzlarni yuklashda xatolik: '+e.message)}
+}
+async function respondDebt(id,status){
+ try{
+  let note=$('note-'+id)?.value.trim()||null;
+  if(status==='disputed'&&!note&&!confirm('Sabab yozmasdan e’tiroz bildirmoqchimisiz?'))return;
+  const {error}=await db.rpc('buyer_respond_to_debt',{p_debt_id:id,p_status:status,p_note:note});
+  if(error)throw error;
+  alert(status==='confirmed'?'Qarz tasdiqlandi.':'E’tirozingiz saqlandi.');
+  await loadBuyerDebts();
+ }catch(e){alert('Javobni saqlab bo‘lmadi: '+e.message)}
+}
+async function boot(){
+ try{
+  const {data:r,error}=await db.auth.getSession();if(error)throw error;
+  if(r.session){user=r.session.user;await startApp()}
+ }catch(e){authMsg('Xatolik: '+e.message)}
+}
 boot();
 </script>
 </body>
