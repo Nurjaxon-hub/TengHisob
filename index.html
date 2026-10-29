@@ -37,13 +37,23 @@ button:disabled{opacity:.5}
 .topline{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .notice{background:#fff5d9;padding:12px;border-radius:9px;font-size:13px;line-height:1.5}
 .tag{display:inline-block;padding:5px 8px;border-radius:7px;background:#edf1ee;font-size:12px;margin:5px 0}
+.langbox{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-bottom:10px}
+.langbox label{margin:0;color:white;font-weight:bold}
+.langbox select{width:auto;min-width:130px;padding:8px;border:0;border-radius:8px;font-size:14px}
 @media(max-width:380px){.nav{grid-template-columns:1fr}.row{display:block}}
 </style>
 </head>
 <body>
 <header>
+<div class="langbox">
+<label for="languageSelect" id="languageLabel">Til / Язык</label>
+<select id="languageSelect" onchange="changeLanguage(this.value)">
+<option value="uz">O‘zbekcha</option>
+<option value="ru">Русский</option>
+</select>
+</div>
 <h1>TengHisob</h1>
-<p>Do‘kon va xaridor hisob-kitoblari</p>
+<p data-i18n="Do‘kon va xaridor hisob-kitoblari">Do‘kon va xaridor hisob-kitoblari</p>
 </header>
 <main>
 <section id="auth" class="card">
@@ -178,13 +188,174 @@ const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 const val=id=>$(id).value.trim();
 const num=id=>Number($(id).value);
-const money=n=>(Number(n)||0).toLocaleString('uz-UZ',{maximumFractionDigits:2})+' so‘m';
+let language=localStorage.getItem('tenghisob_language')||'uz';
+
+const translations={
+"Do‘kon va xaridor hisob-kitoblari":"Расчёты магазина и покупателей",
+"Hisobga kirish":"Вход в аккаунт",
+"Yangi hisob yaratish":"Создать аккаунт",
+"To‘liq ism":"Полное имя",
+"Ism va familiya":"Имя и фамилия",
+"Telefon raqami":"Номер телефона",
+"Hisob turi":"Тип аккаунта",
+"Do‘kon egasi":"Владелец магазина",
+"Xaridor":"Покупатель",
+"Elektron pochta":"Электронная почта",
+"Parol":"Пароль",
+"Kirish":"Войти",
+"Ro‘yxatdan o‘tish":"Зарегистрироваться",
+"Hisobim bor — kirish":"У меня есть аккаунт — войти",
+"Hisob":"Аккаунт",
+"Chiqish":"Выйти",
+"Asosiy sahifa":"Главная страница",
+"Do‘kon nomi":"Название магазина",
+"Do‘kon nomini saqlash":"Сохранить название магазина",
+"Jami savdo":"Общая сумма продаж",
+"Xarajatlar":"Расходы",
+"Qarz qoldig‘i":"Остаток долга",
+"Qarzdan tushgan":"Получено по долгам",
+"Savdo":"Продажи",
+"Mahsulotlar":"Товары",
+"Xaridorlar qarzi":"Долги покупателей",
+"Qarz to‘lovlari":"Платежи по долгам",
+"Hisobotlar":"Отчёты",
+"Orqaga":"Назад",
+"Savdo kiritish":"Добавить продажу",
+"Savdo nomi":"Название продажи",
+"Masalan, non":"Например, хлеб",
+"Summa (so‘m)":"Сумма (сум)",
+"To‘lov turi":"Способ оплаты",
+"Naqd":"Наличные",
+"Karta":"Карта",
+"Qarzga":"В долг",
+"Savdoni saqlash":"Сохранить продажу",
+"Xarajat":"Расход",
+"Xarajat nomi":"Название расхода",
+"Xarajatni saqlash":"Сохранить расход",
+"Tan narxi (so‘m)":"Себестоимость (сум)",
+"Sotuv narxi (so‘m)":"Цена продажи (сум)",
+"Miqdori":"Количество",
+"Mahsulot nomini kiriting":"Введите название товара",
+"Mahsulotni saqlash":"Сохранить товар",
+"Xaridor qarzi":"Долг покупателя",
+"Xaridor ismi":"Имя покупателя",
+"Qarz summasi (so‘m)":"Сумма долга (сум)",
+"To‘lash muddati":"Срок оплаты",
+"Izoh":"Примечание",
+"Qarzni saqlash":"Сохранить долг",
+"Qarz to‘lovi":"Платёж по долгу",
+"Qarz":"Долг",
+"To‘langan summa (so‘m)":"Оплаченная сумма (сум)",
+"To‘lovni saqlash":"Сохранить платёж",
+"Sizga biriktirilgan qarzlarni ko‘rish, tasdiqlash yoki nizolash mumkin.":"Вы можете просматривать, подтверждать или оспаривать назначенные вам долги.",
+"Qarzlarimni yangilash":"Обновить мои долги",
+"Ma’lumotlar bazasi yuklanmoqda…":"Загрузка базы данных…",
+"Do‘kon nomini kiriting.":"Введите название магазина.",
+"Xatolik: ":"Ошибка: ",
+"Tekshirilmoqda…":"Проверка…",
+"Elektron pochta va kamida 6 belgili parolni kiriting.":"Введите электронную почту и пароль длиной не менее 6 символов.",
+"Ismingizni kiriting.":"Введите своё имя.",
+"Hisob yaratildi, lekin kirish sessiyasi berilmadi. Supabase email tasdig‘i sozlamalarini tekshiring.":"Аккаунт создан, но сессия входа не выдана. Проверьте настройки подтверждения электронной почты в Supabase.",
+"Hisobdan chiqdingiz.":"Вы вышли из аккаунта.",
+"Xaridor hisobi ulandi.":"Аккаунт покупателя подключён.",
+"Do‘kon topilmadi.":"Магазин не найден.",
+"Bazadagi ma’lumotlar yangilandi.":"Данные базы обновлены.",
+"Bu amal do‘kon egasi uchun.":"Это действие доступно владельцу магазина.",
+"Savdo nomi va summani kiriting.":"Введите название продажи и сумму.",
+"Xarajat nomi va summani kiriting.":"Введите название расхода и сумму.",
+"Mahsulot ma’lumotlarini to‘g‘ri kiriting.":"Правильно заполните данные товара.",
+"Xaridor ismi va summani kiriting.":"Введите имя покупателя и сумму.",
+"Qarz saqlandi, lekin xaridor hisobiga biriktirilmadi. Xaridor ro‘yxatdan o‘tgan bo‘lishi va telefon raqami mos kelishi kerak.":"Долг сохранён, но не привязан к аккаунту покупателя. Покупатель должен быть зарегистрирован, а номер телефона должен совпадать.",
+"Xaridor javobi kutilmoqda":"Ожидается ответ покупателя",
+"Xaridor tasdiqladi":"Покупатель подтвердил",
+"Xaridor nizoladi":"Покупатель оспорил",
+"Holat noma’lum":"Статус неизвестен",
+"Qarzni tanlang.":"Выберите долг.",
+"To‘lov summasini qarz qoldig‘iga mos kiriting.":"Сумма платежа не должна превышать остаток долга.",
+"Bu yozuvni o‘chirmoqchimisiz?":"Вы хотите удалить эту запись?",
+"Xaridor izohi:":"Комментарий покупателя:",
+"Telefon:":"Телефон:",
+"Kiritilmagan":"Не указан",
+"Qarz:":"Долг:",
+"To‘langan:":"Оплачено:",
+"Qoldiq:":"Остаток:",
+"Muddat:":"Срок:",
+"Belgilanmagan":"Не указан",
+"Tan narxi:":"Себестоимость:",
+"Sotuv:":"Продажа:",
+"Bir donadan foyda:":"Прибыль с одной штуки:",
+"O‘chirish":"Удалить",
+"Hozircha ma’lumot yo‘q.":"Пока нет данных.",
+"To‘lanmagan qarz yo‘q":"Нет неоплаченных долгов",
+"Xaridor izohi":"Комментарий покупателя",
+"Qarz yozuvi":"Запись о долге",
+"Qarzni tasdiqlash":"Подтвердить долг",
+"Qarzga e’tiroz bildirish":"Оспорить долг",
+"E’tiroz sababi (ixtiyoriy)":"Причина возражения (необязательно)",
+"Nima bilan rozi emassiz?":"С чем вы не согласны?",
+"Sabab yozmasdan e’tiroz bildirmoqchimisiz?":"Вы хотите оспорить долг без указания причины?",
+"Qarz tasdiqlandi.":"Долг подтверждён.",
+"E’tirozingiz saqlandi.":"Ваше возражение сохранено.",
+"Javobni saqlab bo‘lmadi: ":"Не удалось сохранить ответ: ",
+"Qarzlarni yuklashda xatolik: ":"Ошибка загрузки долгов: ",
+"Hisobot kiritilgan ma’lumotlarga asoslanadi. Mahsulot zaxirasidagi foyda haqiqiy sotilgan mahsulot foydasi bilan bir xil emas.":"Отчёт основан на введённых данных. Прибыль от запасов товаров не равна фактической прибыли от проданных товаров.",
+"Savdo minus xarajat":"Продажи минус расходы",
+"Mahsulot zaxirasidagi taxminiy foyda":"Примерная прибыль от товарных запасов",
+"Xarajat":"Расход",
+"Xarajatlar":"Расходы",
+"Telefon raqami":"Номер телефона",
+"Til / Язык":"Язык / Тил"
+};
+
+const reverseTranslations={};
+for(const [uz,ru] of Object.entries(translations)){
+ if(!reverseTranslations[ru])reverseTranslations[ru]=uz;
+}
+function translateText(text,lang){
+ let result=text;
+ const source=lang==='ru'?translations:reverseTranslations;
+ const keys=Object.keys(source).sort((a,b)=>b.length-a.length);
+ for(const key of keys){
+  if(key)result=result.split(key).join(source[key]);
+ }
+ return result;
+}
+function translatePage(){
+ const lang=language;
+ document.documentElement.lang=lang;
+ document.querySelectorAll('body *').forEach(el=>{
+  if(el.id==='languageSelect')return;
+  el.childNodes.forEach(node=>{
+   if(node.nodeType===Node.TEXT_NODE&&node.nodeValue.trim()){
+    node.nodeValue=translateText(node.nodeValue,lang);
+   }
+  });
+  ['placeholder','title'].forEach(attr=>{
+   if(el.hasAttribute(attr)){
+    el.setAttribute(attr,translateText(el.getAttribute(attr),lang));
+   }
+  });
+ });
+ $('languageSelect').value=lang;
+ $('languageLabel').textContent=lang==='ru'?'Язык':'Til / Язык';
+}
+function changeLanguage(lang){
+ language=lang==='ru'?'ru':'uz';
+ localStorage.setItem('tenghisob_language',language);
+ translatePage();
+ if(user){
+  $('userLabel').textContent=(profile?.full_name||user.email)+' · '+(profile?.role==='shop'?(language==='ru'?'Владелец магазина':'Do‘kon egasi'):(language==='ru'?'Покупатель':'Xaridor'));
+  renderAll();
+  if($('buyer')&&!$('buyer').classList.contains('hidden'))loadBuyerDebts();
+ }
+}
+const money=n=>(Number(n)||0).toLocaleString(language==='ru'?'ru-RU':'uz-UZ',{maximumFractionDigits:2})+(language==='ru'?' сум':' so‘m');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let user=null,profile=null,shop=null,mode=false;
 let data={sales:[],expenses:[],products:[],debts:[],payments:[]};
 
-function say(t){$('status').textContent=t}
-function authMsg(t){$('authMessage').textContent=t}
+function say(t){$('status').textContent=t;translatePage()}
+function authMsg(t){$('authMessage').textContent=t;translatePage()}
 function toggleAuth(){
  mode=!mode;
  $('signupFields').classList.toggle('hidden',!mode);
@@ -210,7 +381,7 @@ async function authenticate(){
   }
   await startApp();
  }catch(e){authMsg('Xatolik: '+e.message)}
- finally{$('authButton').disabled=false}
+ finally{$('authButton').disabled=false;translatePage()}
 }
 async function startApp(){
  const {data:p,error:pe}=await db.from('profiles').select('*').eq('id',user.id).maybeSingle();
@@ -228,9 +399,9 @@ async function startApp(){
   }
  }
  $('auth').classList.add('hidden');$('app').classList.remove('hidden');
- $('userLabel').textContent=(profile.full_name||user.email)+' · '+(profile.role==='shop'?'Do‘kon egasi':'Xaridor');
+ $('userLabel').textContent=(profile.full_name||user.email)+' · '+(profile.role==='shop'?(language==='ru'?'Владелец магазина':'Do‘kon egasi'):(language==='ru'?'Покупатель':'Xaridor'));
  if(shop)$('shopName').value=shop.shop_name||shop.name||'';
- await reloadData();openPage('home');
+ await reloadData();openPage('home');translatePage();
 }
 async function logout(){
  await db.auth.signOut();user=null;shop=null;profile=null;
@@ -265,9 +436,9 @@ async function reloadData(){
 }
 async function saveShopName(){
  if(!shop)return;
- const name=val('shopName');if(!name)return alert('Do‘kon nomini kiriting.');
+ const name=val('shopName');if(!name)return alert(language==='ru'?'Введите название магазина.':'Do‘kon nomini kiriting.');
  const {data:r,error}=await db.from('shops').update({name,shop_name:name}).eq('id',shop.id).select().single();
- if(error)return alert('Xatolik: '+error.message);
+ if(error)return alert((language==='ru'?'Ошибка: ':'Xatolik: ')+error.message);
  shop=r;say('Do‘kon nomi saqlandi.');
 }
 function openPage(id){
@@ -276,40 +447,41 @@ function openPage(id){
  if(id==='payments')renderPaymentOptions();
  if(id==='reports')renderReports();
  if(id==='buyer')loadBuyerDebts();
+ translatePage();
 }
 async function addSale(){
  try{
-  if(!shop)return alert('Bu amal do‘kon egasi uchun.');
+  if(!shop)return alert(language==='ru'?'Это действие доступно владельцу магазина.':'Bu amal do‘kon egasi uchun.');
   let name=val('saleName'),amount=num('saleAmount'),type=$('saleType').value;
-  if(!name||amount<=0)return alert('Savdo nomi va summani kiriting.');
+  if(!name||amount<=0)return alert(language==='ru'?'Введите название продажи и сумму.':'Savdo nomi va summani kiriting.');
   const {error}=await db.from('sales').insert({shop_id:shop.id,name,amount,payment_type:type});
   if(error)throw error;
   $('saleName').value='';$('saleAmount').value='';await reloadData();
- }catch(e){alert('Xatolik: '+e.message)}
+ }catch(e){alert((language==='ru'?'Ошибка: ':'Xatolik: ')+e.message)}
 }
 async function addExpense(){
  try{
   let name=val('expenseName'),amount=num('expenseAmount');
-  if(!name||amount<=0)return alert('Xarajat nomi va summani kiriting.');
+  if(!name||amount<=0)return alert(language==='ru'?'Введите название расхода и сумму.':'Xarajat nomi va summani kiriting.');
   const {error}=await db.from('expenses').insert({shop_id:shop.id,name,amount});
   if(error)throw error;
   $('expenseName').value='';$('expenseAmount').value='';await reloadData();
- }catch(e){alert('Xatolik: '+e.message)}
+ }catch(e){alert((language==='ru'?'Ошибка: ':'Xatolik: ')+e.message)}
 }
 async function addProduct(){
  try{
   let name=val('productName'),cost=num('productCost'),price=num('productPrice'),quantity=num('productQty');
-  if(!name||cost<0||price<=0||$('productQty').value==='')return alert('Mahsulot ma’lumotlarini to‘g‘ri kiriting.');
+  if(!name||cost<0||price<=0||$('productQty').value==='')return alert(language==='ru'?'Правильно заполните данные товара.':'Mahsulot ma’lumotlarini to‘g‘ri kiriting.');
   const {error}=await db.from('products').insert({shop_id:shop.id,name,cost_price:cost,sale_price:price,quantity});
   if(error)throw error;
   $('productName').value='';$('productCost').value='';$('productPrice').value='';$('productQty').value='';
   await reloadData();
- }catch(e){alert('Xatolik: '+e.message)}
+ }catch(e){alert((language==='ru'?'Ошибка: ':'Xatolik: ')+e.message)}
 }
 async function addDebt(){
  try{
   let buyer=val('debtBuyer'),phone=val('debtPhone'),amount=num('debtAmount');
-  if(!buyer||amount<=0)return alert('Xaridor ismi va summani kiriting.');
+  if(!buyer||amount<=0)return alert(language==='ru'?'Введите имя покупателя и сумму.':'Xaridor ismi va summani kiriting.');
   let buyer_id=null;
   if(phone){
    const {data:r,error}=await db.rpc('find_buyer_by_phone',{p_phone:phone});
@@ -323,40 +495,41 @@ async function addDebt(){
   if(error)throw error;
   ['debtBuyer','debtPhone','debtAmount','debtDate','debtNote'].forEach(id=>$(id).value='');
   await reloadData();
-  if(!buyer_id)alert('Qarz saqlandi, lekin xaridor hisobiga biriktirilmadi. Xaridor ro‘yxatdan o‘tgan bo‘lishi va telefon raqami mos kelishi kerak.');
- }catch(e){alert('Xatolik: '+e.message)}
+  if(!buyer_id)alert(language==='ru'?'Долг сохранён, но не привязан к аккаунту покупателя. Покупатель должен быть зарегистрирован, а номер телефона должен совпадать.':'Qarz saqlandi, lekin xaridor hisobiga biriktirilmadi. Xaridor ro‘yxatdan o‘tgan bo‘lishi va telefon raqami mos kelishi kerak.');
+ }catch(e){alert((language==='ru'?'Ошибка: ':'Xatolik: ')+e.message)}
 }
 function paidFor(id){return data.payments.filter(p=>p.debtId===id).reduce((s,p)=>s+p.amount,0)}
 function remaining(d){return Math.max(0,d.amount-paidFor(d.id))}
 function statusText(s){
+ if(language==='ru')return ({pending:'Ожидается ответ покупателя',confirmed:'Покупатель подтвердил',disputed:'Покупатель оспорил'})[s]||'Статус неизвестен';
  return ({pending:'Xaridor javobi kutilmoqda',confirmed:'Xaridor tasdiqladi',disputed:'Xaridor nizoladi'})[s]||'Holat noma’lum';
 }
 async function addPayment(){
  try{
   let id=$('paymentDebt').value,amount=num('paymentAmount'),d=data.debts.find(x=>x.id===id);
-  if(!d)return alert('Qarzni tanlang.');
-  if(amount<=0||amount>remaining(d))return alert('To‘lov summasini qarz qoldig‘iga mos kiriting.');
+  if(!d)return alert(language==='ru'?'Выберите долг.':'Qarzni tanlang.');
+  if(amount<=0||amount>remaining(d))return alert(language==='ru'?'Сумма платежа не должна превышать остаток долга.':'To‘lov summasini qarz qoldig‘iga mos kiriting.');
   const {error}=await db.from('payments').insert({debt_id:id,amount});
   if(error)throw error;
   $('paymentAmount').value='';await reloadData();
- }catch(e){alert('Xatolik: '+e.message)}
+ }catch(e){alert((language==='ru'?'Ошибка: ':'Xatolik: ')+e.message)}
 }
 async function removeItem(kind,id){
- if(!confirm('Bu yozuvni o‘chirmoqchimisiz?'))return;
+ if(!confirm(language==='ru'?'Вы хотите удалить эту запись?':'Bu yozuvni o‘chirmoqchimisiz?'))return;
  try{
   let table={sales:'sales',expenses:'expenses',products:'products',debts:'debts'}[kind];
   const {error}=await db.from(table).delete().eq('id',id).eq('shop_id',shop.id);
   if(error)throw error;await reloadData();
- }catch(e){alert('Xatolik: '+e.message)}
+ }catch(e){alert((language==='ru'?'Ошибка: ':'Xatolik: ')+e.message)}
 }
 function list(id,items,html){
- $(id).innerHTML=items.length?items.map(html).join(''):'<p class="small">Hozircha ma’lumot yo‘q.</p>';
+ $(id).innerHTML=items.length?items.map(html).join(''):`<p class="small">${language==='ru'?'Пока нет данных.':'Hozircha ma’lumot yo‘q.'}</p>`;
 }
 function renderPaymentOptions(){
  let s=$('paymentDebt'),old=s.value,a=data.debts.filter(d=>remaining(d)>0);
  s.innerHTML=a.map(d=>`<option value="${d.id}">${esc(d.buyer)} — ${money(remaining(d))}</option>`).join('');
  if(a.some(d=>d.id===old))s.value=old;
- if(!a.length)s.innerHTML='<option value="">To‘lanmagan qarz yo‘q</option>';
+ if(!a.length)s.innerHTML=`<option value="">${language==='ru'?'Нет неоплаченных долгов':'To‘lanmagan qarz yo‘q'}</option>`;
 }
 function renderAll(){
  const sum=(a,k)=>a.reduce((s,x)=>s+(Number(x[k])||0),0);
@@ -364,12 +537,12 @@ function renderAll(){
  $('totalExpenses').textContent=money(sum(data.expenses,'amount'));
  $('totalDebt').textContent=money(data.debts.reduce((s,d)=>s+remaining(d),0));
  $('totalPaid').textContent=money(sum(data.payments,'amount'));
- list('salesList',data.sales,x=>`<div class="item"><b>${esc(x.name)}</b><div>${money(x.amount)} · ${esc(({naqd:'Naqd',karta:'Karta',qarz:'Qarz'})[x.type]||x.type)}</div><div class="small">${new Date(x.date).toLocaleString('uz-UZ')}</div><button class="danger" onclick="removeItem('sales','${x.id}')">O‘chirish</button></div>`);
- list('expensesList',data.expenses,x=>`<div class="item"><b>${esc(x.title)}</b><div>${money(x.amount)}</div><button class="danger" onclick="removeItem('expenses','${x.id}')">O‘chirish</button></div>`);
- list('productsList',data.products,x=>`<div class="item"><b>${esc(x.name)}</b><div>Tan narxi: ${money(x.cost)} · Sotuv: ${money(x.price)}</div><div>Miqdori: ${esc(x.quantity)} · Bir donadan foyda: ${money(x.price-x.cost)}</div><button class="danger" onclick="removeItem('products','${x.id}')">O‘chirish</button></div>`);
- list('debtsList',data.debts,x=>`<div class="item"><b>${esc(x.buyer)}</b><div>Telefon: ${esc(x.phone||'Kiritilmagan')}</div><div>Qarz: ${money(x.amount)} · To‘langan: ${money(paidFor(x.id))}</div><b>Qoldiq: ${money(remaining(x))}</b><div class="tag">${esc(statusText(x.status))}</div>${x.response?`<div class="small">Xaridor izohi: ${esc(x.response)}</div>`:''}<div class="small">Muddat: ${esc(x.due||'Belgilanmagan')} ${esc(x.note||'')}</div><button class="danger" onclick="removeItem('debts','${x.id}')">O‘chirish</button></div>`);
- list('paymentsList',data.payments,p=>{let d=data.debts.find(x=>x.id===p.debtId);return `<div class="item">${esc(d?.buyer||'Xaridor')} — <b>${money(p.amount)}</b><div class="small">${new Date(p.date).toLocaleString('uz-UZ')}</div></div>`});
- renderPaymentOptions();renderReports();
+ list('salesList',data.sales,x=>`<div class="item"><b>${esc(x.name)}</b><div>${money(x.amount)} · ${esc(({naqd:language==='ru'?'Наличные':'Naqd',karta:language==='ru'?'Карта':'Karta',qarz:language==='ru'?'В долг':'Qarz'})[x.type]||x.type)}</div><div class="small">${new Date(x.date).toLocaleString(language==='ru'?'ru-RU':'uz-UZ')}</div><button class="danger" onclick="removeItem('sales','${x.id}')">${language==='ru'?'Удалить':'O‘chirish'}</button></div>`);
+ list('expensesList',data.expenses,x=>`<div class="item"><b>${esc(x.title)}</b><div>${money(x.amount)}</div><button class="danger" onclick="removeItem('expenses','${x.id}')">${language==='ru'?'Удалить':'O‘chirish'}</button></div>`);
+ list('productsList',data.products,x=>`<div class="item"><b>${esc(x.name)}</b><div>${language==='ru'?'Себестоимость':'Tan narxi'}: ${money(x.cost)} · ${language==='ru'?'Цена продажи':'Sotuv'}: ${money(x.price)}</div><div>${language==='ru'?'Количество':'Miqdori'}: ${esc(x.quantity)} · ${language==='ru'?'Прибыль с одной штуки':'Bir donadan foyda'}: ${money(x.price-x.cost)}</div><button class="danger" onclick="removeItem('products','${x.id}')">${language==='ru'?'Удалить':'O‘chirish'}</button></div>`);
+ list('debtsList',data.debts,x=>`<div class="item"><b>${esc(x.buyer)}</b><div>${language==='ru'?'Телефон':'Telefon'}: ${esc(x.phone||(language==='ru'?'Не указан':'Kiritilmagan'))}</div><div>${language==='ru'?'Долг':'Qarz'}: ${money(x.amount)} · ${language==='ru'?'Оплачено':'To‘langan'}: ${money(paidFor(x.id))}</div><b>${language==='ru'?'Остаток':'Qoldiq'}: ${money(remaining(x))}</b><div class="tag">${esc(statusText(x.status))}</div>${x.response?`<div class="small">${language==='ru'?'Комментарий покупателя':'Xaridor izohi'}: ${esc(x.response)}</div>`:''}<div class="small">${language==='ru'?'Срок':'Muddat'}: ${esc(x.due||(language==='ru'?'Не указан':'Belgilanmagan'))} ${esc(x.note||'')}</div><button class="danger" onclick="removeItem('debts','${x.id}')">${language==='ru'?'Удалить':'O‘chirish'}</button></div>`);
+ list('paymentsList',data.payments,p=>{let d=data.debts.find(x=>x.id===p.debtId);return `<div class="item">${esc(d?.buyer||(language==='ru'?'Покупатель':'Xaridor'))} — <b>${money(p.amount)}</b><div class="small">${new Date(p.date).toLocaleString(language==='ru'?'ru-RU':'uz-UZ')}</div></div>`});
+ renderPaymentOptions();renderReports();translatePage();
 }
 function renderReports(){
  let sales=data.sales.reduce((s,x)=>s+x.amount,0);
@@ -378,13 +551,14 @@ function renderReports(){
  let debt=data.debts.reduce((s,d)=>s+remaining(d),0);
  let productProfit=data.products.reduce((s,p)=>s+(p.price-p.cost)*p.quantity,0);
  $('reportContent').innerHTML=`<div class="stats">
- <div class="stat"><span>Jami savdo</span><b>${money(sales)}</b></div>
- <div class="stat"><span>Xarajat</span><b>${money(expenses)}</b></div>
- <div class="stat"><span>Qarz qoldig‘i</span><b>${money(debt)}</b></div>
- <div class="stat"><span>Qarzdan tushgan</span><b>${money(paid)}</b></div>
- <div class="stat"><span>Savdo minus xarajat</span><b>${money(sales-expenses)}</b></div>
- <div class="stat"><span>Mahsulot zaxirasidagi taxminiy foyda</span><b>${money(productProfit)}</b></div>
- </div><p class="small">Bu hisobot kiritilgan ma’lumotlarga asoslanadi. Mahsulot zaxirasidagi foyda haqiqiy sotilgan mahsulot foydasi bilan bir xil emas.</p>`;
+ <div class="stat"><span>${language==='ru'?'Общая сумма продаж':'Jami savdo'}</span><b>${money(sales)}</b></div>
+ <div class="stat"><span>${language==='ru'?'Расходы':'Xarajat'}</span><b>${money(expenses)}</b></div>
+ <div class="stat"><span>${language==='ru'?'Остаток долга':'Qarz qoldig‘i'}</span><b>${money(debt)}</b></div>
+ <div class="stat"><span>${language==='ru'?'Получено по долгам':'Qarzdan tushgan'}</span><b>${money(paid)}</b></div>
+ <div class="stat"><span>${language==='ru'?'Продажи минус расходы':'Savdo minus xarajat'}</span><b>${money(sales-expenses)}</b></div>
+ <div class="stat"><span>${language==='ru'?'Примерная прибыль от товарных запасов':'Mahsulot zaxirasidagi taxminiy foyda'}</span><b>${money(productProfit)}</b></div>
+ </div><p class="small">${language==='ru'?'Отчёт основан на введённых данных. Прибыль от запасов товаров не равна фактической прибыли от проданных товаров.':'Bu hisobot kiritilgan ma’lumotlarga asoslanadi. Mahsulot zaxirasidagi foyda haqiqiy sotilgan mahsulot foydasi bilan bir xil emas.'}</p>`;
+ translatePage();
 }
 async function loadBuyerDebts(){
  if(!user)return;
@@ -400,37 +574,40 @@ async function loadBuyerDebts(){
    let paid=ps.filter(p=>p.debt_id===d.id).reduce((s,p)=>s+Number(p.amount),0);
    let left=Math.max(0,Number(d.amount)-paid),status=d.status||'pending';
    let controls=status==='pending'?`
-    <button class="good" onclick="respondDebt('${d.id}','confirmed')">Qarzni tasdiqlash</button>
-    <button class="danger" onclick="respondDebt('${d.id}','disputed')">Qarzga e’tiroz bildirish</button>`:'';
-   let noteBox=status==='pending'?`<label>E’tiroz sababi (ixtiyoriy)</label><textarea id="note-${d.id}" rows="2" placeholder="Nima bilan rozi emassiz?"></textarea>`:'';
-   return `<div class="item"><b>Qarz yozuvi</b>
-    <div>Qarz: ${money(d.amount)}</div>
-    <div>To‘langan: ${money(paid)}</div>
-    <b>Qoldiq: ${money(left)}</b>
+    <button class="good" onclick="respondDebt('${d.id}','confirmed')">${language==='ru'?'Подтвердить долг':'Qarzni tasdiqlash'}</button>
+    <button class="danger" onclick="respondDebt('${d.id}','disputed')">${language==='ru'?'Оспорить долг':'Qarzga e’tiroz bildirish'}</button>`:'';
+   let noteBox=status==='pending'?`<label>${language==='ru'?'Причина возражения (необязательно)':'E’tiroz sababi (ixtiyoriy)'}</label><textarea id="note-${d.id}" rows="2" placeholder="${language==='ru'?'С чем вы не согласны?':'Nima bilan rozi emassiz?'}"></textarea>`:'';
+   return `<div class="item"><b>${language==='ru'?'Запись о долге':'Qarz yozuvi'}</b>
+    <div>${language==='ru'?'Долг':'Qarz'}: ${money(d.amount)}</div>
+    <div>${language==='ru'?'Оплачено':'To‘langan'}: ${money(paid)}</div>
+    <b>${language==='ru'?'Остаток':'Qoldiq'}: ${money(left)}</b>
     <div class="tag">${esc(statusText(status))}</div>
-    <div class="small">Muddat: ${esc(d.due_date||'Belgilanmagan')}</div>
-    ${d.buyer_response_note?`<div class="small">E’tiroz izohi: ${esc(d.buyer_response_note)}</div>`:''}
+    <div class="small">${language==='ru'?'Срок':'Muddat'}: ${esc(d.due_date||(language==='ru'?'Не указан':'Belgilanmagan'))}</div>
+    ${d.buyer_response_note?`<div class="small">${language==='ru'?'Комментарий к возражению':'E’tiroz izohi'}: ${esc(d.buyer_response_note)}</div>`:''}
     ${noteBox}<div class="row">${controls}</div>
    </div>`;
   });
- }catch(e){say('Qarzlarni yuklashda xatolik: '+e.message)}
+  translatePage();
+ }catch(e){say((language==='ru'?'Ошибка загрузки долгов: ':'Qarzlarni yuklashda xatolik: ')+e.message)}
 }
 async function respondDebt(id,status){
  try{
   let note=$('note-'+id)?.value.trim()||null;
-  if(status==='disputed'&&!note&&!confirm('Sabab yozmasdan e’tiroz bildirmoqchimisiz?'))return;
+  if(status==='disputed'&&!note&&!confirm(language==='ru'?'Вы хотите оспорить долг без указания причины?':'Sabab yozmasdan e’tiroz bildirmoqchimisiz?'))return;
   const {error}=await db.rpc('buyer_respond_to_debt',{p_debt_id:id,p_status:status,p_note:note});
   if(error)throw error;
-  alert(status==='confirmed'?'Qarz tasdiqlandi.':'E’tirozingiz saqlandi.');
+  alert(status==='confirmed'?(language==='ru'?'Долг подтверждён.':'Qarz tasdiqlandi.'):(language==='ru'?'Ваше возражение сохранено.':'E’tirozingiz saqlandi.'));
   await loadBuyerDebts();
- }catch(e){alert('Javobni saqlab bo‘lmadi: '+e.message)}
+ }catch(e){alert((language==='ru'?'Не удалось сохранить ответ: ':'Javobni saqlab bo‘lmadi: ')+e.message)}
 }
 async function boot(){
  try{
   const {data:r,error}=await db.auth.getSession();if(error)throw error;
   if(r.session){user=r.session.user;await startApp()}
- }catch(e){authMsg('Xatolik: '+e.message)}
+ }catch(e){authMsg((language==='ru'?'Ошибка: ':'Xatolik: ')+e.message)}
 }
+$('languageSelect').value=language;
+translatePage();
 boot();
 </script>
 </body>
