@@ -54,18 +54,21 @@ button{border:0;border-radius:9px;padding:12px;font-size:15px;font-weight:bold;c
 <section id="shop" class="card page hidden">
 <h2>Do‘kon egasi</h2><label>Do‘kon nomi</label><input id="shopName" placeholder="Do‘kon nomi"><button class="secondary" onclick="saveShopName()">Do‘kon nomini saqlash</button>
 <div class="stats" style="margin-top:12px">
-<div class="stat"><span>Jami savdo</span><b id="totalSales">0 ₽</b></div><div class="stat"><span>Xarajatlar</span><b id="totalExpenses">0 ₽</b></div><div class="stat"><span>Qarz qoldig‘i</span><b id="totalDebt">0 ₽</b></div><div class="stat"><span>Qarzdan tushgan</span><b id="totalPaid">0 ₽</b></div></div>
+<div class="stat"><span>Jami savdo</span><b id="totalSales">0 so‘m</b></div>
+<div class="stat"><span>Xarajatlar</span><b id="totalExpenses">0 so‘m</b></div>
+<div class="stat"><span>Qarz qoldig‘i</span><b id="totalDebt">0 so‘m</b></div>
+<div class="stat"><span>Qarzdan tushgan</span><b id="totalPaid">0 so‘m</b></div></div>
 <div class="nav" style="margin-top:14px">
 <button onclick="openPage('sales')">Savdo</button><button onclick="openPage('expenses')">Xarajatlar</button><button onclick="openPage('products')">Mahsulotlar</button><button onclick="openPage('debts')">Xaridorlar qarzi</button><button onclick="openPage('payments')">Qarz to‘lovlari</button><button onclick="openPage('reports')">Hisobotlar</button></div>
 <button class="secondary" style="width:100%;margin-top:12px" onclick="openPage('home')">Orqaga</button>
 </section>
 <section id="sales" class="card page hidden"><h2>Savdo kiritish</h2>
-<label>Savdo nomi</label><input id="saleName" placeholder="Masalan, non"><label>Summa (₽)</label><input id="saleAmount" type="number" min=".01" step=".01"><label>To‘lov turi</label><select id="saleType"><option value="naqd">Naqd</option><option value="karta">Karta</option><option value="qarz">Qarzga</option></select>
+<label>Savdo nomi</label><input id="saleName" placeholder="Masalan, non"><label>Summa (so‘m)</label><input id="saleAmount" type="number" min=".01" step=".01"><label>To‘lov turi</label><select id="saleType"><option value="naqd">Naqd</option><option value="karta">Karta</option><option value="qarz">Qarzga</option></select>
 <button class="primary" onclick="addSale()">Savdoni saqlash</button><div id="salesList"></div><button class="secondary" style="width:100%" onclick="openPage('shop')">Orqaga</button></section>
-<section id="expenses" class="card page hidden"><h2>Xarajat</h2><label>Xarajat nomi</label><input id="expenseName"><label>Summa (₽)</label><input id="expenseAmount" type="number" min=".01" step=".01"><button class="primary" onclick="addExpense()">Xarajatni saqlash</button><div id="expensesList"></div><button class="secondary" style="width:100%" onclick="openPage('shop')">Orqaga</button></section>
-<section id="products" class="card page hidden"><h2>Mahsulotlar</h2><label>Mahsulot nomi</label><input id="productName"><div class="row"><div><label>Tan narxi</label><input id="productCost" type="number" min="0" step=".01"></div><div><label>Sotuv narxi</label><input id="productPrice" type="number" min=".01" step=".01"></div></div><label>Miqdori</label><input id="productQty" type="number" min="0" step=".01"><button class="primary" onclick="addProduct()">Mahsulotni saqlash</button><div id="productsList"></div><button class="secondary" style="width:100%" onclick="openPage('shop')">Orqaga</button></section>
-<section id="debts" class="card page hidden"><h2>Xaridor qarzi</h2><label>Xaridor ismi</label><input id="debtBuyer"><label>Telefon raqami</label><input id="debtPhone" type="tel" placeholder="+998..."><label>Qarz summasi</label><input id="debtAmount" type="number" min=".01" step=".01"><label>To‘lash muddati</label><input id="debtDate" type="date"><label>Izoh</label><input id="debtNote"><button class="primary" onclick="addDebt()">Qarzni saqlash</button><div id="debtsList"></div><button class="secondary" style="width:100%" onclick="openPage('shop')">Orqaga</button></section>
-<section id="payments" class="card page hidden"><h2>Qarz to‘lovi</h2><label>Qarz</label><select id="paymentDebt"></select><label>To‘langan summa</label><input id="paymentAmount" type="number" min=".01" step=".01"><button class="primary" onclick="addPayment()">To‘lovni saqlash</button><div id="paymentsList"></div><button class="secondary" style="width:100%" onclick="openPage('shop')">Orqaga</button></section>
+<section id="expenses" class="card page hidden"><h2>Xarajat</h2><label>Xarajat nomi</label><input id="expenseName"><label>Summa (so‘m)</label><input id="expenseAmount" type="number" min=".01" step=".01"><button class="primary" onclick="addExpense()">Xarajatni saqlash</button><div id="expensesList"></div><button class="secondary" style="width:100%" onclick="openPage('shop')">Orqaga</button></section>
+<section id="products" class="card page hidden"><h2>Mahsulotlar</h2><label>Mahsulot nomi</label><input id="productName"><div class="row"><div><label>Tan narxi (so‘m)</label><input id="productCost" type="number" min="0" step=".01"></div><div><label>Sotuv narxi (so‘m)</label><input id="productPrice" type="number" min=".01" step=".01"></div></div><label>Miqdori</label><input id="productQty" type="number" min="0" step=".01"><button class="primary" onclick="addProduct()">Mahsulotni saqlash</button><div id="productsList"></div><button class="secondary" style="width:100%" onclick="openPage('shop')">Orqaga</button></section>
+<section id="debts" class="card page hidden"><h2>Xaridor qarzi</h2><label>Xaridor ismi</label><input id="debtBuyer"><label>Telefon raqami</label><input id="debtPhone" type="tel" placeholder="+998..."><label>Qarz summasi (so‘m)</label><input id="debtAmount" type="number" min=".01" step=".01"><label>To‘lash muddati</label><input id="debtDate" type="date"><label>Izoh</label><input id="debtNote"><button class="primary" onclick="addDebt()">Qarzni saqlash</button><div id="debtsList"></div><button class="secondary" style="width:100%" onclick="openPage('shop')">Orqaga</button></section>
+<section id="payments" class="card page hidden"><h2>Qarz to‘lovi</h2><label>Qarz</label><select id="paymentDebt"></select><label>To‘langan summa (so‘m)</label><input id="paymentAmount" type="number" min=".01" step=".01"><button class="primary" onclick="addPayment()">To‘lovni saqlash</button><div id="paymentsList"></div><button class="secondary" style="width:100%" onclick="openPage('shop')">Orqaga</button></section>
 <section id="reports" class="card page hidden"><h2>Hisobotlar</h2><div id="reportContent"></div><button class="secondary" style="width:100%" onclick="openPage('shop')">Orqaga</button></section>
 <section id="buyer" class="card page hidden"><h2>Xaridor</h2><p class="small">Hisobingizga biriktirilgan qarzlar ko‘rsatiladi.</p><button class="primary" onclick="loadBuyerDebts()">Qarzlarimni yangilash</button><div id="buyerDebtsList"></div><button class="secondary" style="width:100%" onclick="openPage('home')">Orqaga</button></section>
 <div id="status" class="notice">Ma’lumotlar bazasi yuklanmoqda…</div>
@@ -79,7 +82,7 @@ const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 const val=id=>$(id).value.trim();
 const num=id=>Number($(id).value);
-const money=n=>(Number(n)||0).toLocaleString('ru-RU',{maximumFractionDigits:2})+' ₽';
+const money=n=>(Number(n)||0).toLocaleString('uz-UZ',{maximumFractionDigits:2})+' so‘m';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let user=null,profile=null,shop=null,mode=false;
 let data={sales:[],expenses:[],products:[],debts:[],payments:[]};
@@ -113,13 +116,13 @@ async function startApp(){
  if(profile.role==='shop'){
   shop=existing?.[0]||null;
   if(!shop){
-   const {data:s,error}=await db.from('shops').insert({owner_id:user.id,name:(profile.full_name||'Yangi')+' do‘koni'}).select().single();
+   const {data:s,error}=await db.from('shops').insert({owner_id:user.id,name:(profile.full_name||'Yangi')+' do‘koni',shop_name:(profile.full_name||'Yangi')+' do‘koni'}).select().single();
    if(error)throw error;shop=s;
   }
  }
  $('auth').classList.add('hidden');$('app').classList.remove('hidden');
  $('userLabel').textContent=(profile.full_name||user.email)+' · '+(profile.role==='shop'?'Do‘kon egasi':'Xaridor');
- if(shop)$('shopName').value=shop.name||'';
+ if(shop)$('shopName').value=shop.shop_name||shop.name||'';
  await reloadData();openPage('home');
 }
 async function logout(){await db.auth.signOut();user=null;shop=null;profile=null;$('app').classList.add('hidden');$('auth').classList.remove('hidden');authMsg('Hisobdan chiqdingiz.')}
@@ -143,7 +146,7 @@ async function reloadData(){
  data.payments=pays.map(x=>({id:x.id,debtId:x.debt_id,amount:Number(x.amount),date:x.created_at}));
  renderAll();say('Bazadagi ma’lumotlar yangilandi.');
 }
-async function saveShopName(){if(!shop)return;const name=val('shopName');if(!name)return alert('Do‘kon nomini kiriting.');const {data:r,error}=await db.from('shops').update({name}).eq('id',shop.id).select().single();if(error)return alert('Xatolik: '+error.message);shop=r;say('Do‘kon nomi saqlandi.')}
+async function saveShopName(){if(!shop)return;const name=val('shopName');if(!name)return alert('Do‘kon nomini kiriting.');const {data:r,error}=await db.from('shops').update({name,shop_name:name}).eq('id',shop.id).select().single();if(error)return alert('Xatolik: '+error.message);shop=r;say('Do‘kon nomi saqlandi.')}
 function openPage(id){document.querySelectorAll('.page').forEach(x=>x.classList.add('hidden'));$('home').classList.add('hidden');$(id).classList.remove('hidden');if(id==='payments')renderPaymentOptions();if(id==='reports')renderReports();if(id==='buyer')loadBuyerDebts().catch(e=>say('Xatolik: '+e.message))}
 async function addSale(){try{if(!shop)return alert('Bu amal do‘kon egasi uchun.');let name=val('saleName'),amount=num('saleAmount'),type=$('saleType').value;if(!name||amount<=0)return alert('Savdo nomi va summani kiriting.');const {error}=await db.from('sales').insert({shop_id:shop.id,name,amount,payment_type:type});if(error)throw error;$('saleName').value='';$('saleAmount').value='';await reloadData()}catch(e){alert('Xatolik: '+e.message)}}
 async function addExpense(){try{let name=val('expenseName'),amount=num('expenseAmount');if(!name||amount<=0)return alert('Xarajat nomi va summani kiriting.');const {error}=await db.from('expenses').insert({shop_id:shop.id,name,amount});if(error)throw error;$('expenseName').value='';$('expenseAmount').value='';await reloadData()}catch(e){alert('Xatolik: '+e.message)}}
