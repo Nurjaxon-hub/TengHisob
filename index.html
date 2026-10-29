@@ -3,46 +3,95 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#087f5b">
+<meta name="theme-color" content="#5140b5">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>TengHisob</title>
 <style>
-:root{--g:#087f5b;--bg:#f3f6f9;--t:#183329;--m:#74847c;--l:#e5ece8}
+:root{--g:#7158e2;--bg:#f4f5fb;--txt:#202442;--muted:#6b6f8d;--line:#e9eaf4}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);font:15px/1.5 -apple-system,"Segoe UI",Arial,sans-serif;color:var(--t)}
-header{background:linear-gradient(135deg,#0a9067,#075b45);color:#fff;padding:16px 20px 30px;border-radius:0 0 26px 26px}
-header h1{margin:8px 0 2px;font-size:28px}header p{margin:0;font-size:13px;color:#e0f5ec}
-.lang{display:flex;justify-content:flex-end;align-items:center;gap:8px;font-size:12px}
-.lang select{width:auto;min-height:36px;padding:5px 10px;background:#ffffff22;color:#fff;border-color:#ffffff40}
-.lang option{color:#183329}
-main{max-width:760px;margin:-12px auto 0;padding:0 14px 35px}
-.card{background:#fff;padding:18px;margin-bottom:14px;border:1px solid #eaf0ed;border-radius:18px}
-h2{margin:0 0 14px;font-size:20px}
-label{display:block;margin:12px 0 5px;color:#53655c;font-size:13px;font-weight:700}
-input,select,textarea{display:block;width:100%;min-height:46px;padding:11px 12px;border:1px solid #dce5e0;border-radius:12px;background:#fbfcfb;color:var(--t);font:inherit}
-input:focus,select:focus,textarea:focus{outline:0;border-color:var(--g);box-shadow:0 0 0 3px #087f5b18}
-button{min-height:44px;padding:10px 14px;border:0;border-radius:12px;font:inherit;font-weight:700;cursor:pointer}
-button:disabled{opacity:.5}
-.primary{width:100%;margin-top:12px;background:var(--g);color:#fff}
-.secondary{width:100%;margin-top:12px;background:#e8f5ef;color:#087653}
-.danger{background:#fff0ef;color:#c43e43}.good{background:#e2f7e9;color:#137444}
-.nav,.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-.nav button{min-height:62px;background:#eef8f2;color:#176749;text-align:left;border:1px solid #e0eee6}
-.stat{padding:13px;border:1px solid #e5eee9;border-radius:14px;background:#f3faf6}
-.stat span{font-size:12px;color:#64766c}
-.stat b{display:block;margin-top:6px;color:#087653;font-size:18px;overflow-wrap:anywhere}
-.item{padding:14px 0;border-bottom:1px solid var(--l);overflow-wrap:anywhere}.item:last-child{border:0}
-.item button{margin-top:8px}
-.row{display:flex;gap:10px}.row>*{flex:1;min-width:0}
-.small{color:var(--m);font-size:12px}.hidden{display:none!important}
-.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.notice{padding:12px;border-radius:12px;background:#fff9e8;color:#78602a;font-size:13px}
-.tag{display:inline-block;padding:4px 9px;border-radius:8px;background:#f0f5f2;color:#52645a;font-size:12px;font-weight:700}
-.tag.red{background:#fff0ef;color:#c43e43}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--txt);font-size:15px;line-height:1.55}
+header{position:relative;overflow:hidden;background:linear-gradient(140deg,#292650 0%,#5140a9 58%,#7259e8 100%);color:#fff;padding:20px 20px 42px;padding-top:max(20px,env(safe-area-inset-top));border-radius:0 0 30px 30px;box-shadow:0 12px 35px #37306a30}
+header:before{content:"";position:absolute;width:240px;height:240px;right:-85px;top:-120px;border:38px solid #ffffff10;border-radius:50%;pointer-events:none}
+header:after{content:"";position:absolute;width:140px;height:140px;right:100px;bottom:-105px;background:#ffffff0b;border-radius:50%;pointer-events:none}
+header h1{position:relative;z-index:1;margin:15px 0 3px;font-size:32px;font-weight:850;letter-spacing:-1.2px}
+header p{position:relative;z-index:1;margin:0;color:#e3e0ff;font-size:13px}
+.langbox{position:relative;z-index:2;display:flex;justify-content:flex-end;align-items:center;gap:9px}
+.langbox label{margin:0;color:#e3e0ff;font-size:12px;font-weight:700}
+.langbox select{width:auto;min-width:122px;min-height:40px;padding:9px 12px;border:1px solid #ffffff35;border-radius:12px;background:#ffffff15;color:#fff;font-size:13px}
+.langbox select option{background:#fff;color:#202442}
+main{width:100%;max-width:760px;margin:-18px auto 0;padding:0 14px 40px;padding-bottom:calc(40px + env(safe-area-inset-bottom));position:relative;z-index:3}
+.card{background:#fff;padding:20px;margin-bottom:15px;border:1px solid #ebebf5;border-radius:23px;box-shadow:0 8px 28px #2926500a}
+h2{margin:0 0 18px;font-size:21px;line-height:1.35;font-weight:850;letter-spacing:-.45px}
+label{display:block;margin:14px 0 7px;color:#626782;font-size:13px;font-weight:750}
+input,select,textarea{display:block;width:100%;min-height:49px;padding:13px 14px;border:1px solid #e2e4f0;border-radius:14px;outline:none;background:#f9f9fd;color:var(--txt);font:inherit;font-size:15px;transition:border-color .2s,box-shadow .2s,background .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--g);background:#fff;box-shadow:0 0 0 4px #7158e21a}
+input::placeholder,textarea::placeholder{color:#8e91a8}
+textarea{min-height:80px;resize:vertical}
+button{min-height:45px;padding:12px 15px;border:0;border-radius:14px;font-family:inherit;font-size:14px;font-weight:750;line-height:1.4;cursor:pointer;transition:transform .15s,filter .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent}
+button:active{transform:scale(.98)}
+button:disabled{opacity:.55;cursor:not-allowed}
+.primary{width:100%;margin-top:14px;background:linear-gradient(135deg,#7962eb,#5842c5);color:#fff;box-shadow:0 7px 17px #7158e22e}
+.primary:active{box-shadow:none}
+.secondary{background:#efedff;color:#5b48c7}
+.danger{background:#fff0f2;color:#d84460}
+.good{background:#e7f8ef;color:#18865a}
+.nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.nav button{position:relative;min-height:82px;padding:16px 13px;border:1px solid #e9e7fb;border-radius:18px;background:linear-gradient(145deg,#fff,#f5f3ff);color:#49417e;text-align:left;font-size:14px;overflow-wrap:anywhere;box-shadow:0 4px 12px #35306a08}
+.nav button:before{content:"";display:block;width:25px;height:4px;margin-bottom:12px;border-radius:10px;background:linear-gradient(90deg,#7962eb,#36c9a0)}
+.nav button:active{background:#eeebff}
+.row{display:flex;align-items:flex-end;gap:10px}
+.row>*{flex:1;min-width:0}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.stat{min-width:0;min-height:105px;padding:15px 14px;border:1px solid #e9e8f6;border-radius:18px;background:linear-gradient(145deg,#fbfaff,#f1efff)}
+.stat span{display:block;color:#666a88;font-size:12px;font-weight:700;line-height:1.5}
+.stat b{display:block;margin-top:10px;color:#5b48c7;font-size:clamp(16px,4.5vw,22px);font-weight:850;line-height:1.35;overflow-wrap:anywhere}
+.item{padding:16px 0;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
+.item:last-child{border-bottom:0}
+.item b{color:#292b4b}
+.item>div{margin-top:6px}
+.item button{margin-top:11px}
+.item .tag{margin-top:9px}
+.small{color:var(--muted);font-size:12px;line-height:1.65}
+.hidden{display:none!important}
+.topline{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.topline .small{margin-bottom:3px}
+.topline b{overflow-wrap:anywhere}
+.notice{padding:14px 16px;border:1px solid #e5ddff;border-radius:15px;background:#f6f3ff;color:#5a4b9a;font-size:13px;line-height:1.65;overflow-wrap:anywhere}
+.tag{display:inline-block;max-width:100%;padding:7px 11px;border:1px solid #e6e3fa;border-radius:10px;background:#f3f1ff;color:#5c4bc0;font-size:12px;font-weight:750;overflow-wrap:anywhere}
+.tag.red{background:#fff0f2;border-color:#f7d9df;color:#d84460}
+a.btn{display:flex;align-items:center;justify-content:center;min-height:45px;margin-top:11px;border-radius:14px;font-size:14px;font-weight:750;text-decoration:none}
+#authTitle{margin-bottom:12px}
+#auth .primary{min-height:51px}
+#auth .secondary{width:100%;margin-top:10px}
+#authMsg{overflow-wrap:anywhere}
+#shopName+button{margin-top:10px}
+#shop>.secondary,.page>.secondary,[id$="List"]>.secondary{width:100%;margin-top:16px}
+.page .primary{margin-bottom:8px}
+#buyerDebtsList .item .row{align-items:stretch;margin-top:10px}
+#buyerDebtsList .row button{margin-top:0}
+#buyerDebtsList textarea{margin-bottom:12px}
+#reportContent .stats{margin-top:5px}
+#app>.card:first-child{border-radius:18px}
+#app>.card:first-child .danger{flex-shrink:0}
+#shop .stats .stat:nth-child(2){background:linear-gradient(145deg,#fffafa,#fff0f2);border-color:#f7e5e9}
+#shop .stats .stat:nth-child(2) b{color:#d84460}
+#shop .stats .stat:nth-child(3){background:linear-gradient(145deg,#fffaf1,#fff4df);border-color:#f4e8d0}
+#shop .stats .stat:nth-child(3) b{color:#a06d1c}
+#shop .stats .stat:nth-child(4){background:linear-gradient(145deg,#f3fffa,#e7f9f0);border-color:#dff2e8}
+#shop .stats .stat:nth-child(4) b{color:#18865a}
+.page h2{padding-bottom:13px;border-bottom:1px solid #efeff7}
+#status{margin-top:15px}
+button:focus-visible,a.btn:focus-visible{outline:3px solid #a99bff;outline-offset:2px}
+@media(max-width:380px){main{padding-left:10px;padding-right:10px}.card{padding:16px;border-radius:19px}.nav{gap:8px}.nav button{padding:12px 10px;min-height:75px;font-size:13px}.stats{gap:8px}.stat{padding:12px 10px;min-height:95px}.row{gap:7px}header{padding-left:16px;padding-right:16px}header h1{font-size:29px}}
+@media(min-width:600px){header{padding-left:max(24px,calc((100% - 712px)/2));padding-right:max(24px,calc((100% - 712px)/2))}main{padding-bottom:50px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
 <header>
-<div class="lang"><span>Til / Язык</span>
+<div class="langbox"><label for="languageSelect">Til / Язык</label>
 <select id="languageSelect" onchange="changeLanguage(this.value)"><option value="uz">O‘zbekcha</option><option value="ru">Русский</option></select></div>
 <h1>TengHisob</h1>
 <p data-i="sub"></p>
@@ -60,11 +109,13 @@ button:disabled{opacity:.5}
 <label data-i="pass"></label><input id="password" type="password" autocomplete="current-password">
 <button class="primary" id="authBtn" onclick="authenticate()" data-i="signin"></button>
 <button class="secondary" id="switchBtn" onclick="toggleAuth()" data-i="signup"></button>
+<button class="secondary" onclick="forgot()" data-i="forgot"></button>
 <p id="authMsg" class="small"></p>
 </section>
 
+<section id="reset" class="card hidden"><h2 data-i="newPass"></h2><label data-i="pass"></label><input id="newPassword" type="password" autocomplete="new-password"><button class="primary" onclick="savePass()" data-i="savePass"></button><p id="resetMsg" class="small"></p></section>
 <section id="app" class="hidden">
-<div class="card top"><div><div class="small" data-i="account"></div><b id="userLabel"></b></div>
+<div class="card topline"><div><div class="small" data-i="account"></div><b id="userLabel"></b></div>
 <button class="danger" onclick="logout()" data-i="logout"></button></div>
 
 <section id="shop" class="card page hidden">
@@ -84,11 +135,14 @@ button:disabled{opacity:.5}
 <button onclick="openPage('debts')" data-i="debts"></button>
 <button onclick="openPage('payments')" data-i="payments"></button>
 <button onclick="openPage('reports')" data-i="reports"></button>
+<button onclick="openPage('customers')" data-i="customers"></button>
 </div>
 </section>
 
 <section id="sales" class="card page hidden">
 <h2 data-i="addSale"></h2>
+<label data-i="product"></label><select id="saleProduct" onchange="pickProduct()"></select>
+<label data-i="qty"></label><input id="saleQty" type="number" min="0" step="any" value="1" inputmode="decimal" oninput="pickProduct()">
 <label data-i="saleName"></label><input id="saleName" data-p="eg">
 <label data-i="amount"></label><input id="saleAmount" type="number" min="1" step="1" inputmode="numeric">
 <label data-i="payType"></label>
@@ -99,6 +153,7 @@ button:disabled{opacity:.5}
 <label data-i="phone"></label><input id="salePhone" type="tel" placeholder="+998...">
 </div>
 <button class="primary" onclick="addSale()" data-i="saveSale"></button>
+<input data-s="salesList" data-p="search" oninput="renderAll()" style="margin-top:14px">
 <div id="salesList"></div>
 <button class="secondary" onclick="openPage('shop')" data-i="back"></button>
 </section>
@@ -121,6 +176,7 @@ button:disabled{opacity:.5}
 </div>
 <label data-i="qty"></label><input id="productQty" type="number" min="0" step="any" inputmode="decimal">
 <button class="primary" onclick="addProduct()" data-i="saveProd"></button>
+<input data-s="productsList" data-p="search" oninput="renderAll()" style="margin-top:14px">
 <div id="productsList"></div>
 <button class="secondary" onclick="openPage('shop')" data-i="back"></button>
 </section>
@@ -133,6 +189,7 @@ button:disabled{opacity:.5}
 <label data-i="due"></label><input id="debtDate" type="date">
 <label data-i="note"></label><input id="debtNote">
 <button class="primary" onclick="addDebt()" data-i="saveDebt"></button>
+<input data-s="debtsList" data-p="search" oninput="renderAll()" style="margin-top:14px">
 <div id="debtsList"></div>
 <button class="secondary" onclick="openPage('shop')" data-i="back"></button>
 </section>
@@ -147,14 +204,20 @@ button:disabled{opacity:.5}
 </section>
 
 <section id="reports" class="card page hidden">
-<h2 data-i="reports"></h2><div id="reportContent"></div>
+<h2 data-i="reports"></h2>
+<select id="repRange" onchange="renderReports()"><option value="1" data-i="rToday"></option><option value="7" data-i="r7"></option><option value="30" data-i="r30"></option><option value="0" data-i="rAll" selected></option></select>
+<div id="reportContent"></div>
+<button class="primary" onclick="exportCSV()" data-i="exportCsv"></button>
 <button class="secondary" onclick="openPage('shop')" data-i="back"></button>
 </section>
+
+<section id="customers" class="card page hidden"><h2 data-i="customers"></h2><div id="customersList"></div><button class="secondary" onclick="openPage('shop')" data-i="back"></button></section>
 
 <section id="buyer" class="card page hidden">
 <h2 data-i="buyer"></h2>
 <p class="small" data-i="buyerInfo"></p>
 <button class="primary" onclick="loadBuyerDebts()" data-i="refresh"></button>
+<label data-i="codeIn"></label><div class="row"><input id="claimCode" autocapitalize="characters"><button class="good" onclick="claimCode()" data-i="addByCode"></button></div>
 <div id="buyerDebtsList"></div>
 </section>
 
@@ -166,6 +229,7 @@ button:disabled{opacity:.5}
 <script>
 const SUPABASE_URL='https://edyaxwkpvlqdtdyvldfp.supabase.co';
 const SUPABASE_KEY='sb_publishable_SNmQNm7Zw4FbS4yrATu3pw_LV4lfiNX';
+let recovering=/type=recovery/.test(location.hash);
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id),val=id=>$(id).value.trim(),num=id=>Number($(id).value);
 let lang=localStorage.getItem('tenghisob_language')==='ru'?'ru':'uz';
@@ -238,7 +302,17 @@ stockProfit:['Mahsulot zaxirasidagi taxminiy foyda','Примерная приб
 repNote:['Tushum = naqd va karta savdo + qarzdan tushgan pul. Qarzga sotilgan savdo to‘lanmaguncha tushum hisoblanmaydi. Zaxira foydasi haqiqiy foyda emas.','Поступления = наличные и карта + оплаты по долгам. Продажа в долг не считается, пока не оплачена. Прибыль от запасов — не фактическая прибыль.'],
 badLogin:['Pochta yoki parol noto‘g‘ri.','Неверная почта или пароль.'],
 exists:['Bu pochta allaqachon ro‘yxatdan o‘tgan.','Эта почта уже зарегистрирована.'],
-rate:['Juda ko‘p urinish. Biroz kutib, qayta urinib ko‘ring.','Слишком много попыток. Подождите и повторите.']
+rate:['Juda ko‘p urinish. Biroz kutib, qayta urinib ko‘ring.','Слишком много попыток. Подождите и повторите.'],
+forgot:['Parolni unutdim','Забыл пароль'],resetSent:['Parolni tiklash havolasi pochtangizga yuborildi.','Ссылка для сброса пароля отправлена на почту.'],
+needMail:['Avval pochtangizni kiriting.','Сначала введите почту.'],newPass:['Yangi parol','Новый пароль'],savePass:['Parolni saqlash','Сохранить пароль'],
+shortPass:['Parol kamida 6 belgi bo‘lsin.','Пароль не короче 6 символов.'],passSaved:['Parol yangilandi.','Пароль обновлён.'],
+customers:['Mijozlar','Клиенты'],product:['Mahsulot','Товар'],noProduct:['— mahsulotsiz —','— без товара —'],search:['Qidirish…','Поиск…'],more:['Yana ko‘rsatish','Показать ещё'],
+rToday:['Bugun','Сегодня'],r7:['Oxirgi 7 kun','Последние 7 дней'],r30:['Oxirgi 30 kun','Последние 30 дней'],rAll:['Hammasi','Всё время'],
+exportCsv:['Excel (CSV) yuklab olish','Скачать Excel (CSV)'],noStock:['Omborda mahsulot yetarli emas.','Недостаточно товара на складе.'],
+realProfit:['Sotilgan mahsulot foydasi','Прибыль от проданных товаров'],codeLabel:['Xaridor kodi','Код покупателя'],
+codeIn:['Qarz kodi (do‘kon egasidan)','Код долга (от владельца магазина)'],addByCode:['Qo‘shish','Добавить'],
+codeBad:['Kod noto‘g‘ri yoki ishlatilgan.','Код неверный или уже использован.'],codeOk:['Qarz hisobingizga qo‘shildi.','Долг добавлен в ваш аккаунт.'],
+edit:['Tahrirlash','Изменить'],editName:['Yangi nom / izoh:','Новое название / примечание:'],editVal:['Yangi summa (so‘m):','Новая сумма (сум):']
 };
 const t=k=>(L[k]||[k,k])[lang==='ru'?1:0];
 const loc=()=>lang==='ru'?'ru-RU':'uz-UZ';
@@ -289,6 +363,63 @@ async function authenticate(){
  }catch(e){msg('authMsg','err',eT(e))}
  finally{$('authBtn').disabled=false}
 }
+/* ---- Yangi imkoniyatlar ---- */
+const lim={};let lastCode='';
+const genCode=()=>Array.from(crypto.getRandomValues(new Uint8Array(8)),b=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[b%32]).join('');
+async function forgot(){
+ const email=val('email');if(!email)return msg('authMsg','needMail');
+ const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
+ error?msg('authMsg','err',eT(error)):msg('authMsg','resetSent');
+}
+function showReset(){recovering=true;$('auth').classList.add('hidden');$('reset').classList.remove('hidden')}
+async function savePass(){
+ const p=$('newPassword').value;if(p.length<6)return msg('resetMsg','shortPass');
+ const {error}=await db.auth.updateUser({password:p});
+ if(error)return msg('resetMsg','err',eT(error));
+ recovering=false;history.replaceState(null,'',location.pathname);$('reset').classList.add('hidden');
+ alert(t('passSaved'));
+ const {data:r}=await db.auth.getSession();user=r.session.user;await startApp();
+}
+db.auth.onAuthStateChange(ev=>{if(ev==='PASSWORD_RECOVERY')showReset()});
+function pickProduct(){
+ const p=data.products.find(x=>x.id===$('saleProduct').value);
+ if(p){$('saleName').value=p.name;$('saleAmount').value=p.price*(num('saleQty')||1)}
+}
+const remind=(name,phone,left,due,code)=>{
+ const sn=shop.shop_name||shop.name;
+ const txt=encodeURIComponent(lang==='ru'
+  ?`Здравствуйте, ${name}! Ваш долг в магазине «${sn}»: ${money(left)}.${due?' Срок: '+due+'.':''}${code?' Код для приложения: '+code:''}`
+  :`Hurmatli ${name}, “${sn}” do‘konidagi qarzingiz: ${money(left)}.${due?' Muddat: '+due+'.':''}${code?' Ilovadagi kod: '+code:''}`);
+ const d=ph(phone).replace('+','');
+ return d?`<div class="row"><a class="btn good" href="sms:+${d}?body=${txt}">SMS</a><a class="btn good" target="_blank" rel="noopener" href="https://wa.me/${d}?text=${txt}">WhatsApp</a></div>`:'';
+};
+const editItem=(kind,id)=>run(async()=>{
+ const x=data[kind].find(i=>i.id===id),isP=kind==='products',isD=kind==='debts';
+ const nm=prompt(t(isD?'note':'editName'),isD?x.note:(x.name||x.title));if(nm===null)return;
+ const v=Number(prompt(t('editVal'),isP?x.price:x.amount));
+ if(!(v>0)||(!isD&&!nm.trim()))return alert(t('saleNeed'));
+ const e=isD?(await db.rpc('edit_debt',{p_id:id,p_amount:v,p_note:nm.trim()})).error
+  :(await db.from(kind).update(isP?{name:nm.trim(),sale_price:v}:{name:nm.trim(),amount:v}).eq('id',id).eq('shop_id',shop.id)).error;
+ if(e)throw e;await reloadData();
+});
+const claimCode=()=>run(async()=>{
+ const c=val('claimCode').toUpperCase();if(!c)return;
+ const {data:n,error}=await db.rpc('claim_debt_by_code',{p_code:c});
+ if(error)throw error;
+ if(!n)return alert(t('codeBad'));
+ $('claimCode').value='';alert(t('codeOk'));await loadBuyerDebts();
+});
+function exportCSV(){
+ const q=v=>{let s=String(v??'');if(/^[=+\-@]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'};
+ const R=[['turi','nomi','summa','izoh','sana']];
+ data.sales.forEach(x=>R.push(['savdo',x.name,x.amount,x.type,x.date]));
+ data.expenses.forEach(x=>R.push(['xarajat',x.title,x.amount,'',x.date]));
+ data.debts.forEach(x=>R.push(['qarz',x.buyer,x.amount,'tolangan '+paidFor(x.id)+'; muddat '+x.due,'']));
+ data.payments.forEach(x=>R.push(['tolov',(data.debts.find(d=>d.id===x.debtId)||{}).buyer||'',x.amount,'',x.date]));
+ const a=document.createElement('a');
+ a.href=URL.createObjectURL(new Blob(['\ufeff'+R.map(r=>r.map(q).join(',')).join('\n')],{type:'text/csv'}));
+ a.download='tenghisob.csv';a.click();
+}
 async function startApp(){
  const {data:p,error:pe}=await db.from('profiles').select('*').eq('id',user.id).maybeSingle();
  if(pe)throw pe;
@@ -330,10 +461,10 @@ async function reloadData(){
   const pr=await db.from('payments').select('*').in('debt_id',ids).order('created_at',{ascending:false});
   if(pr.error)throw pr.error;pays=pr.data;
  }
- data.sales=r[0].data.map(x=>({id:x.id,name:x.name,amount:Number(x.amount),type:x.payment_type,date:x.created_at}));
- data.expenses=r[1].data.map(x=>({id:x.id,title:x.name,amount:Number(x.amount)}));
+ data.sales=r[0].data.map(x=>({id:x.id,name:x.name,amount:Number(x.amount),type:x.payment_type,date:x.created_at,pid:x.product_id||null,cost:Number(x.cost_total||0)}));
+ data.expenses=r[1].data.map(x=>({id:x.id,title:x.name,amount:Number(x.amount),date:x.created_at}));
  data.products=r[2].data.map(x=>({id:x.id,name:x.name,cost:Number(x.cost_price??x.cost??0),price:Number(x.sale_price??x.price??0),quantity:Number(x.quantity||0)}));
- data.debts=r[3].data.map(x=>({id:x.id,buyer:x.buyer_name||x.buyer||t('buyer'),phone:x.buyer_phone||x.phone||'',amount:Number(x.amount),due:x.due_date||'',note:x.note||'',status:x.status||'pending',response:x.buyer_response_note||''}));
+ data.debts=r[3].data.map(x=>({id:x.id,buyer:x.buyer_name||x.buyer||t('buyer'),phone:x.buyer_phone||x.phone||'',amount:Number(x.amount),due:x.due_date||'',note:x.note||'',linked:!!x.buyer_id,code:x.claim_code||'',status:x.status||'pending',response:x.buyer_response_note||''}));
  data.payments=pays.map(x=>({id:x.id,debtId:x.debt_id,amount:Number(x.amount),date:x.created_at}));
  renderAll();say('updated');
 }
@@ -372,7 +503,7 @@ async function makeDebt(buyer,phone,amount,due,note){
   if(error)throw error;
   if(r?.length)buyer_id=r[0].buyer_id;
  }
- const {error}=await db.from('debts').insert({shop_id:shop.id,buyer_id,buyer_name:buyer,buyer_phone:phone,amount,due_date:due||null,note:note||null,status:'pending'});
+ const {error}=await db.from('debts').insert({shop_id:shop.id,buyer_id,buyer_name:buyer,buyer_phone:phone,amount,due_date:due||null,note:note||null,status:'pending',claim_code:buyer_id?null:(lastCode=genCode())});
  if(error)throw error;
  return buyer_id;
 }
@@ -380,13 +511,18 @@ const addSale=()=>run(async()=>{
  const name=val('saleName'),amount=num('saleAmount'),type=$('saleType').value,buyer=val('saleBuyer');
  if(!name||!(amount>0))return alert(t('saleNeed'));
  if(type==='qarz'&&!buyer)return alert(t('debtNeed'));
- const {error}=await db.from('sales').insert({shop_id:shop.id,name,amount,payment_type:type});
+ const pr=data.products.find(p=>p.id===$('saleProduct').value),q=num('saleQty')||1;
+ if(pr&&q>pr.quantity)return alert(t('noStock'));
+ const row={shop_id:shop.id,name,amount,payment_type:type};
+ if(pr){row.product_id=pr.id;row.quantity=q;row.cost_total=pr.cost*q}
+ const {error}=await db.from('sales').insert(row);
  if(error)throw error;
+ if(pr){const u=await db.from('products').update({quantity:pr.quantity-q}).eq('id',pr.id);if(u.error)throw u.error}
  let linked=true;
  if(type==='qarz')linked=await makeDebt(buyer,val('salePhone'),amount,null,name);
- ['saleName','saleAmount','saleBuyer','salePhone'].forEach(i=>$(i).value='');
+ ['saleName','saleAmount','saleBuyer','salePhone'].forEach(i=>$(i).value='');$('saleProduct').value='';$('saleQty').value=1;
  await reloadData();
- if(!linked)alert(t('unlinked'));
+ if(!linked)alert(t('unlinked')+'\n'+t('codeLabel')+': '+lastCode);
 });
 const addExpense=()=>run(async()=>{
  const name=val('expenseName'),amount=num('expenseAmount');
@@ -404,7 +540,7 @@ const addDebt=()=>run(async()=>{
  const id=await makeDebt(buyer,val('debtPhone'),amount,val('debtDate'),val('debtNote'));
  ['debtBuyer','debtPhone','debtAmount','debtDate','debtNote'].forEach(i=>$(i).value='');
  await reloadData();
- if(!id)alert(t('unlinked'));
+ if(!id)alert(t('unlinked')+'\n'+t('codeLabel')+': '+lastCode);
 });
 const paidFor=id=>data.payments.filter(p=>p.debtId===id).reduce((s,p)=>s+p.amount,0);
 const remaining=d=>Math.max(0,d.amount-paidFor(d.id));
@@ -427,10 +563,13 @@ const removeItem=(kind,id)=>{
   await reloadData();
  });
 };
-const delBtn=(k,id)=>`<button class="danger" onclick="removeItem('${k}','${id}')">${t('del')}</button>`;
+const delBtn=(k,id)=>(k==='payments'?'':`<button class="good" onclick="editItem('${k}','${id}')">${t('edit')}</button> `)+`<button class="danger" onclick="removeItem('${k}','${id}')">${t('del')}</button>`;
 const statusText=s=>t(['pending','confirmed','disputed'].includes(s)?s:'unknown');
 function list(id,items,html){
- $(id).innerHTML=items.length?items.map(html).join(''):`<p class="small">${t('noData')}</p>`;
+ const s=document.querySelector('[data-s="'+id+'"]'),qv=(s?.value||'').toLowerCase();
+ if(qv)items=items.filter(x=>[x.name,x.title,x.buyer,x.phone,x.note].join(' ').toLowerCase().includes(qv));
+ const n=lim[id]||30;
+ $(id).innerHTML=items.length?items.slice(0,n).map(html).join('')+(items.length>n?`<button class="secondary" onclick="lim['${id}']=${n+30};renderAll()">${t('more')}</button>`:''):`<p class="small">${t('noData')}</p>`;
 }
 function renderPaymentOptions(){
  const s=$('paymentDebt'),old=s.value,a=data.debts.filter(d=>remaining(d)>0);
@@ -449,20 +588,27 @@ function renderAll(){
  list('productsList',data.products,x=>`<div class="item"><b>${esc(x.name)}</b><div>${t('costL')}: ${money(x.cost)} · ${t('saleL')}: ${money(x.price)}</div><div>${t('qty')}: ${esc(x.quantity)} · ${t('unitProfit')}: ${money(x.price-x.cost)}</div>${delBtn('products',x.id)}</div>`);
  list('debtsList',data.debts,x=>{
   const left=remaining(x),late=x.due&&x.due<today&&left>0;
-  return `<div class="item"><b>${esc(x.buyer)}</b><div>${t('tel')}: ${esc(x.phone||t('notSet'))}</div><div>${t('debt')}: ${money(x.amount)} · ${t('paidL')}: ${money(paidFor(x.id))}</div><b>${t('leftL')}: ${money(left)}</b><div><span class="tag">${esc(statusText(x.status))}</span> ${late?`<span class="tag red">${t('overdue')}</span>`:''}</div>${x.response?`<div class="small">${t('buyerNote')}: ${esc(x.response)}</div>`:''}<div class="small">${t('dueL')}: ${esc(x.due||t('unset'))} ${esc(x.note)}</div>${delBtn('debts',x.id)}</div>`;
+  return `<div class="item"><b>${esc(x.buyer)}</b><div>${t('tel')}: ${esc(x.phone||t('notSet'))}</div><div>${t('debt')}: ${money(x.amount)} · ${t('paidL')}: ${money(paidFor(x.id))}</div><b>${t('leftL')}: ${money(left)}</b><div><span class="tag">${esc(statusText(x.status))}</span> ${late?`<span class="tag red">${t('overdue')}</span>`:''}</div>${x.response?`<div class="small">${t('buyerNote')}: ${esc(x.response)}</div>`:''}<div class="small">${t('dueL')}: ${esc(x.due||t('unset'))} ${esc(x.note)}</div>${x.linked?'':`<div class="small">${t('codeLabel')}: <b>${esc(x.code)}</b></div>`}${left>0?remind(x.buyer,x.phone,left,x.due,x.linked?'':x.code):''}${delBtn('debts',x.id)}</div>`;
  });
  list('paymentsList',data.payments,p=>{const d=data.debts.find(x=>x.id===p.debtId);return `<div class="item">${esc(d?.buyer||t('buyer'))} — <b>${money(p.amount)}</b><div class="small">${new Date(p.date).toLocaleString(loc())}</div>${delBtn('payments',p.id)}</div>`});
+ const g={};
+ data.debts.forEach(d=>{const k=ph(d.phone)||d.buyer.toLowerCase();const c=g[k]=g[k]||{name:d.buyer,phone:d.phone,amount:0,paid:0};c.amount+=d.amount;c.paid+=paidFor(d.id)});
+ list('customersList',Object.values(g).sort((a,b)=>(b.amount-b.paid)-(a.amount-a.paid)),c=>`<div class="item"><b>${esc(c.name)}</b><div>${t('tel')}: ${esc(c.phone||t('notSet'))}</div><div>${t('debt')}: ${money(c.amount)} · ${t('paidL')}: ${money(c.paid)}</div><b>${t('leftL')}: ${money(c.amount-c.paid)}</b>${c.amount>c.paid?remind(c.name,c.phone,c.amount-c.paid,'',''):''}</div>`);
+ const sp=$('saleProduct'),old=sp.value;
+ sp.innerHTML=`<option value="">${t('noProduct')}</option>`+data.products.filter(p=>p.quantity>0).map(p=>`<option value="${esc(p.id)}">${esc(p.name)} (${esc(p.quantity)})</option>`).join('');
+ if(data.products.some(p=>p.id===old))sp.value=old;
  renderPaymentOptions();renderReports();
 }
 /* Hisobot: qarzga sotilgan savdo to‘lanmaguncha tushum emas; qarzdan tushgan pul tushumga qo‘shiladi */
 function renderReports(){
- const s=a=>a.reduce((n,x)=>n+x.amount,0);
- const sales=s(data.sales),exp=s(data.expenses),paid=s(data.payments);
- const debt=data.debts.reduce((n,d)=>n+remaining(d),0);
- const cashIn=s(data.sales.filter(x=>x.type!=='qarz'));
+ const days=Number($('repRange').value),from=days?new Date(new Date().setHours(0,0,0,0)-(days-1)*864e5):null;
+ const f=a=>from?a.filter(x=>new Date(x.date)>=from):a,s=a=>a.reduce((n,x)=>n+x.amount,0);
+ const S=f(data.sales),sales=s(S),exp=s(f(data.expenses)),paid=s(f(data.payments));
+ const debt=data.debts.reduce((n,d)=>n+remaining(d),0),cashIn=s(S.filter(x=>x.type!=='qarz'));
+ const real=S.filter(x=>x.pid).reduce((n,x)=>n+x.amount-x.cost,0);
  const stock=data.products.reduce((n,p)=>n+(p.price-p.cost)*p.quantity,0);
  const st=(k,v)=>`<div class="stat"><span>${t(k)}</span><b>${money(v)}</b></div>`;
- $('reportContent').innerHTML=`<div class="stats">${st('totSales',sales)}${st('expenses',exp)}${st('debtLeft',debt)}${st('paidDebt',paid)}${st('netCash',cashIn+paid-exp)}${st('stockProfit',stock)}</div><p class="small">${t('repNote')}</p>`;
+ $('reportContent').innerHTML=`<div class="stats">${st('totSales',sales)}${st('expenses',exp)}${st('debtLeft',debt)}${st('paidDebt',paid)}${st('netCash',cashIn+paid-exp)}${st('realProfit',real)}${st('stockProfit',stock)}</div><p class="small">${t('repNote')}</p>`;
 }
 async function loadBuyerDebts(){
  if(!user)return;
@@ -500,10 +646,11 @@ async function respondDebt(id,status){
 }
 (async()=>{
  tr();
+ if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
  try{
   const {data:r,error}=await db.auth.getSession();
   if(error)throw error;
-  if(r.session){user=r.session.user;await startApp()}
+  if(recovering)showReset();else if(r.session){user=r.session.user;await startApp()}
  }catch(e){msg('authMsg','err',eT(e))}
 })();
 </script>
