@@ -467,6 +467,7 @@ function renderReports(){
 async function loadBuyerDebts(){
  if(!user)return;
  try{
+  await db.rpc('claim_my_debts');
   const {data:r,error}=await db.from('debts').select('*').eq('buyer_id',user.id).order('created_at',{ascending:false});
   if(error)throw error;
   const ds=r||[],ids=ds.map(d=>d.id);let ps=[];
