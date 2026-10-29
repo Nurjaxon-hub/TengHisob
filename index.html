@@ -3,44 +3,86 @@
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#16845b">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#087f5b">
 <title>TengHisob</title>
 <style>
-:root{--g:#16845b;--bg:#f3f7f4;--txt:#183329}
+:root{--g:#087f5b;--g2:#075e48;--bg:#f3f6f9;--txt:#183329;--muted:#74847c;--line:#e5ece8;--white:#fff;--red:#c83e43}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);font-family:Arial,sans-serif;color:var(--txt)}
-header{background:var(--g);color:white;padding:20px;text-align:center}
-header h1{margin:0}
-main{max-width:760px;margin:auto;padding:14px}
-.card{background:white;padding:16px;margin-bottom:13px;border-radius:14px;box-shadow:0 2px 8px #0000000a}
-h2{font-size:20px;margin-top:0}
-label{display:block;font-size:14px;margin:10px 0 5px}
-input,select,textarea{width:100%;padding:12px;border:1px solid #ccd9d0;border-radius:9px;font-size:16px;background:white}
-button{border:0;border-radius:9px;padding:12px;font-size:15px;font-weight:bold;cursor:pointer}
-button:disabled{opacity:.5}
-.primary{background:var(--g);color:white;width:100%;margin-top:12px}
-.secondary{background:#e6f2eb;color:#176846}
-.danger{background:#fdecea;color:#c0392b}
-.good{background:#dff5e7;color:#176846}
-.nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-.nav button{background:#e5f3eb;color:#176846;text-align:left;min-height:48px}
-.row{display:flex;gap:8px}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--txt);font-size:15px;line-height:1.5}
+header{position:relative;overflow:hidden;background:linear-gradient(135deg,#0a9067,#075b45);color:white;padding:19px 20px 34px;border-radius:0 0 27px 27px;box-shadow:0 8px 25px #075e481c}
+header:before{content:"";position:absolute;width:190px;height:190px;right:-70px;top:-85px;border:32px solid #ffffff10;border-radius:50%;pointer-events:none}
+header:after{content:"";position:absolute;width:100px;height:100px;right:65px;bottom:-75px;background:#ffffff0a;border-radius:50%;pointer-events:none}
+header h1{position:relative;z-index:1;margin:12px 0 2px;font-size:30px;font-weight:850;letter-spacing:-1px}
+header p{position:relative;z-index:1;margin:0;color:#e0f5ec;font-size:13px}
+.langbox{position:relative;z-index:2;display:flex;justify-content:flex-end;align-items:center;gap:8px}
+.langbox label{margin:0;color:#e2f5ed;font-size:12px;font-weight:700}
+.langbox select{width:auto;min-width:122px;padding:8px 10px;border:1px solid #ffffff35;border-radius:10px;background:#ffffff18;color:white;font-size:13px}
+.langbox select option{background:white;color:#183329}
+main{width:100%;max-width:760px;margin:-12px auto 0;padding:0 14px 35px;position:relative;z-index:3}
+.card{background:var(--white);padding:19px;margin-bottom:15px;border:1px solid #eaf0ed;border-radius:20px;box-shadow:0 5px 22px #18332908}
+h2{margin:0 0 17px;font-size:21px;line-height:1.35;font-weight:800;letter-spacing:-.35px}
+h3{font-size:17px}
+label{display:block;margin:13px 0 6px;color:#53655c;font-size:13px;font-weight:700}
+input,select,textarea{display:block;width:100%;min-height:47px;padding:12px 13px;border:1px solid #dce5e0;border-radius:12px;outline:none;background:#fbfcfb;color:var(--txt);font:inherit;font-size:15px;transition:border-color .2s,box-shadow .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--g);background:white;box-shadow:0 0 0 3px #087f5b14}
+input::placeholder,textarea::placeholder{color:#9ba9a1}
+textarea{min-height:75px;resize:vertical}
+button{min-height:44px;padding:11px 14px;border:0;border-radius:12px;font-family:inherit;font-size:14px;font-weight:750;line-height:1.4;cursor:pointer;transition:transform .15s,filter .15s;-webkit-tap-highlight-color:transparent}
+button:active{transform:scale(.98)}
+button:disabled{opacity:.55;cursor:not-allowed}
+.primary{width:100%;margin-top:13px;background:linear-gradient(135deg,#0b9369,#087653);color:white;box-shadow:0 5px 12px #087f5b20}
+.secondary{background:#e8f5ef;color:#087653}
+.danger{background:#fff0ef;color:#c43e43}
+.good{background:#e2f7e9;color:#137444}
+.nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.nav button{min-height:76px;padding:14px 13px;border:1px solid #e0eee6;border-radius:15px;background:linear-gradient(145deg,#f3faf6,#e8f5ed);color:#176749;text-align:left;font-size:14px;overflow-wrap:anywhere;box-shadow:0 2px 6px #173d2a05}
+.nav button:active{background:#dff1e7}
+.row{display:flex;align-items:flex-end;gap:10px}
 .row>*{flex:1;min-width:0}
-.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.stat{background:#eaf5ee;padding:12px;border-radius:10px}
-.stat span{display:block;font-size:13px}
-.stat b{display:block;margin-top:6px;font-size:19px;overflow-wrap:anywhere}
-.item{padding:12px 0;border-bottom:1px solid #e7eee9;overflow-wrap:anywhere}
-.small{font-size:13px;color:#687a70}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.stat{min-width:0;min-height:99px;padding:14px 13px;border:1px solid #e5eee9;border-radius:16px;background:linear-gradient(145deg,#f6fbf8,#edf6f0)}
+.stat span{display:block;color:#64766c;font-size:12px;font-weight:650;line-height:1.45}
+.stat b{display:block;margin-top:9px;color:#087653;font-size:clamp(16px,4.5vw,22px);font-weight:800;line-height:1.3;overflow-wrap:anywhere}
+.item{padding:15px 0;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
+.item:last-child{border-bottom:0}
+.item b{color:#203d31}
+.item>div{margin-top:5px}
+.item button{margin-top:10px}
+.small{color:var(--muted);font-size:12px;line-height:1.6}
 .hidden{display:none!important}
-.topline{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.notice{background:#fff5d9;padding:12px;border-radius:9px;font-size:13px;line-height:1.5}
-.tag{display:inline-block;padding:5px 8px;border-radius:7px;background:#edf1ee;font-size:12px;margin:5px 0}
-.langbox{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-bottom:10px}
-.langbox label{margin:0;color:white;font-weight:bold}
-.langbox select{width:auto;min-width:130px;padding:8px;border:0;border-radius:8px;font-size:14px}
-@media(max-width:380px){.nav{grid-template-columns:1fr}.row{display:block}}
+.topline{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.topline .small{margin-bottom:3px}
+.topline b{overflow-wrap:anywhere}
+.notice{padding:13px 15px;border:1px solid #f2e5bc;border-radius:13px;background:#fff9e8;color:#78602a;font-size:13px;line-height:1.6;overflow-wrap:anywhere}
+.tag{display:inline-block;max-width:100%;padding:6px 10px;border:1px solid #e4ebe6;border-radius:9px;background:#f0f5f2;color:#52645a;font-size:12px;font-weight:700;overflow-wrap:anywhere}
+#authTitle{margin-bottom:12px}
+#auth .primary{min-height:49px}
+#auth .secondary{width:100%;margin-top:10px}
+#authMessage{overflow-wrap:anywhere}
+#home h2{margin-bottom:15px}
+#shopName+button{margin-top:9px}
+#shop>.secondary,.page>.secondary{width:100%;margin-top:15px}
+#status{margin-top:15px}
+.page .primary{margin-bottom:8px}
+#buyerDebtsList .item .row{align-items:stretch;margin-top:10px}
+#buyerDebtsList .row button{margin-top:0}
+#buyerDebtsList textarea{margin-bottom:12px}
+#reportContent .stats{margin-top:5px}
+@media(max-width:380px){
+ main{padding-left:10px;padding-right:10px}
+ .card{padding:15px;border-radius:17px}
+ .nav{gap:8px}
+ .nav button{padding:12px 10px;min-height:68px;font-size:13px}
+ .stats{gap:8px}
+ .stat{padding:12px 10px;min-height:91px}
+ .row{gap:7px}
+ header{padding-left:16px;padding-right:16px}
+}
+@media(min-width:600px){
+ header{padding-left:max(24px,calc((100% - 712px)/2));padding-right:max(24px,calc((100% - 712px)/2))}
+}
 </style>
 </head>
 <body>
@@ -55,11 +97,12 @@ button:disabled{opacity:.5}
 <h1>TengHisob</h1>
 <p data-i18n="Do‘kon va xaridor hisob-kitoblari">Do‘kon va xaridor hisob-kitoblari</p>
 </header>
+
 <main>
 <section id="auth" class="card">
 <h2 id="authTitle">Hisobga kirish</h2>
 <div id="signupFields" class="hidden">
-<label>To‘liq ism</label><input id="fullName" placeholder="Ism va familiya">
+<label>To‘liq ism</label><input id="fullName" placeholder="Ism va familiya" autocomplete="name">
 <label>Telefon raqami</label><input id="phone" type="tel" placeholder="+998...">
 <label>Hisob turi</label>
 <select id="role">
@@ -70,7 +113,7 @@ button:disabled{opacity:.5}
 <label>Elektron pochta</label><input id="email" type="email" autocomplete="email">
 <label>Parol</label><input id="password" type="password" autocomplete="current-password">
 <button class="primary" id="authButton" onclick="authenticate()">Kirish</button>
-<button class="secondary" style="width:100%;margin-top:9px" id="switchAuth" onclick="toggleAuth()">Yangi hisob yaratish</button>
+<button class="secondary" id="switchAuth" onclick="toggleAuth()">Yangi hisob yaratish</button>
 <p id="authMessage" class="small"></p>
 </section>
 
@@ -92,13 +135,13 @@ button:disabled{opacity:.5}
 <h2>Do‘kon egasi</h2>
 <label>Do‘kon nomi</label><input id="shopName" placeholder="Do‘kon nomi">
 <button class="secondary" onclick="saveShopName()">Do‘kon nomini saqlash</button>
-<div class="stats" style="margin-top:12px">
+<div class="stats" style="margin-top:14px">
 <div class="stat"><span>Jami savdo</span><b id="totalSales">0 so‘m</b></div>
 <div class="stat"><span>Xarajatlar</span><b id="totalExpenses">0 so‘m</b></div>
 <div class="stat"><span>Qarz qoldig‘i</span><b id="totalDebt">0 so‘m</b></div>
 <div class="stat"><span>Qarzdan tushgan</span><b id="totalPaid">0 so‘m</b></div>
 </div>
-<div class="nav" style="margin-top:14px">
+<div class="nav" style="margin-top:15px">
 <button onclick="openPage('sales')">Savdo</button>
 <button onclick="openPage('expenses')">Xarajatlar</button>
 <button onclick="openPage('products')">Mahsulotlar</button>
@@ -106,13 +149,13 @@ button:disabled{opacity:.5}
 <button onclick="openPage('payments')">Qarz to‘lovlari</button>
 <button onclick="openPage('reports')">Hisobotlar</button>
 </div>
-<button class="secondary" style="width:100%;margin-top:12px" onclick="openPage('home')">Orqaga</button>
+<button class="secondary" style="width:100%;margin-top:14px" onclick="openPage('home')">Orqaga</button>
 </section>
 
 <section id="sales" class="card page hidden">
 <h2>Savdo kiritish</h2>
 <label>Savdo nomi</label><input id="saleName" placeholder="Masalan, non">
-<label>Summa (so‘m)</label><input id="saleAmount" type="number" min=".01" step=".01">
+<label>Summa (so‘m)</label><input id="saleAmount" type="number" min=".01" step=".01" inputmode="decimal">
 <label>To‘lov turi</label>
 <select id="saleType"><option value="naqd">Naqd</option><option value="karta">Karta</option><option value="qarz">Qarzga</option></select>
 <button class="primary" onclick="addSale()">Savdoni saqlash</button>
@@ -123,7 +166,7 @@ button:disabled{opacity:.5}
 <section id="expenses" class="card page hidden">
 <h2>Xarajat</h2>
 <label>Xarajat nomi</label><input id="expenseName">
-<label>Summa (so‘m)</label><input id="expenseAmount" type="number" min=".01" step=".01">
+<label>Summa (so‘m)</label><input id="expenseAmount" type="number" min=".01" step=".01" inputmode="decimal">
 <button class="primary" onclick="addExpense()">Xarajatni saqlash</button>
 <div id="expensesList"></div>
 <button class="secondary" style="width:100%" onclick="openPage('shop')">Orqaga</button>
@@ -133,10 +176,10 @@ button:disabled{opacity:.5}
 <h2>Mahsulotlar</h2>
 <label>Mahsulot nomi</label><input id="productName">
 <div class="row">
-<div><label>Tan narxi (so‘m)</label><input id="productCost" type="number" min="0" step=".01"></div>
-<div><label>Sotuv narxi (so‘m)</label><input id="productPrice" type="number" min=".01" step=".01"></div>
+<div><label>Tan narxi (so‘m)</label><input id="productCost" type="number" min="0" step=".01" inputmode="decimal"></div>
+<div><label>Sotuv narxi (so‘m)</label><input id="productPrice" type="number" min=".01" step=".01" inputmode="decimal"></div>
 </div>
-<label>Miqdori</label><input id="productQty" type="number" min="0" step=".01">
+<label>Miqdori</label><input id="productQty" type="number" min="0" step=".01" inputmode="decimal">
 <button class="primary" onclick="addProduct()">Mahsulotni saqlash</button>
 <div id="productsList"></div>
 <button class="secondary" style="width:100%" onclick="openPage('shop')">Orqaga</button>
@@ -146,7 +189,7 @@ button:disabled{opacity:.5}
 <h2>Xaridor qarzi</h2>
 <label>Xaridor ismi</label><input id="debtBuyer">
 <label>Telefon raqami</label><input id="debtPhone" type="tel" placeholder="+998...">
-<label>Qarz summasi (so‘m)</label><input id="debtAmount" type="number" min=".01" step=".01">
+<label>Qarz summasi (so‘m)</label><input id="debtAmount" type="number" min=".01" step=".01" inputmode="decimal">
 <label>To‘lash muddati</label><input id="debtDate" type="date">
 <label>Izoh</label><input id="debtNote">
 <button class="primary" onclick="addDebt()">Qarzni saqlash</button>
@@ -157,7 +200,7 @@ button:disabled{opacity:.5}
 <section id="payments" class="card page hidden">
 <h2>Qarz to‘lovi</h2>
 <label>Qarz</label><select id="paymentDebt"></select>
-<label>To‘langan summa (so‘m)</label><input id="paymentAmount" type="number" min=".01" step=".01">
+<label>To‘langan summa (so‘m)</label><input id="paymentAmount" type="number" min=".01" step=".01" inputmode="decimal">
 <button class="primary" onclick="addPayment()">To‘lovni saqlash</button>
 <div id="paymentsList"></div>
 <button class="secondary" style="width:100%" onclick="openPage('shop')">Orqaga</button>
@@ -175,7 +218,6 @@ button:disabled{opacity:.5}
 <div id="buyerDebtsList"></div>
 <button class="secondary" style="width:100%" onclick="openPage('home')">Orqaga</button>
 </section>
-
 <div id="status" class="notice">Ma’lumotlar bazasi yuklanmoqda…</div>
 </section>
 </main>
@@ -301,12 +343,8 @@ const translations={
 "Hisobot kiritilgan ma’lumotlarga asoslanadi. Mahsulot zaxirasidagi foyda haqiqiy sotilgan mahsulot foydasi bilan bir xil emas.":"Отчёт основан на введённых данных. Прибыль от запасов товаров не равна фактической прибыли от проданных товаров.",
 "Savdo minus xarajat":"Продажи минус расходы",
 "Mahsulot zaxirasidagi taxminiy foyda":"Примерная прибыль от товарных запасов",
-"Xarajat":"Расход",
-"Xarajatlar":"Расходы",
-"Telefon raqami":"Номер телефона",
 "Til / Язык":"Язык / Тил"
 };
-
 const reverseTranslations={};
 for(const [uz,ru] of Object.entries(translations)){
  if(!reverseTranslations[ru])reverseTranslations[ru]=uz;
@@ -334,7 +372,7 @@ function translatePage(){
    if(el.hasAttribute(attr)){
     el.setAttribute(attr,translateText(el.getAttribute(attr),lang));
    }
-  });
+ });
  });
  $('languageSelect').value=lang;
  $('languageLabel').textContent=lang==='ru'?'Язык':'Til / Язык';
@@ -346,7 +384,7 @@ function changeLanguage(lang){
  if(user){
   $('userLabel').textContent=(profile?.full_name||user.email)+' · '+(profile?.role==='shop'?(language==='ru'?'Владелец магазина':'Do‘kon egasi'):(language==='ru'?'Покупатель':'Xaridor'));
   renderAll();
-  if($('buyer')&&!$('buyer').classList.contains('hidden'))loadBuyerDebts();
+  if(!$('buyer').classList.contains('hidden'))loadBuyerDebts();
  }
 }
 const money=n=>(Number(n)||0).toLocaleString(language==='ru'?'ru-RU':'uz-UZ',{maximumFractionDigits:2})+(language==='ru'?' сум':' so‘m');
@@ -377,7 +415,8 @@ async function authenticate(){
    user=r.user;
   }else{
    const {data:r,error}=await db.auth.signInWithPassword({email,password});
-   if(error)throw error;user=r.user;
+   if(error)throw error;
+   user=r.user;
   }
   await startApp();
  }catch(e){authMsg('Xatolik: '+e.message)}
@@ -395,7 +434,8 @@ async function startApp(){
   if(!shop){
    const name=(profile.full_name||'Yangi')+' do‘koni';
    const {data:s,error}=await db.from('shops').insert({owner_id:user.id,name,shop_name:name}).select().single();
-   if(error)throw error;shop=s;
+   if(error)throw error;
+   shop=s;
   }
  }
  $('auth').classList.add('hidden');$('app').classList.remove('hidden');
@@ -425,7 +465,8 @@ async function reloadData(){
  const ids=r[3].data.map(d=>d.id);let pays=[];
  if(ids.length){
   const pr=await db.from('payments').select('*').in('debt_id',ids).order('created_at',{ascending:false});
-  if(pr.error)throw pr.error;pays=pr.data;
+  if(pr.error)throw pr.error;
+  pays=pr.data;
  }
  data.sales=r[0].data.map(x=>({id:x.id,name:x.name,amount:Number(x.amount),type:x.payment_type,date:x.created_at}));
  data.expenses=r[1].data.map(x=>({id:x.id,title:x.name,amount:Number(x.amount),date:x.created_at}));
@@ -436,7 +477,8 @@ async function reloadData(){
 }
 async function saveShopName(){
  if(!shop)return;
- const name=val('shopName');if(!name)return alert(language==='ru'?'Введите название магазина.':'Do‘kon nomini kiriting.');
+ const name=val('shopName');
+ if(!name)return alert(language==='ru'?'Введите название магазина.':'Do‘kon nomini kiriting.');
  const {data:r,error}=await db.from('shops').update({name,shop_name:name}).eq('id',shop.id).select().single();
  if(error)return alert((language==='ru'?'Ошибка: ':'Xatolik: ')+error.message);
  shop=r;say('Do‘kon nomi saqlandi.');
@@ -448,6 +490,7 @@ function openPage(id){
  if(id==='reports')renderReports();
  if(id==='buyer')loadBuyerDebts();
  translatePage();
+ window.scrollTo({top:0,behavior:'smooth'});
 }
 async function addSale(){
  try{
@@ -485,12 +528,12 @@ async function addDebt(){
   let buyer_id=null;
   if(phone){
    const {data:r,error}=await db.rpc('find_buyer_by_phone',{p_phone:phone});
-   if(error)throw error;if(r?.length)buyer_id=r[0].buyer_id;
+   if(error)throw error;
+   if(r?.length)buyer_id=r[0].buyer_id;
   }
   const {error}=await db.from('debts').insert({
    shop_id:shop.id,buyer_id,buyer_name:buyer,buyer_phone:phone,
-   amount,due_date:val('debtDate')||null,note:val('debtNote')||null,
-   status:'pending'
+   amount,due_date:val('debtDate')||null,note:val('debtNote')||null,status:'pending'
   });
   if(error)throw error;
   ['debtBuyer','debtPhone','debtAmount','debtDate','debtNote'].forEach(id=>$(id).value='');
@@ -517,9 +560,10 @@ async function addPayment(){
 async function removeItem(kind,id){
  if(!confirm(language==='ru'?'Вы хотите удалить эту запись?':'Bu yozuvni o‘chirmoqchimisiz?'))return;
  try{
-  let table={sales:'sales',expenses:'expenses',products:'products',debts:'debts'}[kind];
+  const table={sales:'sales',expenses:'expenses',products:'products',debts:'debts'}[kind];
   const {error}=await db.from(table).delete().eq('id',id).eq('shop_id',shop.id);
-  if(error)throw error;await reloadData();
+  if(error)throw error;
+  await reloadData();
  }catch(e){alert((language==='ru'?'Ошибка: ':'Xatolik: ')+e.message)}
 }
 function list(id,items,html){
@@ -568,7 +612,8 @@ async function loadBuyerDebts(){
   let ds=r||[],ids=ds.map(d=>d.id),ps=[];
   if(ids.length){
    const p=await db.from('payments').select('*').in('debt_id',ids).order('created_at',{ascending:false});
-   if(p.error)throw p.error;ps=p.data;
+   if(p.error)throw p.error;
+   ps=p.data;
   }
   list('buyerDebtsList',ds,d=>{
    let paid=ps.filter(p=>p.debt_id===d.id).reduce((s,p)=>s+Number(p.amount),0);
@@ -602,7 +647,8 @@ async function respondDebt(id,status){
 }
 async function boot(){
  try{
-  const {data:r,error}=await db.auth.getSession();if(error)throw error;
+  const {data:r,error}=await db.auth.getSession();
+  if(error)throw error;
   if(r.session){user=r.session.user;await startApp()}
  }catch(e){authMsg((language==='ru'?'Ошибка: ':'Xatolik: ')+e.message)}
 }
