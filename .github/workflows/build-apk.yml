@@ -14,6 +14,7 @@ on:
       - "capacitor.config.json"
       - "manifest.json"
       - "sw.js"
+      - "icon.svg"
       - "icon-192.png"
       - "icon-512.png"
       - ".github/workflows/build-apk.yml"
@@ -33,7 +34,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -41,21 +41,21 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Install dependencies
-        run: npm install
-
       - name: Check project files
         run: |
           test -f index.html
           test -f package.json
           test -f capacitor.config.json
 
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
       - name: Prepare web files
         run: |
           mkdir -p www
-          cp index.html www/index.html
+          cp index.html www/
 
-          for file in style.css manifest.json sw.js icon-192.png icon-512.png; do
+          for file in style.css manifest.json sw.js icon.svg icon-192.png icon-512.png; do
             if [ -f "$file" ]; then
               cp "$file" www/
             fi
