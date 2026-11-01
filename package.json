@@ -5,7 +5,10 @@
   "private": true,
   "description": "TengHisob Android APK",
   "scripts": {
-    "build:android": "cap sync android"
+    "build:android": "npx cap sync android",
+    "android:open": "npx cap open android",
+    "android:run": "npx cap run android",
+    "cap:sync": "npx cap sync"
   },
   "dependencies": {
     "@capacitor/android": "^6.2.1",
