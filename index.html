@@ -33,10 +33,27 @@
 <p id="authMsg" class="small"></p>
 </section>
 
-<section id="reset" class="card hidden"><h2 data-i="newPass"></h2><label data-i="pass"></label><input id="newPassword" type="password" autocomplete="new-password"><button class="primary" onclick="savePass()" data-i="savePass"></button><p id="resetMsg" class="small"></p></section>
+<section id="reset" class="card hidden">
+<h2 data-i="newPass"></h2>
+<label data-i="pass"></label>
+<input id="newPassword" type="password" autocomplete="new-password">
+<button class="primary" onclick="savePass()" data-i="savePass"></button>
+<p id="resetMsg" class="small"></p>
+</section>
+
 <section id="app" class="hidden">
-<div class="card topline"><div><div class="small" data-i="account"></div><b id="userLabel"></b></div>
-<button class="danger" onclick="logout()" data-i="logout"></button></div>
+<div class="card topline">
+<div><div class="small" data-i="account"></div><b id="userLabel"></b></div>
+<button class="danger" onclick="logout()" data-i="logout"></button>
+</div>
+
+<section class="card" id="notificationPanel">
+<div class="row">
+<h3 data-i="notifications"></h3>
+<button class="secondary" onclick="loadNotifications()" data-i="refresh"></button>
+</div>
+<div id="notificationsList"></div>
+</section>
 
 <section id="shop" class="card page hidden">
 <h2 data-i="shopOwner"></h2>
@@ -67,7 +84,10 @@
 <label data-i="amount"></label><input id="saleAmount" type="number" min="1" step="1" inputmode="numeric">
 <label data-i="payType"></label>
 <select id="saleType" onchange="$('saleDebt').classList.toggle('hidden',this.value!=='qarz')">
-<option value="naqd" data-i="cash"></option><option value="karta" data-i="card"></option><option value="qarz" data-i="credit"></option></select>
+<option value="naqd" data-i="cash"></option>
+<option value="karta" data-i="card"></option>
+<option value="qarz" data-i="credit"></option>
+</select>
 <div id="saleDebt" class="hidden">
 <label data-i="buyerName"></label><input id="saleBuyer">
 <label data-i="phone"></label><input id="salePhone" type="tel" placeholder="+998...">
@@ -125,19 +145,32 @@
 
 <section id="reports" class="card page hidden">
 <h2 data-i="reports"></h2>
-<select id="repRange" onchange="renderReports()"><option value="1" data-i="rToday"></option><option value="7" data-i="r7"></option><option value="30" data-i="r30"></option><option value="0" data-i="rAll" selected></option></select>
+<select id="repRange" onchange="renderReports()">
+<option value="1" data-i="rToday"></option>
+<option value="7" data-i="r7"></option>
+<option value="30" data-i="r30"></option>
+<option value="0" data-i="rAll" selected></option>
+</select>
 <div id="reportContent"></div>
 <button class="primary" onclick="exportCSV()" data-i="exportCsv"></button>
 <button class="secondary" onclick="openPage('shop')" data-i="back"></button>
 </section>
 
-<section id="customers" class="card page hidden"><h2 data-i="customers"></h2><div id="customersList"></div><button class="secondary" onclick="openPage('shop')" data-i="back"></button></section>
+<section id="customers" class="card page hidden">
+<h2 data-i="customers"></h2>
+<div id="customersList"></div>
+<button class="secondary" onclick="openPage('shop')" data-i="back"></button>
+</section>
 
 <section id="buyer" class="card page hidden">
 <h2 data-i="buyer"></h2>
 <p class="small" data-i="buyerInfo"></p>
 <button class="primary" onclick="loadBuyerDebts()" data-i="refresh"></button>
-<label data-i="codeIn"></label><div class="row"><input id="claimCode" autocapitalize="characters"><button class="good" onclick="claimCode()" data-i="addByCode"></button></div>
+<label data-i="codeIn"></label>
+<div class="row">
+<input id="claimCode" autocapitalize="characters">
+<button class="good" onclick="claimCode()" data-i="addByCode"></button>
+</div>
 <div id="buyerDebtsList"></div>
 </section>
 
@@ -151,43 +184,79 @@ const SUPABASE_URL='https://edyaxwkpvlqdtdyvldfp.supabase.co';
 const SUPABASE_KEY='sb_publishable_SNmQNm7Zw4FbS4yrATu3pw_LV4lfiNX';
 let recovering=/type=recovery/.test(location.hash);
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const $=id=>document.getElementById(id),val=id=>$(id).value.trim(),num=id=>Number($(id).value);
+const $=id=>document.getElementById(id);
+const val=id=>$(id).value.trim();
+const num=id=>Number($(id).value);
+
 let lang=localStorage.getItem('tenghisob_language')==='ru'?'ru':'uz';
 let user=null,profile=null,shop=null,mode=false;
 let data={sales:[],expenses:[],products:[],debts:[],payments:[]};
+let notifications=[];
 
 const L={
 sub:['Do‘kon va xaridor hisob-kitoblari','Расчёты магазина и покупателей'],
-login:['Hisobga kirish','Вход в аккаунт'],signup:['Yangi hisob yaratish','Создать аккаунт'],
-register:['Ro‘yxatdan o‘tish','Зарегистрироваться'],haveAcc:['Hisobim bor — kirish','У меня есть аккаунт — войти'],
-fullName:['To‘liq ism','Полное имя'],namePh:['Ism va familiya','Имя и фамилия'],
-phone:['Telefon raqami','Номер телефона'],role:['Hisob turi','Тип аккаунта'],
-shopOwner:['Do‘kon egasi','Владелец магазина'],buyer:['Xaridor','Покупатель'],
-email:['Elektron pochta','Электронная почта'],pass:['Parol','Пароль'],signin:['Kirish','Войти'],
-account:['Hisob','Аккаунт'],logout:['Chiqish','Выйти'],
-shopName:['Do‘kon nomi','Название магазина'],saveShop:['Do‘kon nomini saqlash','Сохранить название магазина'],
-totSales:['Jami savdo','Общая сумма продаж'],expenses:['Xarajatlar','Расходы'],
-debtLeft:['Qarz qoldig‘i','Остаток долга'],paidDebt:['Qarzdan tushgan','Получено по долгам'],
-sales:['Savdo','Продажи'],products:['Mahsulotlar','Товары'],debts:['Xaridorlar qarzi','Долги покупателей'],
-payments:['Qarz to‘lovlari','Платежи по долгам'],reports:['Hisobotlar','Отчёты'],back:['Orqaga','Назад'],
-addSale:['Savdo kiritish','Добавить продажу'],saleName:['Savdo nomi','Название продажи'],
-eg:['Masalan, non','Например, хлеб'],amount:['Summa (so‘m)','Сумма (сум)'],
-payType:['To‘lov turi','Способ оплаты'],cash:['Naqd','Наличные'],card:['Karta','Карта'],credit:['Qarzga','В долг'],
-buyerName:['Xaridor ismi','Имя покупателя'],saveSale:['Savdoni saqlash','Сохранить продажу'],
-expense:['Xarajat','Расход'],expName:['Xarajat nomi','Название расхода'],saveExp:['Xarajatni saqlash','Сохранить расход'],
-prodName:['Mahsulot nomi','Название товара'],cost:['Tan narxi (so‘m)','Себестоимость (сум)'],
-price:['Sotuv narxi (so‘m)','Цена продажи (сум)'],qty:['Miqdori','Количество'],saveProd:['Mahsulotni saqlash','Сохранить товар'],
-debtTitle:['Xaridor qarzi','Долг покупателя'],debtAmt:['Qarz summasi (so‘m)','Сумма долга (сум)'],
-due:['To‘lash muddati','Срок оплаты'],note:['Izoh','Примечание'],saveDebt:['Qarzni saqlash','Сохранить долг'],
-payTitle:['Qarz to‘lovi','Платёж по долгу'],debt:['Qarz','Долг'],paidAmt:['To‘langan summa (so‘m)','Оплаченная сумма (сум)'],
+login:['Hisobga kirish','Вход в аккаунт'],
+signup:['Yangi hisob yaratish','Создать аккаунт'],
+register:['Ro‘yxatdan o‘tish','Зарегистрироваться'],
+haveAcc:['Hisobim bor — kirish','У меня есть аккаунт — войти'],
+fullName:['To‘liq ism','Полное имя'],
+namePh:['Ism va familiya','Имя и фамилия'],
+phone:['Telefon raqami','Номер телефона'],
+role:['Hisob turi','Тип аккаунта'],
+shopOwner:['Do‘kon egasi','Владелец магазина'],
+buyer:['Xaridor','Покупатель'],
+email:['Elektron pochta','Электронная почта'],
+pass:['Parol','Пароль'],
+signin:['Kirish','Войти'],
+account:['Hisob','Аккаунт'],
+logout:['Chiqish','Выйти'],
+shopName:['Do‘kon nomi','Название магазина'],
+saveShop:['Do‘kon nomini saqlash','Сохранить название магазина'],
+totSales:['Jami savdo','Общая сумма продаж'],
+expenses:['Xarajatlar','Расходы'],
+debtLeft:['Qarz qoldig‘i','Остаток долга'],
+paidDebt:['Qarzdan tushgan','Получено по долгам'],
+sales:['Savdo','Продажи'],
+products:['Mahsulotlar','Товары'],
+debts:['Xaridorlar qarzi','Долги покупателей'],
+payments:['Qarz to‘lovlari','Платежи по долгам'],
+reports:['Hisobotlar','Отчёты'],
+back:['Orqaga','Назад'],
+addSale:['Savdo kiritish','Добавить продажу'],
+saleName:['Savdo nomi','Название продажи'],
+eg:['Masalan, non','Например, хлеб'],
+amount:['Summa (so‘m)','Сумма (сум)'],
+payType:['To‘lov turi','Способ оплаты'],
+cash:['Naqd','Наличные'],
+card:['Karta','Карта'],
+credit:['Qarzga','В долг'],
+buyerName:['Xaridor ismi','Имя покупателя'],
+saveSale:['Savdoni saqlash','Сохранить продажу'],
+expense:['Xarajat','Расход'],
+expName:['Xarajat nomi','Название расхода'],
+saveExp:['Xarajatni saqlash','Сохранить расход'],
+prodName:['Mahsulot nomi','Название товара'],
+cost:['Tan narxi (so‘m)','Себестоимость (сум)'],
+price:['Sotuv narxi (so‘m)','Цена продажи (сум)'],
+qty:['Miqdori','Количество'],
+saveProd:['Mahsulotni saqlash','Сохранить товар'],
+debtTitle:['Xaridor qarzi','Долг покупателя'],
+debtAmt:['Qarz summasi (so‘m)','Сумма долга (сум)'],
+due:['To‘lash muddati','Срок оплаты'],
+note:['Izoh','Примечание'],
+saveDebt:['Qarzni saqlash','Сохранить долг'],
+payTitle:['Qarz to‘lovi','Платёж по долгу'],
+debt:['Qarz','Долг'],
+paidAmt:['To‘langan summa (so‘m)','Оплаченная сумма (сум)'],
 savePay:['To‘lovni saqlash','Сохранить платёж'],
 buyerInfo:['Sizga biriktirilgan qarzlarni ko‘rish, tasdiqlash yoki nizolash mumkin.','Вы можете просматривать, подтверждать или оспаривать назначенные вам долги.'],
-refresh:['Qarzlarimni yangilash','Обновить мои долги'],
+refresh:['Yangilash','Обновить'],
 loading:['Ma’lumotlar bazasi yuklanmoqda…','Загрузка базы данных…'],
 updated:['Bazadagi ma’lumotlar yangilandi.','Данные базы обновлены.'],
 buyerOk:['Xaridor hisobi ulandi.','Аккаунт покупателя подключён.'],
 shopSaved:['Do‘kon nomi saqlandi.','Название магазина сохранено.'],
-err:['Xatolik: ','Ошибка: '],checking:['Tekshirilmoqda…','Проверка…'],
+err:['Xatolik: ','Ошибка: '],
+checking:['Tekshirilmoqda…','Проверка…'],
 needEmail:['Elektron pochta va kamida 6 belgili parolni kiriting.','Введите почту и пароль не короче 6 символов.'],
 needName:['Ismingizni kiriting.','Введите своё имя.'],
 noSession:['Hisob yaratildi. Pochtangizga kelgan havolani bosib tasdiqlang, so‘ng kiring.','Аккаунт создан. Подтвердите почту по ссылке из письма и войдите.'],
@@ -197,22 +266,38 @@ saleNeed:['Savdo nomi va summani kiriting.','Введите название п�
 expNeed:['Xarajat nomi va summani kiriting.','Введите название расхода и сумму.'],
 prodNeed:['Mahsulot ma’lumotlarini to‘g‘ri kiriting.','Правильно заполните данные товара.'],
 debtNeed:['Xaridor ismi va summani kiriting.','Введите имя покупателя и сумму.'],
-unlinked:['Qarz saqlandi, lekin xaridor hisobiga biriktirilmadi. Xaridor ro‘yxatdan o‘tgan bo‘lishi va telefon raqami mos kelishi kerak.','Долг сохранён, но не привязан к аккаунту покупателя. Покупатель должен быть зарегистрирован, а номер телефона должен совпадать.'],
+unlinked:['Qarz saqlandi, lekin xaridor hisobiga biriktirilmadi. Xaridorga kodni yuboring.','Долг сохранён, но не привязан к аккаунту покупателя. Отправьте покупателю код.'],
 pickDebt:['Qarzni tanlang.','Выберите долг.'],
 payBad:['To‘lov summasini qarz qoldig‘iga mos kiriting.','Сумма платежа не должна превышать остаток долга.'],
-del:['O‘chirish','Удалить'],delQ:['Bu yozuvni o‘chirmoqchimisiz?','Вы хотите удалить эту запись?'],
+del:['O‘chirish','Удалить'],
+delQ:['Bu yozuvni o‘chirmoqchimisiz?','Вы хотите удалить эту запись?'],
 noRight:['O‘chirishga ruxsat yo‘q.','Нет прав на удаление.'],
-pending:['Xaridor javobi kutilmoqda','Ожидается ответ покупателя'],confirmed:['Xaridor tasdiqladi','Покупатель подтвердил'],
-disputed:['Xaridor nizoladi','Покупатель оспорил'],unknown:['Holat noma’lum','Статус неизвестен'],
-tel:['Telefon','Телефон'],notSet:['Kiritilmagan','Не указан'],paidL:['To‘langan','Оплачено'],leftL:['Qoldiq','Остаток'],
-dueL:['Muddat','Срок'],unset:['Belgilanmagan','Не указан'],costL:['Tan narxi','Себестоимость'],saleL:['Sotuv','Цена продажи'],
-unitProfit:['Bir donadan foyda','Прибыль с одной штуки'],buyerNote:['Xaridor izohi','Комментарий покупателя'],
-noData:['Hozircha ma’lumot yo‘q.','Пока нет данных.'],noOpen:['To‘lanmagan qarz yo‘q','Нет неоплаченных долгов'],
-overdue:['Muddati o‘tgan','Просрочен'],debtRec:['Qarz yozuvi','Запись о долге'],
-bConfirm:['Qarzni tasdiqlash','Подтвердить долг'],bDispute:['Qarzga e’tiroz bildirish','Оспорить долг'],
-reason:['E’tiroz sababi (ixtiyoriy)','Причина возражения (необязательно)'],whyNot:['Nima bilan rozi emassiz?','С чем вы не согласны?'],
+pending:['Xaridor javobi kutilmoqda','Ожидается ответ покупателя'],
+confirmed:['Xaridor tasdiqladi','Покупатель подтвердил'],
+disputed:['Xaridor nizoladi','Покупатель оспорил'],
+paid:['To‘liq to‘langan','Полностью оплачено'],
+unknown:['Holat noma’lum','Статус неизвестен'],
+tel:['Telefon','Телефон'],
+notSet:['Kiritilmagan','Не указан'],
+paidL:['To‘langan','Оплачено'],
+leftL:['Qoldiq','Остаток'],
+dueL:['Muddat','Срок'],
+unset:['Belgilanmagan','Не указан'],
+costL:['Tan narxi','Себестоимость'],
+saleL:['Sotuv','Цена продажи'],
+unitProfit:['Bir donadan foyda','Прибыль с одной штуки'],
+buyerNote:['Xaridor izohi','Комментарий покупателя'],
+noData:['Hozircha ma’lumot yo‘q.','Пока нет данных.'],
+noOpen:['To‘lanmagan qarz yo‘q','Нет неоплаченных долгов'],
+overdue:['Muddati o‘tgan','Просрочен'],
+debtRec:['Qarz yozuvi','Запись о долге'],
+bConfirm:['Qarzni tasdiqlash','Подтвердить долг'],
+bDispute:['Qarzga e’tiroz bildirish','Оспорить долг'],
+reason:['E’tiroz sababi (ixtiyoriy)','Причина возражения (необязательно)'],
+whyNot:['Nima bilan rozi emassiz?','С чем вы не согласны?'],
 noReasonQ:['Sabab yozmasdan e’tiroz bildirmoqchimisiz?','Вы хотите оспорить долг без указания причины?'],
-okConfirm:['Qarz tasdiqlandi.','Долг подтверждён.'],okDispute:['E’tirozingiz saqlandi.','Ваше возражение сохранено.'],
+okConfirm:['Qarz tasdiqlandi.','Долг подтверждён.'],
+okDispute:['E’tirozingiz saqlandi.','Ваше возражение сохранено.'],
 respFail:['Javobni saqlab bo‘lmadi: ','Не удалось сохранить ответ: '],
 loadFail:['Qarzlarni yuklashda xatolik: ','Ошибка загрузки долгов: '],
 objNote:['E’tiroz izohi','Комментарий к возражению'],
@@ -222,24 +307,52 @@ repNote:['Tushum = naqd va karta savdo + qarzdan tushgan pul. Qarzga sotilgan sa
 badLogin:['Pochta yoki parol noto‘g‘ri.','Неверная почта или пароль.'],
 exists:['Bu pochta allaqachon ro‘yxatdan o‘tgan.','Эта почта уже зарегистрирована.'],
 rate:['Juda ko‘p urinish. Biroz kutib, qayta urinib ko‘ring.','Слишком много попыток. Подождите и повторите.'],
-forgot:['Parolni unutdim','Забыл пароль'],resetSent:['Parolni tiklash havolasi pochtangizga yuborildi.','Ссылка для сброса пароля отправлена на почту.'],
-needMail:['Avval pochtangizni kiriting.','Сначала введите почту.'],newPass:['Yangi parol','Новый пароль'],savePass:['Parolni saqlash','Сохранить пароль'],
-shortPass:['Parol kamida 6 belgi bo‘lsin.','Пароль не короче 6 символов.'],passSaved:['Parol yangilandi.','Пароль обновлён.'],
-customers:['Mijozlar','Клиенты'],product:['Mahsulot','Товар'],noProduct:['— mahsulotsiz —','— без товара —'],search:['Qidirish…','Поиск…'],more:['Yana ko‘rsatish','Показать ещё'],
-rToday:['Bugun','Сегодня'],r7:['Oxirgi 7 kun','Последние 7 дней'],r30:['Oxirgi 30 kun','Последние 30 дней'],rAll:['Hammasi','Всё время'],
-exportCsv:['Excel (CSV) yuklab olish','Скачать Excel (CSV)'],noStock:['Omborda mahsulot yetarli emas.','Недостаточно товара на складе.'],
-realProfit:['Sotilgan mahsulot foydasi','Прибыль от проданных товаров'],codeLabel:['Xaridor kodi','Код покупателя'],
-codeIn:['Qarz kodi (do‘kon egasidan)','Код долга (от владельца магазина)'],addByCode:['Qo‘shish','Добавить'],
-codeBad:['Kod noto‘g‘ri yoki ishlatilgan.','Код неверный или уже использован.'],codeOk:['Qarz hisobingizga qo‘shildi.','Долг добавлен в ваш аккаунт.'],
-edit:['Tahrirlash','Изменить'],editName:['Yangi nom / izoh:','Новое название / примечание:'],editVal:['Yangi summa (so‘m):','Новая сумма (сум):']
+forgot:['Parolni unutdim','Забыл пароль'],
+resetSent:['Parolni tiklash havolasi pochtangizga yuborildi.','Ссылка для сброса пароля отправлена на почту.'],
+needMail:['Avval pochtangizni kiriting.','Сначала введите почту.'],
+newPass:['Yangi parol','Новый пароль'],
+savePass:['Parolni saqlash','Сохранить пароль'],
+shortPass:['Parol kamida 6 belgi bo‘lsin.','Пароль не короче 6 символов.'],
+passSaved:['Parol yangilandi.','Пароль обновлён.'],
+customers:['Mijozlar','Клиенты'],
+product:['Mahsulot','Товар'],
+noProduct:['— mahsulotsiz —','— без товара —'],
+search:['Qidirish…','Поиск…'],
+more:['Yana ko‘rsatish','Показать ещё'],
+rToday:['Bugun','Сегодня'],
+r7:['Oxirgi 7 kun','Последние 7 дней'],
+r30:['Oxirgi 30 kun','Последние 30 дней'],
+rAll:['Hammasi','Всё время'],
+exportCsv:['Excel (CSV) yuklab olish','Скачать Excel (CSV)'],
+noStock:['Omborda mahsulot yetarli emas.','Недостаточно товара на складе.'],
+realProfit:['Sotilgan mahsulot foydasi','Прибыль от проданных товаров'],
+codeLabel:['Xaridor kodi','Код покупателя'],
+codeIn:['Qarz kodi (do‘kon egasidan)','Код долга (от владельца магазина)'],
+addByCode:['Qo‘shish','Добавить'],
+codeBad:['Kod noto‘g‘ri yoki ishlatilgan.','Код неверный или уже использован.'],
+codeOk:['Qarz hisobingizga qo‘shildi.','Долг добавлен в ваш аккаунт.'],
+edit:['Tahrirlash','Изменить'],
+editName:['Yangi nom / izoh:','Новое название / примечание:'],
+editVal:['Yangi summa (so‘m):','Новая сумма (сум):'],
+notifications:['Bildirishnomalar','Уведомления'],
+markRead:['O‘qildi deb belgilash','Отметить прочитанным'],
+noNotifications:['Hozircha bildirishnoma yo‘q.','Пока нет уведомлений.']
 };
 
 const t=k=>(L[k]||[k,k])[lang==='ru'?1:0];
 const loc=()=>lang==='ru'?'ru-RU':'uz-UZ';
 const money=n=>(Number(n)||0).toLocaleString(loc(),{maximumFractionDigits:2})+(lang==='ru'?' сум':' so‘m');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const ph=p=>{let d=(p||'').replace(/\D/g,'');if(d.length===9)d='998'+d;if(d.length===11&&d[0]==='8')d='7'+d.slice(1);return d?'+'+d:''};
-const eT=e=>{const m=e.message||String(e);return /invalid login/i.test(m)?t('badLogin'):/already registered/i.test(m)?t('exists'):/rate limit|too many/i.test(m)?t('rate'):m};
+const ph=p=>{
+ let d=(p||'').replace(/\D/g,'');
+ if(d.length===9)d='998'+d;
+ if(d.length===11&&d[0]==='8')d='7'+d.slice(1);
+ return d?'+'+d:'';
+};
+const eT=e=>{
+ const m=e.message||String(e);
+ return /invalid login/i.test(m)?t('badLogin'):/already registered/i.test(m)?t('exists'):/rate limit|too many/i.test(m)?t('rate'):m;
+};
 
 function tr(){
  document.documentElement.lang=lang;
@@ -247,19 +360,35 @@ function tr(){
  document.querySelectorAll('[data-p]').forEach(e=>e.placeholder=t(e.dataset.p));
  $('languageSelect').value=lang;
 }
-function msg(id,k,x){$(id).dataset.i=k;$(id).dataset.x=x||'';tr()}
+
+function msg(id,k,x){
+ $(id).dataset.i=k;
+ $(id).dataset.x=x||'';
+ tr();
+}
 const say=(k,x)=>msg('status',k,x);
 
 function changeLanguage(v){
- lang=v==='ru'?'ru':'uz';localStorage.setItem('tenghisob_language',lang);tr();
- if(user){setLabel();renderAll();if(!$('buyer').classList.contains('hidden'))loadBuyerDebts()}
+ lang=v==='ru'?'ru':'uz';
+ localStorage.setItem('tenghisob_language',lang);
+ tr();
+ if(user){
+  setLabel();
+  renderAll();
+  loadNotifications();
+  if(!$('buyer').classList.contains('hidden'))loadBuyerDebts();
+ }
 }
 
 const setLabel=()=>$('userLabel').textContent=(profile.full_name||user.email)+' · '+t(profile.role==='shop'?'shopOwner':'buyer');
-const run=async f=>{try{await f()}catch(e){alert(t('err')+eT(e))}};
+const run=async f=>{
+ try{await f()}
+ catch(e){alert(t('err')+eT(e))}
+};
 
 function toggleAuth(){
- mode=!mode;$('signupBox').classList.toggle('hidden',!mode);
+ mode=!mode;
+ $('signupBox').classList.toggle('hidden',!mode);
  $('authTitle').dataset.i=mode?'signup':'login';
  $('authBtn').dataset.i=mode?'register':'signin';
  $('switchBtn').dataset.i=mode?'haveAcc':'signup';
@@ -270,43 +399,72 @@ function toggleAuth(){
 async function authenticate(){
  const email=val('email'),password=$('password').value;
  if(!email||password.length<6)return msg('authMsg','needEmail');
- $('authBtn').disabled=true;msg('authMsg','checking');
+ if(mode&&!val('fullName'))return msg('authMsg','needName');
+ $('authBtn').disabled=true;
+ msg('authMsg','checking');
  try{
   let res;
   if(mode){
-   if(!val('fullName'))return msg('authMsg','needName');
-   res=await db.auth.signUp({email,password,options:{data:{full_name:val('fullName'),phone:ph(val('phone')),role:$('role').value}}});
-  }else res=await db.auth.signInWithPassword({email,password});
+   res=await db.auth.signUp({
+    email,password,
+    options:{data:{
+     full_name:val('fullName'),
+     phone:ph(val('phone')),
+     role:$('role').value
+    }}
+   });
+  }else{
+   res=await db.auth.signInWithPassword({email,password});
+  }
   if(res.error)throw res.error;
   if(!res.data.session)return msg('authMsg','noSession');
-  user=res.data.user;msg('authMsg','');
+  user=res.data.user;
+  msg('authMsg','');
   await startApp();
- }catch(e){msg('authMsg','err',eT(e))}
- finally{$('authBtn').disabled=false}
+ }catch(e){
+  msg('authMsg','err',eT(e));
+ }finally{
+  $('authBtn').disabled=false;
+ }
 }
 
 const lim={};
 let lastCode='';
-const genCode=()=>Array.from(crypto.getRandomValues(new Uint8Array(8)),b=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[b%32]).join('');
+const genCode=()=>Array.from(
+ crypto.getRandomValues(new Uint8Array(8)),
+ b=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[b%32]
+).join('');
 
 async function forgot(){
- const email=val('email');if(!email)return msg('authMsg','needMail');
+ const email=val('email');
+ if(!email)return msg('authMsg','needMail');
  const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
  error?msg('authMsg','err',eT(error)):msg('authMsg','resetSent');
 }
 
-function showReset(){recovering=true;$('auth').classList.add('hidden');$('reset').classList.remove('hidden')}
-
-async function savePass(){
- const p=$('newPassword').value;if(p.length<6)return msg('resetMsg','shortPass');
- const {error}=await db.auth.updateUser({password:p});
- if(error)return msg('resetMsg','err',eT(error));
- recovering=false;history.replaceState(null,'',location.pathname);$('reset').classList.add('hidden');
- alert(t('passSaved'));
- const {data:r}=await db.auth.getSession();user=r.session.user;await startApp();
+function showReset(){
+ recovering=true;
+ $('auth').classList.add('hidden');
+ $('reset').classList.remove('hidden');
 }
 
-db.auth.onAuthStateChange(ev=>{if(ev==='PASSWORD_RECOVERY')showReset()});
+async function savePass(){
+ const p=$('newPassword').value;
+ if(p.length<6)return msg('resetMsg','shortPass');
+ const {error}=await db.auth.updateUser({password:p});
+ if(error)return msg('resetMsg','err',eT(error));
+ recovering=false;
+ history.replaceState(null,'',location.pathname);
+ $('reset').classList.add('hidden');
+ alert(t('passSaved'));
+ const {data:r}=await db.auth.getSession();
+ user=r.session.user;
+ await startApp();
+}
+
+db.auth.onAuthStateChange(ev=>{
+ if(ev==='PASSWORD_RECOVERY')showReset();
+});
 
 function pickProduct(){
  const p=data.products.find(x=>x.id===$('saleProduct').value);
@@ -327,33 +485,50 @@ const remind=(name,phone,left,due,code)=>{
 };
 
 const editItem=(kind,id)=>run(async()=>{
- const x=data[kind].find(i=>i.id===id),isP=kind==='products',isD=kind==='debts';
- const nm=prompt(t(isD?'note':'editName'),isD?x.note:(x.name||x.title));if(nm===null)return;
+ const x=data[kind].find(i=>i.id===id);
+ const isP=kind==='products',isD=kind==='debts';
+ const nm=prompt(t(isD?'note':'editName'),isD?x.note:(x.name||x.title));
+ if(nm===null)return;
  const v=Number(prompt(t('editVal'),isP?x.price:x.amount));
  if(!(v>0)||(!isD&&!nm.trim()))return alert(t('saleNeed'));
  let e;
  if(isD){
   e=(await db.rpc('edit_debt',{p_id:id,p_amount:v,p_note:nm.trim()})).error;
  }else if(isP){
-  e=(await db.from('products').update({name:nm.trim(),selling_price:v,sale_price:v}).eq('id',id).eq('shop_id',shop.id)).error;
+  e=(await db.from('products').update({
+   name:nm.trim(),selling_price:v,sale_price:v
+  }).eq('id',id).eq('shop_id',shop.id)).error;
  }else if(kind==='expenses'){
-  e=(await db.from('expenses').update({name:nm.trim(),title:nm.trim(),amount:v}).eq('id',id).eq('shop_id',shop.id)).error;
+  e=(await db.from('expenses').update({
+   name:nm.trim(),title:nm.trim(),amount:v
+  }).eq('id',id).eq('shop_id',shop.id)).error;
  }else{
-  e=(await db.from(kind).update({name:nm.trim(),amount:v}).eq('id',id).eq('shop_id',shop.id)).error;
+  e=(await db.from(kind).update({
+   name:nm.trim(),amount:v
+  }).eq('id',id).eq('shop_id',shop.id)).error;
  }
- if(e)throw e;await reloadData();
+ if(e)throw e;
+ await reloadData();
 });
 
 const claimCode=()=>run(async()=>{
- const c=val('claimCode').toUpperCase();if(!c)return;
+ const c=val('claimCode').toUpperCase();
+ if(!c)return;
  const {data:n,error}=await db.rpc('claim_debt_by_code',{p_code:c});
  if(error)throw error;
  if(!n)return alert(t('codeBad'));
- $('claimCode').value='';alert(t('codeOk'));await loadBuyerDebts();
+ $('claimCode').value='';
+ alert(t('codeOk'));
+ await loadBuyerDebts();
+ await loadNotifications();
 });
 
 function exportCSV(){
- const q=v=>{let s=String(v??'');if(/^[=+\-@]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'};
+ const q=v=>{
+  let s=String(v??'');
+  if(/^[=+\-@]/.test(s))s="'"+s;
+  return '"'+s.replace(/"/g,'""')+'"';
+ };
  const R=[['turi','nomi','summa','izoh','sana']];
  data.sales.forEach(x=>R.push(['savdo',x.name,x.amount,x.type,x.date]));
  data.expenses.forEach(x=>R.push(['xarajat',x.title,x.amount,'',x.date]));
@@ -361,7 +536,9 @@ function exportCSV(){
  data.payments.forEach(x=>R.push(['tolov',(data.debts.find(d=>d.id===x.debtId)||{}).buyer||'',x.amount,'',x.date]));
  const a=document.createElement('a');
  a.href=URL.createObjectURL(new Blob(['\ufeff'+R.map(r=>r.map(q).join(',')).join('\n')],{type:'text/csv'}));
- a.download='tenghisob.csv';a.click();URL.revokeObjectURL(a.href);
+ a.download='tenghisob.csv';
+ a.click();
+ URL.revokeObjectURL(a.href);
 }
 
 async function startApp(){
@@ -370,49 +547,138 @@ async function startApp(){
  const m=user.user_metadata||{};
  profile=p||{id:user.id,full_name:m.full_name||user.email,role:m.role||'buyer'};
  shop=null;
+
  if(profile.role==='shop'){
   const {data:ex,error:se}=await db.from('shops').select('*').eq('owner_id',user.id).limit(1);
   if(se)throw se;
   shop=ex?.[0]||null;
+
   if(!shop){
    const name=(profile.full_name||'Yangi')+' do‘koni';
-   const {data:s,error}=await db.from('shops').insert({owner_id:user.id,name,shop_name:name}).select().single();
+   const {data:s,error}=await db.from('shops').insert({
+    owner_id:user.id,name,shop_name:name
+   }).select().single();
    if(error)throw error;
    shop=s;
   }
   $('shopName').value=shop.shop_name||shop.name||'';
  }
- $('auth').classList.add('hidden');$('app').classList.remove('hidden');
+
+ $('auth').classList.add('hidden');
+ $('app').classList.remove('hidden');
  setLabel();
  await reloadData();
+ await loadNotifications();
  const first=shop?'shop':'buyer';
- openPage(first,false);history.replaceState({p:first},'');
+ openPage(first,false);
+ history.replaceState({p:first},'');
 }
 
 async function logout(){
- await db.auth.signOut();user=null;shop=null;profile=null;
+ await db.auth.signOut();
+ user=null;shop=null;profile=null;
+ notifications=[];
  data={sales:[],expenses:[],products:[],debts:[],payments:[]};
  document.querySelectorAll('.page').forEach(x=>x.classList.add('hidden'));
- $('app').classList.add('hidden');$('auth').classList.remove('hidden');
+ $('app').classList.add('hidden');
+ $('auth').classList.remove('hidden');
  msg('authMsg','loggedOut');
 }
 
 async function reloadData(){
- if(!shop){data={sales:[],expenses:[],products:[],debts:[],payments:[]};renderAll();say('buyerOk');return}
+ if(!shop){
+  data={sales:[],expenses:[],products:[],debts:[],payments:[]};
+  renderAll();
+  say('buyerOk');
+  return;
+ }
+
  const q=(tb,o)=>db.from(tb).select('*').eq('shop_id',shop.id).order(o,{ascending:o==='name'});
- const r=await Promise.all([q('sales','created_at'),q('expenses','created_at'),q('products','name'),q('debts','created_at')]);
+ const r=await Promise.all([
+  q('sales','created_at'),
+  q('expenses','created_at'),
+  q('products','name'),
+  q('debts','created_at')
+ ]);
  for(const x of r)if(x.error)throw x.error;
- const ids=r[3].data.map(d=>d.id);let pays=[];
+
+ const ids=r[3].data.map(d=>d.id);
+ let pays=[];
  if(ids.length){
   const pr=await db.from('payments').select('*').in('debt_id',ids).order('created_at',{ascending:false});
-  if(pr.error)throw pr.error;pays=pr.data;
+  if(pr.error)throw pr.error;
+  pays=pr.data;
  }
- data.sales=r[0].data.map(x=>({id:x.id,name:x.name,amount:Number(x.amount),type:x.payment_type,date:x.created_at,pid:x.product_id||null,cost:Number(x.cost_total||0)}));
- data.expenses=r[1].data.map(x=>({id:x.id,title:x.title||x.name,amount:Number(x.amount),date:x.created_at}));
- data.products=r[2].data.map(x=>({id:x.id,name:x.name,cost:Number(x.cost_price??x.cost??0),price:Number(x.selling_price??x.sale_price??x.price??0),quantity:Number(x.quantity||0)}));
- data.debts=r[3].data.map(x=>({id:x.id,buyer:x.buyer_name||x.buyer||t('buyer'),phone:x.buyer_phone||x.phone||'',amount:Number(x.amount),due:x.due_date||'',note:x.note||'',linked:!!x.buyer_id,code:x.claim_code||'',status:x.status||'pending',response:x.buyer_response_note||''}));
- data.payments=pays.map(x=>({id:x.id,debtId:x.debt_id,amount:Number(x.amount),date:x.created_at}));
- renderAll();say('updated');
+
+ data.sales=r[0].data.map(x=>({
+  id:x.id,name:x.name,amount:Number(x.amount),
+  type:x.payment_type,date:x.created_at,
+  pid:x.product_id||null,cost:Number(x.cost_total||0)
+ }));
+ data.expenses=r[1].data.map(x=>({
+  id:x.id,title:x.title||x.name,
+  amount:Number(x.amount),date:x.created_at
+ }));
+ data.products=r[2].data.map(x=>({
+  id:x.id,name:x.name,
+  cost:Number(x.cost_price??x.cost??0),
+  price:Number(x.selling_price??x.sale_price??x.price??0),
+  quantity:Number(x.quantity||0)
+ }));
+ data.debts=r[3].data.map(x=>({
+  id:x.id,buyer:x.buyer_name||x.buyer||t('buyer'),
+  phone:x.buyer_phone||x.phone||'',
+  amount:Number(x.amount),due:x.due_date||'',
+  note:x.note||'',linked:!!x.buyer_id,
+  code:x.claim_code||'',status:x.status||'pending',
+  response:x.buyer_response_note||''
+ }));
+ data.payments=pays.map(x=>({
+  id:x.id,debtId:x.debt_id,
+  amount:Number(x.amount),date:x.created_at
+ }));
+
+ renderAll();
+ say('updated');
+}
+
+async function loadNotifications(){
+ if(!user)return;
+ try{
+  const {data:r,error}=await db.from('notifications')
+   .select('*').eq('user_id',user.id)
+   .order('created_at',{ascending:false}).limit(30);
+  if(error)throw error;
+  notifications=r||[];
+  renderNotifications();
+ }catch(e){
+  $('notificationsList').innerHTML=`<p class="small">${esc(eT(e))}</p>`;
+ }
+}
+
+function renderNotifications(){
+ const el=$('notificationsList');
+ if(!el)return;
+ if(!notifications.length){
+  el.innerHTML=`<p class="small">${t('noNotifications')}</p>`;
+  return;
+ }
+ el.innerHTML=notifications.map(n=>`
+  <div class="item">
+   <b>${esc(n.title)}</b>
+   <div>${esc(n.body)}</div>
+   <div class="small">${new Date(n.created_at).toLocaleString(loc())}</div>
+   ${n.read_at?'':`<button class="secondary" onclick="markNotificationRead('${esc(n.id)}')">${t('markRead')}</button>`}
+  </div>
+ `).join('');
+}
+
+async function markNotificationRead(id){
+ const {error}=await db.from('notifications')
+  .update({read_at:new Date().toISOString()})
+  .eq('id',id).eq('user_id',user.id);
+ if(error)return alert(t('err')+eT(error));
+ await loadNotifications();
 }
 
 async function saveShopName(){
@@ -420,8 +686,12 @@ async function saveShopName(){
  const name=val('shopName');
  if(!name)return alert(t('needShopName'));
  run(async()=>{
-  const {data:r,error}=await db.from('shops').update({name,shop_name:name}).eq('id',shop.id).select().single();
-  if(error)throw error;shop=r;say('shopSaved');
+  const {data:r,error}=await db.from('shops')
+   .update({name,shop_name:name})
+   .eq('id',shop.id).select().single();
+  if(error)throw error;
+  shop=r;
+  say('shopSaved');
  });
 }
 
@@ -437,87 +707,129 @@ function openPage(id,push=true){
  window.scrollTo({top:0});
 }
 
-onpopstate=e=>{if(user)openPage(e.state?.p||(shop?'shop':'buyer'),false)};
+onpopstate=e=>{
+ if(user)openPage(e.state?.p||(shop?'shop':'buyer'),false);
+};
 
 async function save(table,row,clear){
  const {error}=await db.from(table).insert(row);
  if(error)throw error;
- clear.forEach(i=>$(i).value='');await reloadData();
+ clear.forEach(i=>$(i).value='');
+ await reloadData();
+ await loadNotifications();
 }
 
 async function makeDebt(buyer,phone,amount,due,note){
- phone=ph(phone);let buyer_id=null;
+ phone=ph(phone);
+ let buyer_id=null;
  if(phone){
   const {data:r,error}=await db.rpc('find_buyer_by_phone',{p_phone:phone});
   if(error)throw error;
   if(r?.length)buyer_id=r[0].buyer_id;
  }
- const {error}=await db.from('debts').insert({shop_id:shop.id,buyer_id,buyer_name:buyer,buyer_phone:phone,amount,due_date:due||null,note:note||null,status:'pending',claim_code:buyer_id?null:(lastCode=genCode())});
+ const code=buyer_id?null:genCode();
+ const {error}=await db.from('debts').insert({
+  shop_id:shop.id,buyer_id,
+  buyer_name:buyer,buyer_phone:phone,
+  amount,due_date:due||null,
+  note:note||null,status:'pending',
+  claim_code:code
+ });
  if(error)throw error;
+ lastCode=code||'';
  return buyer_id;
 }
 
 const addSale=()=>run(async()=>{
- const name=val('saleName'),amount=num('saleAmount'),type=$('saleType').value,buyer=val('saleBuyer');
+ const name=val('saleName');
+ const amount=num('saleAmount');
+ const type=$('saleType').value;
+ const buyer=val('saleBuyer');
+ const phone=ph(val('salePhone'));
+
  if(!name||!(amount>0)||!Number.isFinite(amount))return alert(t('saleNeed'));
  if(type==='qarz'&&!buyer)return alert(t('debtNeed'));
+
  const pr=data.products.find(p=>p.id===$('saleProduct').value);
  const q=num('saleQty');
+
  if(pr&&(!(q>0)||!Number.isFinite(q)))return alert(t('prodNeed'));
  if(pr&&q>pr.quantity)return alert(t('noStock'));
- const row={shop_id:shop.id,name,amount,payment_type:type};
- if(pr){row.product_id=pr.id;row.quantity=q;row.cost_total=pr.cost*q}
- const {data:sale,error}=await db.from('sales').insert(row).select().single();
+
+ const params={
+  p_shop_id:shop.id,
+  p_name:name,
+  p_amount:amount,
+  p_payment_type:type,
+  p_product_id:pr?pr.id:null,
+  p_quantity:pr?q:null,
+  p_cost_total:pr?pr.cost*q:0,
+  p_buyer_name:type==='qarz'?buyer:null,
+  p_buyer_phone:type==='qarz'?phone:null,
+  p_due_date:null,
+  p_note:type==='qarz'?name:null,
+  p_claim_code:null
+ };
+
+ const {data:result,error}=await db.rpc('record_sale_atomic',params);
  if(error)throw error;
 
- let stockChanged=false;
- try{
-  if(pr){
-   const u=await db.from('products').update({quantity:pr.quantity-q}).eq('id',pr.id).eq('shop_id',shop.id).gte('quantity',q).select('id');
-   if(u.error)throw u.error;
-   if(!u.data?.length)throw Error(t('noStock'));
-   stockChanged=true;
-  }
-  let linked=true;
-  if(type==='qarz')linked=await makeDebt(buyer,val('salePhone'),amount,null,name);
+ lastCode=result?.claim_code||'';
 
-  ['saleName','saleAmount','saleBuyer','salePhone'].forEach(i=>$(i).value='');
-  $('saleProduct').value='';$('saleQty').value=1;
-  await reloadData();
-  if(!linked)alert(t('unlinked')+'\n'+t('codeLabel')+': '+lastCode);
- }catch(e){
-  if(stockChanged){
-   const restore=await db.from('products').update({quantity:pr.quantity}).eq('id',pr.id).eq('shop_id',shop.id);
-   if(restore.error)console.error('Stock rollback failed:',restore.error);
-  }
-  const rollback=await db.from('sales').delete().eq('id',sale.id).eq('shop_id',shop.id);
-  if(rollback.error)console.error('Sale rollback failed:',rollback.error);
-  throw e;
+ ['saleName','saleAmount','saleBuyer','salePhone'].forEach(i=>$(i).value='');
+ $('saleProduct').value='';
+ $('saleQty').value=1;
+ $('saleType').value='naqd';
+ $('saleDebt').classList.add('hidden');
+
+ await reloadData();
+ await loadNotifications();
+
+ if(type==='qarz'&&lastCode){
+  alert(t('unlinked')+'\n'+t('codeLabel')+': '+lastCode);
  }
 });
 
 const addExpense=()=>run(async()=>{
- const name=val('expenseName'),amount=num('expenseAmount');
+ const name=val('expenseName');
+ const amount=num('expenseAmount');
  if(!name||!(amount>0)||!Number.isFinite(amount))return alert(t('expNeed'));
- await save('expenses',{shop_id:shop.id,name,title:name,amount},['expenseName','expenseAmount']);
+ await save('expenses',{
+  shop_id:shop.id,name,title:name,amount
+ },['expenseName','expenseAmount']);
 });
 
 const addProduct=()=>run(async()=>{
- const name=val('productName'),cost=num('productCost'),price=num('productPrice'),quantity=num('productQty');
+ const name=val('productName');
+ const cost=num('productCost');
+ const price=num('productPrice');
+ const quantity=num('productQty');
  if(!name||!(cost>=0)||!Number.isFinite(cost)||!(price>0)||!Number.isFinite(price)||$('productQty').value===''||!(quantity>=0)||!Number.isFinite(quantity))return alert(t('prodNeed'));
- await save('products',{shop_id:shop.id,name,cost_price:cost,selling_price:price,sale_price:price,quantity},['productName','productCost','productPrice','productQty']);
+ await save('products',{
+  shop_id:shop.id,name,
+  cost_price:cost,selling_price:price,
+  sale_price:price,quantity
+ },['productName','productCost','productPrice','productQty']);
 });
 
 const addDebt=()=>run(async()=>{
- const buyer=val('debtBuyer'),amount=num('debtAmount');
+ const buyer=val('debtBuyer');
+ const amount=num('debtAmount');
  if(!buyer||!(amount>0)||!Number.isFinite(amount))return alert(t('debtNeed'));
- const id=await makeDebt(buyer,val('debtPhone'),amount,val('debtDate'),val('debtNote'));
+ const id=await makeDebt(
+  buyer,val('debtPhone'),amount,
+  val('debtDate'),val('debtNote')
+ );
  ['debtBuyer','debtPhone','debtAmount','debtDate','debtNote'].forEach(i=>$(i).value='');
  await reloadData();
+ await loadNotifications();
  if(!id)alert(t('unlinked')+'\n'+t('codeLabel')+': '+lastCode);
 });
 
-const paidFor=id=>data.payments.filter(p=>p.debtId===id).reduce((s,p)=>s+p.amount,0);
+const paidFor=id=>data.payments
+ .filter(p=>p.debtId===id)
+ .reduce((s,p)=>s+p.amount,0);
+
 const remaining=d=>Math.max(0,d.amount-paidFor(d.id));
 
 const addPayment=()=>run(async()=>{
@@ -536,37 +848,51 @@ const removeItem=(kind,id)=>{
  if(!confirm(t('delQ')))return;
  run(async()=>{
   if(kind==='debts'){
-   const p=await db.from('payments').delete().eq('debt_id',id);
-   if(p.error)throw p.error;
+   const {error}=await db.from('debts')
+    .delete().eq('id',id).eq('shop_id',shop.id);
+   if(error)throw error;
+  }else{
+   let q=db.from(kind).delete().eq('id',id);
+   if(kind!=='payments')q=q.eq('shop_id',shop.id);
+   const {data:r,error}=await q.select();
+   if(error)throw error;
+   if(!r.length)throw Error(t('noRight'));
   }
-  let q=db.from(kind).delete().eq('id',id);
-  if(kind!=='payments')q=q.eq('shop_id',shop.id);
-  const {data:r,error}=await q.select();
-  if(error)throw error;
-  if(!r.length)throw Error(t('noRight'));
   await reloadData();
+  await loadNotifications();
  });
 };
 
-const delBtn=(k,id)=>(k==='payments'?'':`<button class="good" onclick="editItem('${k}','${id}')">${t('edit')}</button> `)+`<button class="danger" onclick="removeItem('${k}','${id}')">${t('del')}</button>`;
-const statusText=s=>t(['pending','confirmed','disputed'].includes(s)?s:'unknown');
+const delBtn=(k,id)=>
+ (k==='payments'?'':`<button class="good" onclick="editItem('${k}','${id}')">${t('edit')}</button> `)+
+ `<button class="danger" onclick="removeItem('${k}','${id}')">${t('del')}</button>`;
+
+const statusText=s=>t(
+ ['pending','confirmed','disputed','paid'].includes(s)?s:'unknown'
+);
 
 function list(id,items,html){
- const s=document.querySelector('[data-s="'+id+'"]'),qv=(s?.value||'').toLowerCase();
- if(qv)items=items.filter(x=>[x.name,x.title,x.buyer,x.phone,x.note].join(' ').toLowerCase().includes(qv));
+ const s=document.querySelector('[data-s="'+id+'"]');
+ const qv=(s?.value||'').toLowerCase();
+ if(qv){
+  items=items.filter(x=>
+   [x.name,x.title,x.buyer,x.phone,x.note].join(' ').toLowerCase().includes(qv)
+  );
+ }
  const n=lim[id]||30;
- $(id).innerHTML=items.length?items.slice(0,n).map(html).join('')+(items.length>n?`<button class="secondary" onclick="lim['${id}']=${n+30};renderAll()">${t('more')}</button>`:''):`<p class="small">${t('noData')}</p>`;
+ $(id).innerHTML=items.length
+  ?items.slice(0,n).map(html).join('')+
+   (items.length>n?`<button class="secondary" onclick="lim['${id}']=${n+30};renderAll()">${t('more')}</button>`:'')
+  :`<p class="small">${t('noData')}</p>`;
 }
 
 function renderPaymentOptions(){
  const s=$('paymentDebt');
  const old=s.value;
  const a=data.debts.filter(d=>d.status==='confirmed'&&remaining(d)>0);
-
  s.innerHTML=a.length
   ?a.map(d=>`<option value="${esc(d.id)}">${esc(d.buyer)} — ${money(remaining(d))}</option>`).join('')
   :`<option value="">${t('noOpen')}</option>`;
-
  if(a.some(d=>d.id===old))s.value=old;
 }
 
@@ -574,7 +900,7 @@ function renderAll(){
  const sum=(a,k)=>a.reduce((s,x)=>s+(Number(x[k])||0),0);
  const today=new Date().toLocaleDateString('sv');
 
- const confirmedDebts=data.debts.filter(d=>d.status==='confirmed');
+ const confirmedDebts=data.debts.filter(d=>d.status==='confirmed'||d.status==='paid');
  const confirmedIds=new Set(confirmedDebts.map(d=>d.id));
  const confirmedPayments=data.payments.filter(p=>confirmedIds.has(p.debtId));
 
@@ -583,20 +909,60 @@ function renderAll(){
  $('totalDebt').textContent=money(confirmedDebts.reduce((s,d)=>s+remaining(d),0));
  $('totalPaid').textContent=money(sum(confirmedPayments,'amount'));
 
- list('salesList',data.sales,x=>`<div class="item"><b>${esc(x.name)}</b><div>${money(x.amount)} · ${t(x.type==='naqd'?'cash':x.type==='karta'?'card':'credit')}</div><div class="small">${new Date(x.date).toLocaleString(loc())}</div>${delBtn('sales',x.id)}</div>`);
+ list('salesList',data.sales,x=>`
+  <div class="item">
+   <b>${esc(x.name)}</b>
+   <div>${money(x.amount)} · ${t(x.type==='naqd'?'cash':x.type==='karta'?'card':'credit')}</div>
+   <div class="small">${new Date(x.date).toLocaleString(loc())}</div>
+   ${delBtn('sales',x.id)}
+  </div>
+ `);
 
- list('expensesList',data.expenses,x=>`<div class="item"><b>${esc(x.title)}</b><div>${money(x.amount)}</div>${delBtn('expenses',x.id)}</div>`);
+ list('expensesList',data.expenses,x=>`
+  <div class="item">
+   <b>${esc(x.title)}</b>
+   <div>${money(x.amount)}</div>
+   ${delBtn('expenses',x.id)}
+  </div>
+ `);
 
- list('productsList',data.products,x=>`<div class="item"><b>${esc(x.name)}</b><div>${t('costL')}: ${money(x.cost)} · ${t('saleL')}: ${money(x.price)}</div><div>${t('qty')}: ${esc(x.quantity)} · ${t('unitProfit')}: ${money(x.price-x.cost)}</div>${delBtn('products',x.id)}</div>`);
+ list('productsList',data.products,x=>`
+  <div class="item">
+   <b>${esc(x.name)}</b>
+   <div>${t('costL')}: ${money(x.cost)} · ${t('saleL')}: ${money(x.price)}</div>
+   <div>${t('qty')}: ${esc(x.quantity)} · ${t('unitProfit')}: ${money(x.price-x.cost)}</div>
+   ${delBtn('products',x.id)}
+  </div>
+ `);
 
  list('debtsList',data.debts,x=>{
-  const left=remaining(x),late=x.due&&x.due<today&&left>0;
-  return `<div class="item"><b>${esc(x.buyer)}</b><div>${t('tel')}: ${esc(x.phone||t('notSet'))}</div><div>${t('debt')}: ${money(x.amount)} · ${t('paidL')}: ${money(paidFor(x.id))}</div><b>${t('leftL')}: ${money(left)}</b><div><span class="tag">${esc(statusText(x.status))}</span> ${late?`<span class="tag red">${t('overdue')}</span>`:''}</div>${x.response?`<div class="small">${t('buyerNote')}: ${esc(x.response)}</div>`:''}<div class="small">${t('dueL')}: ${esc(x.due||t('unset'))} ${esc(x.note)}</div>${x.linked?'':`<div class="small">${t('codeLabel')}: <b>${esc(x.code)}</b></div>`}${left>0?remind(x.buyer,x.phone,left,x.due,x.linked?'':x.code):''}${delBtn('debts',x.id)}</div>`;
+  const left=remaining(x);
+  const late=x.due&&x.due<today&&left>0;
+  return `
+   <div class="item">
+    <b>${esc(x.buyer)}</b>
+    <div>${t('tel')}: ${esc(x.phone||t('notSet'))}</div>
+    <div>${t('debt')}: ${money(x.amount)} · ${t('paidL')}: ${money(paidFor(x.id))}</div>
+    <b>${t('leftL')}: ${money(left)}</b>
+    <div><span class="tag">${esc(statusText(x.status))}</span> ${late?`<span class="tag red">${t('overdue')}</span>`:''}</div>
+    ${x.response?`<div class="small">${t('buyerNote')}: ${esc(x.response)}</div>`:''}
+    <div class="small">${t('dueL')}: ${esc(x.due||t('unset'))} ${esc(x.note)}</div>
+    ${x.linked?'':`<div class="small">${t('codeLabel')}: <b>${esc(x.code)}</b></div>`}
+    ${left>0&&x.status==='confirmed'?remind(x.buyer,x.phone,left,x.due,x.linked?'':x.code):''}
+    ${delBtn('debts',x.id)}
+   </div>
+  `;
  });
 
  list('paymentsList',data.payments,p=>{
   const d=data.debts.find(x=>x.id===p.debtId);
-  return `<div class="item">${esc(d?.buyer||t('buyer'))} — <b>${money(p.amount)}</b><div class="small">${new Date(p.date).toLocaleString(loc())}</div>${delBtn('payments',p.id)}</div>`;
+  return `
+   <div class="item">
+    ${esc(d?.buyer||t('buyer'))} — <b>${money(p.amount)}</b>
+    <div class="small">${new Date(p.date).toLocaleString(loc())}</div>
+    ${delBtn('payments',p.id)}
+   </div>
+  `;
  });
 
  const g={};
@@ -607,10 +973,21 @@ function renderAll(){
   c.paid+=paidFor(d.id);
  });
 
- list('customersList',Object.values(g).sort((a,b)=>(b.amount-b.paid)-(a.amount-a.paid)),c=>`<div class="item"><b>${esc(c.name)}</b><div>${t('tel')}: ${esc(c.phone||t('notSet'))}</div><div>${t('debt')}: ${money(c.amount)} · ${t('paidL')}: ${money(c.paid)}</div><b>${t('leftL')}: ${money(c.amount-c.paid)}</b>${c.amount>c.paid?remind(c.name,c.phone,c.amount-c.paid,'',''):''}</div>`);
+ list('customersList',Object.values(g).sort((a,b)=>(b.amount-b.paid)-(a.amount-a.paid)),c=>`
+  <div class="item">
+   <b>${esc(c.name)}</b>
+   <div>${t('tel')}: ${esc(c.phone||t('notSet'))}</div>
+   <div>${t('debt')}: ${money(c.amount)} · ${t('paidL')}: ${money(c.paid)}</div>
+   <b>${t('leftL')}: ${money(c.amount-c.paid)}</b>
+   ${c.amount>c.paid?remind(c.name,c.phone,c.amount-c.paid,'',''):''}
+  </div>
+ `);
 
  const sp=$('saleProduct'),old=sp.value;
- sp.innerHTML=`<option value="">${t('noProduct')}</option>`+data.products.filter(p=>p.quantity>0).map(p=>`<option value="${esc(p.id)}">${esc(p.name)} (${esc(p.quantity)})</option>`).join('');
+ sp.innerHTML=`<option value="">${t('noProduct')}</option>`+
+  data.products.filter(p=>p.quantity>0).map(p=>
+   `<option value="${esc(p.id)}">${esc(p.name)} (${esc(p.quantity)})</option>`
+  ).join('');
  if(data.products.some(p=>p.id===old))sp.value=old;
 
  renderPaymentOptions();
@@ -625,8 +1002,7 @@ function renderReports(){
 
  const S=f(data.sales);
  const E=f(data.expenses);
-
- const confirmedDebts=data.debts.filter(d=>d.status==='confirmed');
+ const confirmedDebts=data.debts.filter(d=>d.status==='confirmed'||d.status==='paid');
  const confirmedIds=new Set(confirmedDebts.map(d=>d.id));
  const confirmedPayments=data.payments.filter(p=>confirmedIds.has(p.debtId));
  const P=f(confirmedPayments);
@@ -638,56 +1014,111 @@ function renderReports(){
  const cashIn=s(S.filter(x=>x.type!=='qarz'));
  const real=S.filter(x=>x.pid).reduce((n,x)=>n+x.amount-x.cost,0);
  const stock=data.products.reduce((n,p)=>n+(p.price-p.cost)*p.quantity,0);
-
  const st=(k,v)=>`<div class="stat"><span>${t(k)}</span><b>${money(v)}</b></div>`;
 
- $('reportContent').innerHTML=`<div class="stats">${st('totSales',sales)}${st('expenses',exp)}${st('debtLeft',debt)}${st('paidDebt',paid)}${st('netCash',cashIn+paid-exp)}${st('realProfit',real)}${st('stockProfit',stock)}</div><p class="small">${t('repNote')}</p>`;
+ $('reportContent').innerHTML=`
+  <div class="stats">
+   ${st('totSales',sales)}
+   ${st('expenses',exp)}
+   ${st('debtLeft',debt)}
+   ${st('paidDebt',paid)}
+   ${st('netCash',cashIn+paid-exp)}
+   ${st('realProfit',real)}
+   ${st('stockProfit',stock)}
+  </div>
+  <p class="small">${t('repNote')}</p>
+ `;
 }
 
 async function loadBuyerDebts(){
  if(!user)return;
  try{
-  await db.rpc('claim_my_debts');
-  const {data:r,error}=await db.from('debts').select('*').eq('buyer_id',user.id).order('created_at',{ascending:false});
+  const {error:claimError}=await db.rpc('claim_my_debts');
+  if(claimError)throw claimError;
+
+  const {data:r,error}=await db.from('debts')
+   .select('*').eq('buyer_id',user.id)
+   .order('created_at',{ascending:false});
   if(error)throw error;
-  const ds=r||[],ids=ds.map(d=>d.id);let ps=[];
+
+  const ds=r||[];
+  const ids=ds.map(d=>d.id);
+  let ps=[];
+
   if(ids.length){
    const p=await db.from('payments').select('*').in('debt_id',ids);
-   if(p.error)throw p.error;ps=p.data;
+   if(p.error)throw p.error;
+   ps=p.data;
   }
+
   list('buyerDebtsList',ds,d=>{
-   const paid=ps.filter(p=>p.debt_id===d.id).reduce((s,p)=>s+Number(p.amount),0);
-   const left=Math.max(0,Number(d.amount)-paid),st=d.status||'pending',pend=st==='pending';
-   return `<div class="item"><b>${t('debtRec')}</b>
-<div>${t('debt')}: ${money(d.amount)}</div><div>${t('paidL')}: ${money(paid)}</div><b>${t('leftL')}: ${money(left)}</b>
-<div><span class="tag">${esc(statusText(st))}</span></div>
-<div class="small">${t('dueL')}: ${esc(d.due_date||t('unset'))}</div>
-${d.buyer_response_note?`<div class="small">${t('objNote')}: ${esc(d.buyer_response_note)}</div>`:''}
-${pend?`<label>${t('reason')}</label><textarea id="note-${esc(d.id)}" rows="2" placeholder="${t('whyNot')}"></textarea>
-<div class="row"><button class="good" onclick="respondDebt('${esc(d.id)}','confirmed')">${t('bConfirm')}</button><button class="danger" onclick="respondDebt('${esc(d.id)}','disputed')">${t('bDispute')}</button></div>`:''}</div>`;
+   const paid=ps.filter(p=>p.debt_id===d.id)
+    .reduce((s,p)=>s+Number(p.amount),0);
+   const left=Math.max(0,Number(d.amount)-paid);
+   const st=d.status||'pending';
+   const pend=st==='pending';
+
+   return `
+    <div class="item">
+     <b>${t('debtRec')}</b>
+     <div>${t('debt')}: ${money(d.amount)}</div>
+     <div>${t('paidL')}: ${money(paid)}</div>
+     <b>${t('leftL')}: ${money(left)}</b>
+     <div><span class="tag">${esc(statusText(st))}</span></div>
+     <div class="small">${t('dueL')}: ${esc(d.due_date||t('unset'))}</div>
+     ${d.buyer_response_note?`<div class="small">${t('objNote')}: ${esc(d.buyer_response_note)}</div>`:''}
+     ${pend?`
+      <label>${t('reason')}</label>
+      <textarea id="note-${esc(d.id)}" rows="2" placeholder="${t('whyNot')}"></textarea>
+      <div class="row">
+       <button class="good" onclick="respondDebt('${esc(d.id)}','confirmed')">${t('bConfirm')}</button>
+       <button class="danger" onclick="respondDebt('${esc(d.id)}','disputed')">${t('bDispute')}</button>
+      </div>
+     `:''}
+    </div>
+   `;
   });
- }catch(e){say('loadFail',eT(e))}
+
+  await loadNotifications();
+ }catch(e){
+  say('loadFail',eT(e));
+ }
 }
 
 async function respondDebt(id,status){
  try{
   const note=$('note-'+id)?.value.trim()||null;
   if(status==='disputed'&&!note&&!confirm(t('noReasonQ')))return;
-  const {error}=await db.rpc('buyer_respond_to_debt',{p_debt_id:id,p_status:status,p_note:note});
+
+  const {error}=await db.rpc('buyer_respond_to_debt',{
+   p_debt_id:id,p_status:status,p_note:note
+  });
   if(error)throw error;
+
   alert(t(status==='confirmed'?'okConfirm':'okDispute'));
   await loadBuyerDebts();
- }catch(e){alert(t('respFail')+eT(e))}
+  await loadNotifications();
+ }catch(e){
+  alert(t('respFail')+eT(e));
+ }
 }
 
 (async()=>{
  tr();
- if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+ if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+ }
  try{
   const {data:r,error}=await db.auth.getSession();
   if(error)throw error;
-  if(recovering)showReset();else if(r.session){user=r.session.user;await startApp()}
- }catch(e){msg('authMsg','err',eT(e))}
+  if(recovering)showReset();
+  else if(r.session){
+   user=r.session.user;
+   await startApp();
+  }
+ }catch(e){
+  msg('authMsg','err',eT(e));
+ }
 })();
 </script>
 </body>
