@@ -9,12 +9,13 @@ on:
     paths:
       - "index.html"
       - "style.css"
-      - "skin.css"
       - "package.json"
       - "package-lock.json"
       - "capacitor.config.json"
       - "manifest.json"
       - "sw.js"
+      - "icon-192.png"
+      - "icon-512.png"
       - ".github/workflows/build-apk.yml"
 
 permissions:
@@ -41,18 +42,24 @@ jobs:
           java-version: "17"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
+
+      - name: Check project files
+        run: |
+          test -f index.html
+          test -f package.json
+          test -f capacitor.config.json
 
       - name: Prepare web files
         run: |
           mkdir -p www
-          cp index.html www/
-          cp style.css www/ 2>/dev/null || true
-          cp skin.css www/ 2>/dev/null || true
-          cp manifest.json www/ 2>/dev/null || true
-          cp sw.js www/ 2>/dev/null || true
-          cp icon-192.png www/ 2>/dev/null || true
-          cp icon-512.png www/ 2>/dev/null || true
+          cp index.html www/index.html
+
+          for file in style.css manifest.json sw.js icon-192.png icon-512.png; do
+            if [ -f "$file" ]; then
+              cp "$file" www/
+            fi
+          done
 
       - name: Create Android project
         run: npx cap add android
