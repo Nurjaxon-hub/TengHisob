@@ -1,5 +1,5 @@
 {
-  "id": "/",
+  "id": "./",
   "name": "TengHisob",
   "short_name": "TengHisob",
   "description": "Do‘kon va xaridorlar uchun hisob-kitob, savdo, qarz va to‘lovlarni boshqarish ilovasi.",
@@ -9,7 +9,7 @@
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#f4f5fb",
+  "background_color": "#f3f5f9",
   "theme_color": "#07162e",
   "categories": ["business", "finance", "productivity"],
   "icons": [
