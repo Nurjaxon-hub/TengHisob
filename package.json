@@ -1,9 +1,8 @@
-
 {
   "name": "tenghisob-android",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
-  "description": "TengHisob Android APK",
+  "description": "TengHisob Android ilovasi",
   "scripts": {
     "build:android": "npx cap sync android",
     "android:open": "npx cap open android",
