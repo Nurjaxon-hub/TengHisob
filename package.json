@@ -1,6 +1,6 @@
 {
   "name": "tenghisob-android",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "description": "TengHisob Android ilovasi",
   "scripts": {
@@ -10,10 +10,10 @@
     "cap:sync": "npx cap sync"
   },
   "dependencies": {
-    "@capacitor/android": "^6.2.1",
-    "@capacitor/core": "^6.2.1"
+    "@capacitor/android": "6.2.1",
+    "@capacitor/core": "6.2.1"
   },
   "devDependencies": {
-    "@capacitor/cli": "^6.2.1"
+    "@capacitor/cli": "6.2.1"
   }
 }
