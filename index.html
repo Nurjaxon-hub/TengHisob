@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#07162e">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon.svg">
 <link rel="stylesheet" href="style.css">
 <title>TengHisob</title>
 </head>
@@ -192,6 +192,7 @@ let lang=localStorage.getItem('tenghisob_language')==='ru'?'ru':'uz';
 let user=null,profile=null,shop=null,mode=false;
 let data={sales:[],expenses:[],products:[],debts:[],payments:[]};
 let notifications=[];
+let realtimeChannel=null;
 
 const L={
 sub:['Do‘kon va xaridor hisob-kitoblari','Расчёты магазина и покупателей'],
@@ -569,12 +570,17 @@ async function startApp(){
  setLabel();
  await reloadData();
  await loadNotifications();
+ subscribeRealtime();
  const first=shop?'shop':'buyer';
  openPage(first,false);
  history.replaceState({p:first},'');
 }
 
 async function logout(){
+ if(realtimeChannel){
+  await db.removeChannel(realtimeChannel);
+  realtimeChannel=null;
+ }
  await db.auth.signOut();
  user=null;shop=null;profile=null;
  notifications=[];
@@ -617,7 +623,7 @@ async function reloadData(){
  }));
  data.expenses=r[1].data.map(x=>({
   id:x.id,title:x.title||x.name,
-  amount:Number(x.amount),date:x.created_at
+  amount:Number(x.amount),date:x.spent_at||x.created_at
  }));
  data.products=r[2].data.map(x=>({
   id:x.id,name:x.name,
@@ -635,7 +641,7 @@ async function reloadData(){
  }));
  data.payments=pays.map(x=>({
   id:x.id,debtId:x.debt_id,
-  amount:Number(x.amount),date:x.created_at
+  amount:Number(x.amount),date:x.paid_at||x.created_at
  }));
 
  renderAll();
@@ -654,6 +660,24 @@ async function loadNotifications(){
  }catch(e){
   $('notificationsList').innerHTML=`<p class="small">${esc(eT(e))}</p>`;
  }
+}
+
+function subscribeRealtime(){
+ if(!user)return;
+ if(realtimeChannel)db.removeChannel(realtimeChannel);
+ realtimeChannel=db.channel('tenghisob-'+user.id)
+  .on('postgres_changes',{event:'*',schema:'public',table:'notifications',filter:'user_id=eq.'+user.id},()=>{
+   loadNotifications();
+  })
+  .on('postgres_changes',{event:'*',schema:'public',table:'debts'},()=>{
+   if(shop)reloadData();
+   else if(!$('buyer').classList.contains('hidden'))loadBuyerDebts();
+  })
+  .on('postgres_changes',{event:'*',schema:'public',table:'payments'},()=>{
+   if(shop)reloadData();
+   else if(!$('buyer').classList.contains('hidden'))loadBuyerDebts();
+  })
+  .subscribe();
 }
 
 function renderNotifications(){
@@ -922,6 +946,7 @@ function renderAll(){
   <div class="item">
    <b>${esc(x.title)}</b>
    <div>${money(x.amount)}</div>
+   <div class="small">${x.date?new Date(x.date).toLocaleString(loc()):''}</div>
    ${delBtn('expenses',x.id)}
   </div>
  `);
@@ -959,7 +984,7 @@ function renderAll(){
   return `
    <div class="item">
     ${esc(d?.buyer||t('buyer'))} — <b>${money(p.amount)}</b>
-    <div class="small">${new Date(p.date).toLocaleString(loc())}</div>
+    <div class="small">${p.date?new Date(p.date).toLocaleString(loc()):''}</div>
     ${delBtn('payments',p.id)}
    </div>
   `;
@@ -997,7 +1022,7 @@ function renderAll(){
 function renderReports(){
  const days=Number($('repRange').value);
  const from=days?new Date(new Date().setHours(0,0,0,0)-(days-1)*864e5):null;
- const f=a=>from?a.filter(x=>new Date(x.date)>=from):a;
+ const f=a=>from?a.filter(x=>x.date&&new Date(x.date)>=from):a;
  const s=a=>a.reduce((n,x)=>n+x.amount,0);
 
  const S=f(data.sales);
@@ -1044,9 +1069,16 @@ async function loadBuyerDebts(){
   const ds=r||[];
   const ids=ds.map(d=>d.id);
   let ps=[];
+  let shopIds=[...new Set(ds.map(d=>d.shop_id).filter(Boolean))];
+  let shopsById={};
+
+  if(shopIds.length){
+   const sr=await db.from('shops').select('id,name,shop_name').in('id',shopIds);
+   if(!sr.error)(sr.data||[]).forEach(s=>shopsById[s.id]=s);
+  }
 
   if(ids.length){
-   const p=await db.from('payments').select('*').in('debt_id',ids);
+   const p=await db.from('payments').select('*').in('debt_id',ids).order('created_at',{ascending:false});
    if(p.error)throw p.error;
    ps=p.data;
   }
@@ -1057,15 +1089,21 @@ async function loadBuyerDebts(){
    const left=Math.max(0,Number(d.amount)-paid);
    const st=d.status||'pending';
    const pend=st==='pending';
+   const sh=shopsById[d.shop_id];
+   const shopTitle=sh?(sh.shop_name||sh.name):'';
+   const history=ps.filter(p=>p.debt_id===d.id);
 
    return `
     <div class="item">
      <b>${t('debtRec')}</b>
+     ${shopTitle?`<div>${esc(shopTitle)}</div>`:''}
      <div>${t('debt')}: ${money(d.amount)}</div>
      <div>${t('paidL')}: ${money(paid)}</div>
      <b>${t('leftL')}: ${money(left)}</b>
      <div><span class="tag">${esc(statusText(st))}</span></div>
      <div class="small">${t('dueL')}: ${esc(d.due_date||t('unset'))}</div>
+     ${d.note?`<div class="small">${esc(d.note)}</div>`:''}
+     ${history.length?`<div class="small">${t('payments')}: ${history.map(p=>money(p.amount)+' · '+new Date(p.paid_at||p.created_at).toLocaleDateString(loc())).join(' | ')}</div>`:''}
      ${d.buyer_response_note?`<div class="small">${t('objNote')}: ${esc(d.buyer_response_note)}</div>`:''}
      ${pend?`
       <label>${t('reason')}</label>
