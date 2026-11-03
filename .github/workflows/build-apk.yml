@@ -17,7 +17,7 @@ on:
       - ".github/workflows/build-apk.yml"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -26,11 +26,14 @@ jobs:
     steps:
       - name: Get source code
         uses: actions/checkout@v4
+        with:
+          token: ${{ github.token }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -48,16 +51,32 @@ jobs:
           test -f package.json
           test -f capacitor.config.json
 
-      - name: Install dependencies
-        run: npm install --no-audit --no-fund
+      - name: Generate package-lock.json
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+
+      - name: Save package-lock.json to GitHub
+        run: |
+          if ! git diff --quiet -- package-lock.json; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add package-lock.json
+            git commit -m "Generate package-lock.json"
+            git push
+          fi
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
 
       - name: Prepare web files
         run: |
           mkdir -p www
           cp index.html style.css manifest.json sw.js icon.svg www/
 
-      - name: Create Android project
-        run: npx cap add android
+      - name: Create Android project if missing
+        run: |
+          if [ ! -d android ]; then
+            npx cap add android
+          fi
 
       - name: Sync Android project
         run: npx cap sync android
