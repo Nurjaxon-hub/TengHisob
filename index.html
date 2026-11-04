@@ -1162,7 +1162,7 @@ function renderAll(){
    <b>${esc(x.name)}</b>
    <div>${money(x.amount)} · ${t(x.type==='naqd'?'cash':x.type==='karta'?'card':'credit')}</div>
    <div class="small">${new Date(x.date).toLocaleString(loc())}</div>
-   ${delBtn('sales',x.id)}
+   ${x.type==='qarz'?'':delBtn('sales',x.id)}
   </div>
  `);
 
