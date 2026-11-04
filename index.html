@@ -98,6 +98,7 @@
 <div id="saleDebt" class="hidden">
 <label data-i="buyerName"></label><input id="saleBuyer">
 <label data-i="phone"></label><input id="salePhone" type="tel" placeholder="+998...">
+<label data-i="due"></label><input id="saleDueDate" type="date">
 </div>
 <button class="primary" onclick="addSale()" data-i="saveSale"></button>
 <input data-s="salesList" data-p="search" oninput="renderAll()" style="margin-top:14px">
@@ -274,7 +275,7 @@ payTitle:['Qarz to‘lovi','Платёж по долгу'],
 debt:['Qarz','Долг'],
 paidAmt:['To‘langan summa (so‘m)','Оплаченная сумма (сум)'],
 savePay:['To‘lovni saqlash','Сохранить платёж'],
-buyerInfo:['Sizga biriktirilgan qarzlarni ko‘rish, tasdiqlash или nizolash mumkin.','Вы можете просматривать, подтверждать или оспаривать назначенные вам долги.'],
+buyerInfo:['Sizga biriktirilgan qarzlarni ko‘rish, tasdiqlash yoki nizolash mumkin.','Вы можете просматривать, подтверждать или оспаривать назначенные вам долги.'],
 ratingLabel:['Reyting','Рейтинг'],
 refresh:['Yangilash','Обновить'],
 loading:['Ma’lumotlar bazasi yuklanmoqda…','Загрузка базы данных…'],
@@ -983,7 +984,7 @@ const addSale=()=>run(async()=>{
   p_cost_total:pr?pr.cost*q:0,
   p_buyer_name:type==='qarz'?buyer:null,
   p_buyer_phone:type==='qarz'?phone:null,
-  p_due_date:null,
+  p_due_date:val('saleDueDate')||null,
   p_note:type==='qarz'?name:null,
   p_claim_code:null
  };
@@ -993,7 +994,7 @@ const addSale=()=>run(async()=>{
 
  lastCode=result?.claim_code||'';
 
- ['saleName','saleAmount','saleBuyer','salePhone'].forEach(i=>$(i).value='');
+ ['saleName','saleAmount','saleBuyer','salePhone','saleDueDate'].forEach(i=>$(i).value='');
  $('saleProduct').value='';
  $('saleQty').value=1;
  $('saleType').value='naqd';
