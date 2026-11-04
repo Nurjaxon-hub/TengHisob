@@ -654,7 +654,7 @@ async function logout(){
 
 async function reloadData(){
  if(!shop){
-  data={sales:[],expenses:[],products:[],debts:[],payments:[]};
+  data={sales:[],expenses:[],products:[],debts:[],payments:[],ratings:{}};
   renderAll();
   say('buyerOk');
   return;
