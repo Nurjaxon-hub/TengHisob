@@ -55,12 +55,17 @@ jobs:
 
       - name: Save package-lock.json to GitHub
         run: |
-          if ! git diff --quiet -- package-lock.json; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -f package-lock.json ]; then
             git add package-lock.json
-            git commit -m "Generate package-lock.json"
-            git push
+            if ! git diff --cached --quiet -- package-lock.json; then
+              git config user.name "github-actions[bot]"
+              git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+              git commit -m "Generate package-lock.json"
+              git push
+            fi
+          else
+            echo "ERROR: package-lock.json was not generated"
+            exit 1
           fi
 
       - name: Install locked dependencies
