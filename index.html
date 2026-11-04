@@ -616,6 +616,7 @@ async function startApp(){
   $('shopPhone').value=shop.contact_phone||'';
   $('shopDescription').value=shop.description||'';
   $('listShopBtn').dataset.i=shop.is_listed?'listingDisable':'listingEnable';
+  tr();
  }
 
  $('auth').classList.add('hidden');
@@ -874,9 +875,11 @@ async function loadBuyerRating(){
 async function submitRatingAppeal(id){
  const reason=$('ratingReason-'+id)?.value.trim()||'';
  if(reason.length<5||reason.length>1000)return alert(t('appealReason'));
- const {error}=await db.rpc('submit_buyer_rating_appeal',{p_event_id:id,p_reason:reason});
- if(error)return alert(t('err')+eT(error));
- await loadBuyerRating();
+ try{
+  const {error}=await db.rpc('submit_buyer_rating_appeal',{p_event_id:id,p_reason:reason});
+  if(error)throw error;
+  await loadBuyerRating();
+ }catch(e){alert(t('err')+eT(e));}
 }
 
 async function loadShopAppeals(){
@@ -910,11 +913,13 @@ async function loadShopAppeals(){
 async function reviewRatingAppeal(id,decision){
  const note=prompt(t('appealReviewNote'),'');
  if(note===null)return;
- const {error}=await db.rpc('review_buyer_rating_appeal',{
-  p_appeal_id:id,p_decision:decision,p_review_note:note
- });
- if(error)return alert(t('err')+eT(error));
- await loadShopAppeals();
+ try{
+  const {error}=await db.rpc('review_buyer_rating_appeal',{
+   p_appeal_id:id,p_decision:decision,p_review_note:note
+  });
+  if(error)throw error;
+  await loadShopAppeals();
+ }catch(e){alert(t('err')+eT(e));}
 }
 
 function openPage(id,push=true){
