@@ -354,7 +354,7 @@ r30:['Oxirgi 30 kun','Последние 30 дней'],
 rAll:['Hammasi','Всё время'],
 exportCsv:['Excel (CSV) yuklab olish','Скачать Excel (CSV)'],
 noStock:['Omborda mahsulot yetarli emas.','Недостаточно товара на складе.'],
-realProfit:['Sotilgan mahsulot foydasi','Прибыль от проданных товаров'],
+realProfit:['Sof foyda','Чистая прибыль'],
 codeLabel:['Xaridor kodi','Код покупателя'],
 codeIn:['Qarz kodi (do‘kon egasidan)','Код долга (от владельца магазина)'],
 addByCode:['Qo‘shish','Добавить'],
@@ -1300,7 +1300,7 @@ function renderReports(){
  const paid=s(P);
  const debt=confirmedDebts.reduce((n,d)=>n+remaining(d),0);
  const cashIn=s(S.filter(x=>x.type!=='qarz'));
- const real=S.filter(x=>x.pid).reduce((n,x)=>n+x.amount-x.cost,0);
+ const real=S.reduce((n,x)=>n+x.amount-x.cost,0)-exp;
  const stock=data.products.reduce((n,p)=>n+(p.price-p.cost)*p.quantity,0);
  const st=(k,v)=>`<div class="stat"><span>${t(k)}</span><b>${money(v)}</b></div>`;
 
