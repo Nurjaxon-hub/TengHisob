@@ -59,6 +59,12 @@
 <h2 data-i="shopOwner"></h2>
 <label data-i="shopName"></label><input id="shopName">
 <button class="secondary" onclick="saveShopName()" data-i="saveShop"></button>
+<label data-i="shopAddress"></label><input id="shopAddress" autocomplete="street-address">
+<label data-i="shopPhone"></label><input id="shopPhone" type="tel" placeholder="+998...">
+<label data-i="shopDescription"></label><textarea id="shopDescription" rows="2"></textarea>
+<button class="secondary" onclick="saveShopProfile()" data-i="saveShopProfile"></button>
+<button class="secondary" id="listShopBtn" onclick="toggleShopListing()" data-i="listingEnable"></button>
+<p class="small" data-i="listingInfo"></p>
 <div class="stats">
 <div class="stat"><span data-i="totSales"></span><b id="totalSales"></b></div>
 <div class="stat"><span data-i="expenses"></span><b id="totalExpenses"></b></div>
@@ -73,6 +79,7 @@
 <button onclick="openPage('payments')" data-i="payments"></button>
 <button onclick="openPage('reports')" data-i="reports"></button>
 <button onclick="openPage('customers')" data-i="customers"></button>
+<button onclick="openPage('shopAppeals')" data-i="appealsTitle"></button>
 </div>
 </section>
 
@@ -162,9 +169,26 @@
 <button class="secondary" onclick="openPage('shop')" data-i="back"></button>
 </section>
 
+<section id="shopAppeals" class="card page hidden">
+<h2 data-i="appealsTitle"></h2>
+<div id="shopAppealsList"></div>
+<button class="secondary" onclick="openPage('shop')" data-i="back"></button>
+</section>
+
+<section id="catalog" class="card page hidden">
+<h2 data-i="catalogTitle"></h2>
+<div id="shopCatalogList"></div>
+<button class="secondary" onclick="openPage('buyer')" data-i="back"></button>
+</section>
+
 <section id="buyer" class="card page hidden">
 <h2 data-i="buyer"></h2>
 <p class="small" data-i="buyerInfo"></p>
+<div class="card">
+<div class="topline"><b data-i="ratingTitle"></b><b id="buyerRatingScore">100/100</b></div>
+<div id="buyerRatingEvents"></div>
+</div>
+<button class="secondary" onclick="openPage('catalog')" data-i="catalogTitle"></button>
 <button class="primary" onclick="loadBuyerDebts()" data-i="refresh"></button>
 <label data-i="codeIn"></label>
 <div class="row">
@@ -337,7 +361,29 @@ editName:['Yangi nom / izoh:','Новое название / примечани�
 editVal:['Yangi summa (so‘m):','Новая сумма (сум):'],
 notifications:['Bildirishnomalar','Уведомления'],
 markRead:['O‘qildi deb belgilash','Отметить прочитанным'],
-noNotifications:['Hozircha bildirishnoma yo‘q.','Пока нет уведомлений.']
+noNotifications:['Hozircha bildirishnoma yo‘q.','Пока нет уведомлений.'],
+shopAddress:['Do‘kon manzili','Адрес магазина'],
+shopPhone:['Do‘kon telefoni','Телефон магазина'],
+shopDescription:['Do‘kon haqida','О магазине'],
+saveShopProfile:['Ma’lumotlarni saqlash','Сохранить данные'],
+listingEnable:['Katalogda ko‘rsatish','Показывать в каталоге'],
+listingDisable:['Katalogdan yashirish','Скрыть из каталога'],
+listingInfo:['Katalogda ko‘rinishi uchun do‘kon nomi va manzilini to‘ldiring.','Чтобы магазин отображался в каталоге, заполните название и адрес.'],
+catalogTitle:['Do‘konlar katalogi','Каталог магазинов'],
+ratingTitle:['Xaridor reytingi','Рейтинг покупателя'],
+appealPending:['Ko‘rib chiqilmoqda','На рассмотрении'],
+appealAccepted:['Qabul qilindi','Принято'],
+appealRejected:['Rad etildi','Отклонено'],
+appealsTitle:['Xaridor e’tirozlari','Возражения покупателей'],
+noAppeals:['Ko‘rib chiqiladigan e’tiroz yo‘q.','Нет возражений для рассмотрения.'],
+appealAccept:['Qabul qilish','Принять'],
+appealReject:['Rad etish','Отклонить'],
+appealReviewNote:['Ko‘rib chiqish izohi (ixtiyoriy)','Комментарий к решению (необязательно)'],
+listingEmpty:['Katalogda hozircha do‘kon yo‘q.','В каталоге пока нет магазинов.'],
+ratingNoEvents:['Reyting tarixi hozircha bo‘sh.','История рейтинга пока пуста.'],
+appealReason:['E’tiroz sababini yozing (5–1000 belgi)','Укажите причину (5–1000 символов)'],
+appealSend:['E’tiroz yuborish','Отправить возражение'],
+shopSaveOk:['Do‘kon ma’lumotlari saqlandi.','Данные магазина сохранены.']
 };
 
 const t=k=>(L[k]||[k,k])[lang==='ru'?1:0];
@@ -563,6 +609,10 @@ async function startApp(){
    shop=s;
   }
   $('shopName').value=shop.shop_name||shop.name||'';
+  $('shopAddress').value=shop.address||'';
+  $('shopPhone').value=shop.contact_phone||'';
+  $('shopDescription').value=shop.description||'';
+  $('listShopBtn').dataset.i=shop.is_listed?'listingDisable':'listingEnable';
  }
 
  $('auth').classList.add('hidden');
@@ -677,6 +727,13 @@ function subscribeRealtime(){
    if(shop)reloadData();
    else if(!$('buyer').classList.contains('hidden'))loadBuyerDebts();
   })
+  .on('postgres_changes',{event:'*',schema:'public',table:'buyer_rating_events',filter:'buyer_id=eq.'+user.id},()=>{
+   if(!shop)loadBuyerRating();
+  })
+  .on('postgres_changes',{event:'*',schema:'public',table:'buyer_rating_appeals'},()=>{
+   if(shop&&$('shopAppeals')&&!$('shopAppeals').classList.contains('hidden'))loadShopAppeals();
+   if(!shop)loadBuyerRating();
+  })
   .subscribe();
 }
 
@@ -719,14 +776,141 @@ async function saveShopName(){
  });
 }
 
+async function saveShopProfile(){
+ if(!shop)return;
+ const name=val('shopName');
+ if(!name)return alert(t('needShopName'));
+ run(async()=>{
+  const {data:r,error}=await db.from('shops').update({
+   name,shop_name:name,address:val('shopAddress')||null,
+   contact_phone:ph(val('shopPhone'))||null,
+   description:val('shopDescription')||null
+  }).eq('id',shop.id).eq('owner_id',user.id).select().single();
+  if(error)throw error;
+  shop=r;
+  say('shopSaveOk');
+ });
+}
+
+async function toggleShopListing(){
+ if(!shop)return;
+ const next=!shop.is_listed;
+ if(next&&(!val('shopName')||!val('shopAddress'))){
+  alert(t('listingInfo'));return;
+ }
+ run(async()=>{
+  const {data:r,error}=await db.from('shops').update({is_listed:next})
+   .eq('id',shop.id).eq('owner_id',user.id).select().single();
+  if(error)throw error;
+  shop=r;
+  $('listShopBtn').dataset.i=shop.is_listed?'listingDisable':'listingEnable';
+  tr();
+ });
+}
+
+async function loadShopCatalog(){
+ const el=$('shopCatalogList');
+ el.innerHTML='<p class="small">'+t('loading')+'</p>';
+ const {data:r,error}=await db.from('shops')
+  .select('id,shop_name,name,address,contact_phone,description')
+  .eq('is_listed',true).order('shop_name',{ascending:true});
+ if(error)throw error;
+ el.innerHTML=r?.length?r.map(x=>`
+  <div class="item">
+   <b>${esc(x.shop_name||x.name||'')}</b>
+   <div>${esc(x.address||'')}</div>
+   ${x.contact_phone?`<div><a href="tel:${esc(x.contact_phone)}">${esc(x.contact_phone)}</a></div>`:''}
+   ${x.description?`<div class="small">${esc(x.description)}</div>`:''}
+  </div>`
+ ).join(''):'<p class="small">'+t('listingEmpty')+'</p>';
+}
+
+async function loadBuyerRating(){
+ if(!user||profile.role!=='buyer')return;
+ const {data:r,error}=await db.from('buyer_rating_summary')
+  .select('score,updated_at').eq('buyer_id',user.id).maybeSingle();
+ if(error)throw error;
+ $('buyerRatingScore').textContent=(r?.score??100)+'/100';
+ const {data:events,error:ee}=await db.from('buyer_rating_events')
+  .select('id,event_type,points,status,reason,created_at')
+  .eq('buyer_id',user.id).order('created_at',{ascending:false}).limit(30);
+ if(ee)throw ee;
+ const ids=(events||[]).map(x=>x.id);
+ let appeals=[];
+ if(ids.length){
+  const a=await db.from('buyer_rating_appeals')
+   .select('event_id,status,reason,review_note')
+   .in('event_id',ids);
+  if(a.error)throw a.error;
+  appeals=a.data||[];
+ }
+ $('buyerRatingEvents').innerHTML=events?.length?events.map(e=>{
+  const appeal=appeals.find(a=>a.event_id===e.id);
+  return `<div class="item">
+   <b>${esc(e.reason||e.event_type)}</b>
+   <div>${Number(e.points)>0?'+':''}${Number(e.points)} · ${esc(e.status)}</div>
+   <div class="small">${new Date(e.created_at).toLocaleString(loc())}</div>
+   ${appeal?`<div class="small">${t(appeal.status==='pending'?'appealPending':appeal.status==='accepted'?'appealAccepted':'appealRejected')}</div>${appeal.review_note?`<div class="small">${esc(appeal.review_note)}</div>`:''}`:
+    e.status==='applied'?`<textarea id="ratingReason-${esc(e.id)}" maxlength="1000" placeholder="${t('appealReason')}"></textarea><button class="secondary" onclick="submitRatingAppeal('${esc(e.id)}')">${t('appealSend')}</button>`:''}
+  </div>`;
+ }).join(''):'<p class="small">'+t('ratingNoEvents')+'</p>';
+}
+
+async function submitRatingAppeal(id){
+ const reason=$('ratingReason-'+id)?.value.trim()||'';
+ if(reason.length<5||reason.length>1000)return alert(t('appealReason'));
+ const {error}=await db.rpc('submit_buyer_rating_appeal',{p_event_id:id,p_reason:reason});
+ if(error)return alert(t('err')+eT(error));
+ await loadBuyerRating();
+}
+
+async function loadShopAppeals(){
+ const el=$('shopAppealsList');
+ el.innerHTML='<p class="small">'+t('loading')+'</p>';
+ const {data:a,error}=await db.from('buyer_rating_appeals')
+  .select('id,event_id,buyer_id,reason,created_at,status')
+  .eq('status','pending').order('created_at',{ascending:true});
+ if(error)throw error;
+ if(!a?.length){el.innerHTML='<p class="small">'+t('noAppeals')+'</p>';return;}
+ const ids=a.map(x=>x.event_id);
+ const {data:events,error:ee}=await db.from('buyer_rating_events')
+  .select('id,event_type,points,reason,shop_id').in('id',ids);
+ if(ee)throw ee;
+ const byId=Object.fromEntries((events||[]).map(x=>[x.id,x]));
+ el.innerHTML=a.filter(x=>byId[x.event_id]?.shop_id===shop.id).map(x=>{
+  const ev=byId[x.event_id];
+  return `<div class="item">
+   <b>${esc(ev?.reason||ev?.event_type||'')}</b>
+   <div>${t('ratingTitle')}: ${Number(ev?.points||0)}</div>
+   <div>${esc(x.reason)}</div>
+   <div class="small">${new Date(x.created_at).toLocaleString(loc())}</div>
+   <button class="good" onclick="reviewRatingAppeal('${esc(x.id)}','accepted')">${t('appealAccept')}</button>
+   <button class="danger" onclick="reviewRatingAppeal('${esc(x.id)}','rejected')">${t('appealReject')}</button>
+  </div>`;
+ }).join('')||'<p class="small">'+t('noAppeals')+'</p>';
+}
+
+async function reviewRatingAppeal(id,decision){
+ const note=prompt(t('appealReviewNote'),'');
+ if(note===null)return;
+ const {error}=await db.rpc('review_buyer_rating_appeal',{
+  p_appeal_id:id,p_decision:decision,p_review_note:note
+ });
+ if(error)return alert(t('err')+eT(error));
+ await loadShopAppeals();
+}
+
 function openPage(id,push=true){
  if(!user)return;
- if(id!=='buyer'&&!shop)id='buyer';
+ if(!shop&&!['buyer','catalog'].includes(id))id='buyer';
+ if(shop&&id==='catalog')id='shop';
  document.querySelectorAll('.page').forEach(x=>x.classList.add('hidden'));
  $(id).classList.remove('hidden');
  if(id==='payments')renderPaymentOptions();
  if(id==='reports')renderReports();
- if(id==='buyer')loadBuyerDebts();
+ if(id==='buyer'){loadBuyerDebts();loadBuyerRating();}
+ if(id==='catalog')loadShopCatalog();
+ if(id==='shopAppeals')loadShopAppeals();
  if(push)history.pushState({p:id},'');
  window.scrollTo({top:0});
 }
