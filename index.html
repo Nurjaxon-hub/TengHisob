@@ -363,6 +363,7 @@ edit:['Tahrirlash','Изменить'],
 editName:['Yangi nom / izoh:','Новое название / примечание:'],
 editVal:['Yangi summa (so‘m):','Новая сумма (сум):'],
 editDue:['Yangi to‘lov muddati (YYYY-MM-DD), bo‘sh qoldirish — muddatni olib tashlash:','Новый срок оплаты (YYYY-MM-DD), пусто — убрать срок:'],
+editCost:['Yangi tannarx (so‘m):','Новая себестоимость (сум):'],
 notifications:['Bildirishnomalar','Уведомления'],
 markRead:['O‘qildi deb belgilash','Отметить прочитанным'],
 noNotifications:['Hozircha bildirishnoma yo‘q.','Пока нет уведомлений.'],
@@ -549,6 +550,8 @@ const editItem=(kind,id)=>run(async()=>{
  if(nm===null)return;
  const v=Number(prompt(t('editVal'),isP?x.price:x.amount));
  if(!(v>0)||(!isD&&!nm.trim()))return alert(t('saleNeed'));
+ let c;
+ if(isP){c=Number(prompt(t('editCost'),x.cost));if(!Number.isFinite(c)||c<0)return alert(t('editCost'));}
  let e;
  if(isD){
   const due=prompt(t('editDue'),x.due||'');
@@ -560,7 +563,7 @@ const editItem=(kind,id)=>run(async()=>{
   })).error;
  }else if(isP){
   e=(await db.from('products').update({
-   name:nm.trim(),selling_price:v,sale_price:v
+   name:nm.trim(),selling_price:v,sale_price:v,cost_price:c,cost:c
   }).eq('id',id).eq('shop_id',shop.id)).error;
  }else if(kind==='expenses'){
   e=(await db.from('expenses').update({
