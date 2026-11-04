@@ -36,7 +36,7 @@
 <section id="reset" class="card hidden">
 <h2 data-i="newPass"></h2>
 <label data-i="pass"></label>
-<input id="newPassword" type="password" autocomplete="new-password">
+<input id="newPassword" type="password" minlength="8" autocomplete="new-password">
 <button class="primary" onclick="savePass()" data-i="savePass"></button>
 <p id="resetMsg" class="small"></p>
 </section>
@@ -339,7 +339,8 @@ resetSent:['Parolni tiklash havolasi pochtangizga yuborildi.','Ссылка дл
 needMail:['Avval pochtangizni kiriting.','Сначала введите почту.'],
 newPass:['Yangi parol','Новый пароль'],
 savePass:['Parolni saqlash','Сохранить пароль'],
-shortPass:['Parol kamida 6 belgi bo‘lsin.','Пароль не короче 6 символов.'],
+shortPass:['Yangi parol kamida 8 belgidan iborat bo‘lsin.','Новый пароль должен содержать не менее 8 символов.'],
+passNeed8:['Ro‘yxatdan o‘tish uchun kamida 8 belgili parol kiriting.','Для регистрации введите пароль не короче 8 символов.'],
 passSaved:['Parol yangilandi.','Пароль обновлён.'],
 customers:['Mijozlar','Клиенты'],
 product:['Mahsulot','Товар'],
@@ -444,12 +445,14 @@ function toggleAuth(){
  $('authBtn').dataset.i=mode?'register':'signin';
  $('switchBtn').dataset.i=mode?'haveAcc':'signup';
  $('password').autocomplete=mode?'new-password':'current-password';
+ $('password').minLength=mode?8:6;
  msg('authMsg','');
 }
 
 async function authenticate(){
  const email=val('email'),password=$('password').value;
  if(!email||password.length<6)return msg('authMsg','needEmail');
+ if(mode&&password.length<8)return msg('authMsg','passNeed8');
  if(mode&&!val('fullName'))return msg('authMsg','needName');
  $('authBtn').disabled=true;
  msg('authMsg','checking');
@@ -501,7 +504,7 @@ function showReset(){
 
 async function savePass(){
  const p=$('newPassword').value;
- if(p.length<6)return msg('resetMsg','shortPass');
+ if(p.length<8)return msg('resetMsg','shortPass');
  const {error}=await db.auth.updateUser({password:p});
  if(error)return msg('resetMsg','err',eT(error));
  recovering=false;
