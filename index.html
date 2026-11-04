@@ -215,7 +215,7 @@ const num=id=>Number($(id).value);
 
 let lang=localStorage.getItem('tenghisob_language')==='ru'?'ru':'uz';
 let user=null,profile=null,shop=null,mode=false;
-let data={sales:[],expenses:[],products:[],debts:[],payments:[],ratings:{}};
+let data={sales:[],expenses:[],products:[],debts:[],payments:[],ratings:{},debtHistory:[]};
 let notifications=[];
 let realtimeChannel=null;
 
@@ -387,7 +387,11 @@ listingEmpty:['Katalogda hozircha do‘kon yo‘q.','В каталоге пок�
 ratingNoEvents:['Reyting tarixi hozircha bo‘sh.','История рейтинга пока пуста.'],
 appealReason:['E’tiroz sababini yozing (5–1000 belgi)','Укажите причину (5–1000 символов)'],
 appealSend:['E’tiroz yuborish','Отправить возражение'],
-shopSaveOk:['Do‘kon ma’lumotlari saqlandi.','Данные магазина сохранены.']
+shopSaveOk:['Do‘kon ma’lumotlari saqlandi.','Данные магазина сохранены.'],
+historyTitle:['Qarz o‘zgarishlari tarixi','История изменений долга'],
+historyCreate:['Qarz yaratildi','Долг создан'],
+historyUpdate:['Qarz yangilandi','Долг обновлён'],
+historyDelete:['Qarz o‘chirildi','Долг удалён'],
 };
 
 const t=k=>(L[k]||[k,k])[lang==='ru'?1:0];
@@ -648,7 +652,7 @@ async function logout(){
  await db.auth.signOut();
  user=null;shop=null;profile=null;
  notifications=[];
- data={sales:[],expenses:[],products:[],debts:[],payments:[],ratings:{}};
+ data={sales:[],expenses:[],products:[],debts:[],payments:[],ratings:{},debtHistory:[]};
  document.querySelectorAll('.page').forEach(x=>x.classList.add('hidden'));
  $('app').classList.add('hidden');
  $('auth').classList.remove('hidden');
@@ -673,11 +677,15 @@ async function reloadData(){
  for(const x of r)if(x.error)throw x.error;
 
  const ids=r[3].data.map(d=>d.id);
- let pays=[];
+ let pays=[],debtHistory=[];
  if(ids.length){
-  const pr=await db.from('payments').select('*').in('debt_id',ids).order('created_at',{ascending:false});
+  const [pr,hr]=await Promise.all([
+   db.from('payments').select('*').in('debt_id',ids).order('created_at',{ascending:false}),
+   db.from('debt_history').select('debt_id,action,old_data,new_data,created_at').in('debt_id',ids).order('created_at',{ascending:false})
+  ]);
   if(pr.error)throw pr.error;
-  pays=pr.data;
+  if(hr.error)throw hr.error;
+  pays=pr.data;debtHistory=hr.data||[];
  }
 
  data.sales=r[0].data.map(x=>({
@@ -714,6 +722,7 @@ async function reloadData(){
   id:x.id,debtId:x.debt_id,
   amount:Number(x.amount),date:x.paid_at||x.created_at
  }));
+ data.debtHistory=debtHistory;
 
  renderAll();
  say('updated');
@@ -1118,6 +1127,16 @@ const delBtn=(k,id)=>k==='payments'?'':
 const statusText=s=>t(
  ['pending','confirmed','disputed','paid'].includes(s)?s:'unknown'
 );
+const debtHistoryText=h=>{
+ const old=h.old_data||{},next=h.new_data||{};
+ if(h.action==='create')return t('historyCreate');
+ if(h.action==='delete')return t('historyDelete');
+ const changes=[];
+ if(old.amount!==next.amount)changes.push(t('debt')+': '+money(old.amount)+' → '+money(next.amount));
+ if(old.due_date!==next.due_date)changes.push(t('due')+': '+(old.due_date||t('unset'))+' → '+(next.due_date||t('unset')));
+ if(old.note!==next.note)changes.push(t('note')+' o‘zgardi');
+ return t('historyUpdate')+(changes.length?': '+changes.join(' · '):'');
+};
 
 function list(id,items,html){
  const s=document.querySelector('[data-s="'+id+'"]');
@@ -1197,6 +1216,7 @@ function renderAll(){
     <div><span class="tag">${esc(statusText(x.status))}</span> ${late?`<span class="tag red">${t('overdue')}</span>`:''}</div>
     ${x.response?`<div class="small">${t('buyerNote')}: ${esc(x.response)}</div>`:''}
     <div class="small">${t('dueL')}: ${esc(x.due||t('unset'))} ${esc(x.note)}</div>
+    ${data.debtHistory.filter(h=>h.debt_id===x.id).length?`<div class="small"><b>${t('historyTitle')}:</b> ${data.debtHistory.filter(h=>h.debt_id===x.id).map(h=>esc(debtHistoryText(h))+' · '+new Date(h.created_at).toLocaleDateString(loc())).join(' | ')}</div>`:''}
     ${x.linked?'':`<div class="small">${t('codeLabel')}: <b>${esc(x.code)}</b></div>`}
     ${left>0&&x.status==='confirmed'?remind(x.buyer,x.phone,left,x.due,x.linked?'':x.code):''}
     ${x.status==='pending'&&!data.sales.some(s=>s.debtId===x.id)?delBtn('debts',x.id):''}
@@ -1294,7 +1314,7 @@ async function loadBuyerDebts(){
 
   const ds=r||[];
   const ids=ds.map(d=>d.id);
-  let ps=[];
+  let ps=[],debtHistory=[];
   let shopIds=[...new Set(ds.map(d=>d.shop_id).filter(Boolean))];
   let shopsById={};
 
@@ -1304,9 +1324,13 @@ async function loadBuyerDebts(){
   }
 
   if(ids.length){
-   const p=await db.from('payments').select('*').in('debt_id',ids).order('created_at',{ascending:false});
+   const [p,h]=await Promise.all([
+    db.from('payments').select('*').in('debt_id',ids).order('created_at',{ascending:false}),
+    db.from('debt_history').select('debt_id,action,old_data,new_data,created_at').in('debt_id',ids).order('created_at',{ascending:false})
+   ]);
    if(p.error)throw p.error;
-   ps=p.data;
+   if(h.error)throw h.error;
+   ps=p.data;debtHistory=h.data||[];
   }
 
   list('buyerDebtsList',ds,d=>{
@@ -1318,6 +1342,7 @@ async function loadBuyerDebts(){
    const sh=shopsById[d.shop_id];
    const shopTitle=sh?(sh.shop_name||sh.name):'';
    const history=ps.filter(p=>p.debt_id===d.id);
+   const changes=debtHistory.filter(h=>h.debt_id===d.id);
 
    return `
     <div class="item">
@@ -1330,6 +1355,7 @@ async function loadBuyerDebts(){
      <div class="small">${t('dueL')}: ${esc(d.due_date||t('unset'))}</div>
      ${d.note?`<div class="small">${esc(d.note)}</div>`:''}
      ${history.length?`<div class="small">${t('payments')}: ${history.map(p=>money(p.amount)+' · '+new Date(p.paid_at||p.created_at).toLocaleDateString(loc())).join(' | ')}</div>`:''}
+     ${changes.length?`<div class="small"><b>${t('historyTitle')}:</b> ${changes.map(h=>esc(debtHistoryText(h))+' · '+new Date(h.created_at).toLocaleDateString(loc())).join(' | ')}</div>`:''}
      ${d.buyer_response_note?`<div class="small">${t('objNote')}: ${esc(d.buyer_response_note)}</div>`:''}
      ${pend?`
       <label>${t('reason')}</label>
