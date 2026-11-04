@@ -50,6 +50,26 @@ jobs:
           test -f package.json
           test -f capacitor.config.json
 
+      - name: Validate inline JavaScript
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const html = fs.readFileSync('index.html', 'utf8');
+          const blocks = [...html.matchAll(/<script\\b([^>]*)>([\\s\\S]*?)<\\/script>/gi)]
+            .filter(([, attrs, code]) => !/\\bsrc\\s*=/.test(attrs) && code.trim());
+          if (!blocks.length) throw new Error('Inline JavaScript block not found');
+          for (let i = 0; i < blocks.length; i++) {
+            try {
+              new Function(blocks[i][2]);
+            } catch (error) {
+              console.error('Inline script ' + (i + 1) + ':', error);
+              process.exitCode = 1;
+            }
+          }
+          if (process.exitCode) process.exit(1);
+          console.log('Validated ' + blocks.length + ' inline JavaScript block(s).');
+          NODE
+
       - name: Generate package-lock.json
         run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
 
