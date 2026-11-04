@@ -55,8 +55,8 @@ jobs:
           node <<'NODE'
           const fs = require('node:fs');
           const html = fs.readFileSync('index.html', 'utf8');
-          const blocks = [...html.matchAll(/<script\\b([^>]*)>([\\s\\S]*?)<\\/script>/gi)]
-            .filter(([, attrs, code]) => !/\\bsrc\\s*=/.test(attrs) && code.trim());
+          const blocks = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)]
+            .filter(([, attrs, code]) => !/\bsrc\s*=/.test(attrs) && code.trim());
           if (!blocks.length) throw new Error('Inline JavaScript block not found');
           for (let i = 0; i < blocks.length; i++) {
             try {
