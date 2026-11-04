@@ -563,7 +563,7 @@ const editItem=(kind,id)=>run(async()=>{
   })).error;
  }else if(isP){
   e=(await db.from('products').update({
-   name:nm.trim(),selling_price:v,sale_price:v,cost_price:c,cost:c
+   name:nm.trim(),selling_price:v,sale_price:v,cost_price:c
   }).eq('id',id).eq('shop_id',shop.id)).error;
  }else if(kind==='expenses'){
   e=(await db.from('expenses').update({
