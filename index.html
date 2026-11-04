@@ -489,7 +489,7 @@ async function authenticate(){
 const lim={};
 let lastCode='';
 const genCode=()=>Array.from(
- crypto.getRandomValues(new Uint8Array(8)),
+ crypto.getRandomValues(new Uint8Array(12)),
  b=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[b%32]
 ).join('');
 
