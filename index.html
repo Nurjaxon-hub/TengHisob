@@ -86,7 +86,7 @@
 <section id="sales" class="card page hidden">
 <h2 data-i="addSale"></h2>
 <label data-i="product"></label><select id="saleProduct" onchange="pickProduct()"></select>
-<label data-i="qty"></label><input id="saleQty" type="number" min="0.01" step="any" value="1" inputmode="decimal" oninput="pickProduct()">
+<div id="saleQuantityBox" class="hidden"><label data-i="qty"></label><input id="saleQty" type="number" min="0.01" step="any" value="1" inputmode="decimal" oninput="pickProduct()"></div>
 <label data-i="saleName"></label><input id="saleName" data-p="eg">
 <label data-i="amount"></label><input id="saleAmount" type="number" min="1" step="1" inputmode="numeric">
 <label data-i="saleCostLabel"></label><input id="saleCost" type="number" min="0" step="1" inputmode="numeric" value="0">
@@ -530,14 +530,18 @@ db.auth.onAuthStateChange(ev=>{
 function pickProduct(){
  const p=data.products.find(x=>x.id===$('saleProduct').value);
  if(p){
+  $('saleQuantityBox').classList.remove('hidden');
   const q=num('saleQty');
   $('saleName').value=p.name;
   $('saleAmount').value=q>0?p.price*q:'';
   $('saleCost').value=q>0?p.cost*q:'';
   $('saleCost').readOnly=true;
  }else{
+  $('saleQuantityBox').classList.add('hidden');
   $('saleCost').readOnly=false;
   $('saleCost').value=0;
+  $('saleName').value='';
+  $('saleAmount').value='';
  }
 }
 
@@ -1048,6 +1052,7 @@ const addSale=()=>run(async()=>{
  $('saleCost').value=0;$('saleCost').readOnly=false;
  $('saleProduct').value='';
  $('saleQty').value=1;
+ $('saleQuantityBox').classList.add('hidden');
  $('saleType').value='naqd';
  $('saleDebt').classList.add('hidden');
 
