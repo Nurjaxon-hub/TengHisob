@@ -214,7 +214,7 @@ const num=id=>Number($(id).value);
 
 let lang=localStorage.getItem('tenghisob_language')==='ru'?'ru':'uz';
 let user=null,profile=null,shop=null,mode=false;
-let data={sales:[],expenses:[],products:[],debts:[],payments:[]};
+let data={sales:[],expenses:[],products:[],debts:[],payments:[],ratings:{}};
 let notifications=[];
 let realtimeChannel=null;
 
@@ -274,7 +274,8 @@ payTitle:['Qarz to‘lovi','Платёж по долгу'],
 debt:['Qarz','Долг'],
 paidAmt:['To‘langan summa (so‘m)','Оплаченная сумма (сум)'],
 savePay:['To‘lovni saqlash','Сохранить платёж'],
-buyerInfo:['Sizga biriktirilgan qarzlarni ko‘rish, tasdiqlash yoki nizolash mumkin.','Вы можете просматривать, подтверждать или оспаривать назначенные вам долги.'],
+buyerInfo:['Sizga biriktirilgan qarzlarni ko‘rish, tasdiqlash или nizolash mumkin.','Вы можете просматривать, подтверждать или оспаривать назначенные вам долги.'],
+ratingLabel:['Reyting','Рейтинг'],
 refresh:['Yangilash','Обновить'],
 loading:['Ma’lumotlar bazasi yuklanmoqda…','Загрузка базы данных…'],
 updated:['Bazadagi ma’lumotlar yangilandi.','Данные базы обновлены.'],
@@ -634,7 +635,7 @@ async function logout(){
  await db.auth.signOut();
  user=null;shop=null;profile=null;
  notifications=[];
- data={sales:[],expenses:[],products:[],debts:[],payments:[]};
+ data={sales:[],expenses:[],products:[],debts:[],payments:[],ratings:{}};
  document.querySelectorAll('.page').forEach(x=>x.classList.add('hidden'));
  $('app').classList.add('hidden');
  $('auth').classList.remove('hidden');
@@ -682,13 +683,20 @@ async function reloadData(){
   quantity:Number(x.quantity||0)
  }));
  data.debts=r[3].data.map(x=>({
-  id:x.id,buyer:x.buyer_name||x.buyer||t('buyer'),
+  id:x.id,buyerId:x.buyer_id||null,buyer:x.buyer_name||x.buyer||t('buyer'),
   phone:x.buyer_phone||x.phone||'',
   amount:Number(x.amount),due:x.due_date||'',
   note:x.note||'',linked:!!x.buyer_id,
   code:x.claim_code||'',status:x.status||'pending',
   response:x.buyer_response_note||''
  }));
+ const buyerIds=[...new Set(data.debts.map(d=>d.buyerId).filter(Boolean))];
+ data.ratings={};
+ if(buyerIds.length){
+  const rr=await db.from('buyer_rating_summary').select('buyer_id,score').in('buyer_id',buyerIds);
+  if(rr.error)throw rr.error;
+  (rr.data||[]).forEach(x=>data.ratings[x.buyer_id]=x.score);
+ }
  data.payments=pays.map(x=>({
   id:x.id,debtId:x.debt_id,
   amount:Number(x.amount),date:x.paid_at||x.created_at
@@ -727,8 +735,9 @@ function subscribeRealtime(){
    if(shop)reloadData();
    else if(!$('buyer').classList.contains('hidden'))loadBuyerDebts();
   })
-  .on('postgres_changes',{event:'*',schema:'public',table:'buyer_rating_events',filter:'buyer_id=eq.'+user.id},()=>{
-   if(!shop)loadBuyerRating();
+  .on('postgres_changes',{event:'*',schema:'public',table:'buyer_rating_events'},()=>{
+   if(shop)reloadData();
+   else loadBuyerRating();
   })
   .on('postgres_changes',{event:'*',schema:'public',table:'buyer_rating_appeals'},()=>{
    if(shop&&$('shopAppeals')&&!$('shopAppeals').classList.contains('hidden'))loadShopAppeals();
@@ -1152,6 +1161,7 @@ function renderAll(){
     <b>${esc(x.buyer)}</b>
     <div>${t('tel')}: ${esc(x.phone||t('notSet'))}</div>
     <div>${t('debt')}: ${money(x.amount)} · ${t('paidL')}: ${money(paidFor(x.id))}</div>
+    ${x.buyerId&&data.ratings[x.buyerId]!==undefined?`<div><span class="tag">${t('ratingLabel')}: ${data.ratings[x.buyerId]}/100</span></div>`:''}
     <b>${t('leftL')}: ${money(left)}</b>
     <div><span class="tag">${esc(statusText(x.status))}</span> ${late?`<span class="tag red">${t('overdue')}</span>`:''}</div>
     ${x.response?`<div class="small">${t('buyerNote')}: ${esc(x.response)}</div>`:''}
@@ -1177,7 +1187,7 @@ function renderAll(){
  const g={};
  confirmedDebts.forEach(d=>{
   const k=ph(d.phone)||d.buyer.toLowerCase();
-  const c=g[k]=g[k]||{name:d.buyer,phone:d.phone,amount:0,paid:0};
+  const c=g[k]=g[k]||{name:d.buyer,phone:d.phone,buyerId:d.buyerId,amount:0,paid:0};
   c.amount+=d.amount;
   c.paid+=paidFor(d.id);
  });
@@ -1188,6 +1198,7 @@ function renderAll(){
    <div>${t('tel')}: ${esc(c.phone||t('notSet'))}</div>
    <div>${t('debt')}: ${money(c.amount)} · ${t('paidL')}: ${money(c.paid)}</div>
    <b>${t('leftL')}: ${money(c.amount-c.paid)}</b>
+   ${c.buyerId&&data.ratings[c.buyerId]!==undefined?`<div><span class="tag">${t('ratingLabel')}: ${data.ratings[c.buyerId]}/100</span></div>`:''}
    ${c.amount>c.paid?remind(c.name,c.phone,c.amount-c.paid,'',''):''}
   </div>
  `);
