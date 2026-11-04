@@ -23,7 +23,7 @@ Do‘kon egalari va xaridorlar uchun hisob-kitob ilovasi.
 
 ## APK yaratish
 
-GitHub sahifasida Actions bo‘limini oching.
+GitHub omborida Actions bo‘limini oching.
 
 `Build TengHisob APK` jarayonini tanlang va `Run workflow` tugmasini bosing.
 
