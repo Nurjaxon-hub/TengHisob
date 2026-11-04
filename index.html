@@ -425,7 +425,8 @@ function changeLanguage(v){
   setLabel();
   renderAll();
   loadNotifications();
-  if(!$('buyer').classList.contains('hidden'))loadBuyerDebts();
+  if(!$('buyer').classList.contains('hidden')){loadBuyerDebts();loadBuyerRating();}
+  if(!$('catalog').classList.contains('hidden'))loadShopCatalog();
  }
 }
 
@@ -820,50 +821,54 @@ async function toggleShopListing(){
 
 async function loadShopCatalog(){
  const el=$('shopCatalogList');
- el.innerHTML='<p class="small">'+t('loading')+'</p>';
- const {data:r,error}=await db.from('shops')
-  .select('id,shop_name,name,address,contact_phone,description')
-  .eq('is_listed',true).order('shop_name',{ascending:true});
- if(error)throw error;
- el.innerHTML=r?.length?r.map(x=>`
-  <div class="item">
-   <b>${esc(x.shop_name||x.name||'')}</b>
-   <div>${esc(x.address||'')}</div>
-   ${x.contact_phone?`<div><a href="tel:${esc(x.contact_phone)}">${esc(x.contact_phone)}</a></div>`:''}
-   ${x.description?`<div class="small">${esc(x.description)}</div>`:''}
-  </div>`
- ).join(''):'<p class="small">'+t('listingEmpty')+'</p>';
+ try{
+  el.innerHTML='<p class="small">'+t('loading')+'</p>';
+  const {data:r,error}=await db.from('shops')
+   .select('id,shop_name,name,address,contact_phone,description')
+   .eq('is_listed',true).order('shop_name',{ascending:true});
+  if(error)throw error;
+  el.innerHTML=r?.length?r.map(x=>`
+   <div class="item">
+    <b>${esc(x.shop_name||x.name||'')}</b>
+    <div>${esc(x.address||'')}</div>
+    ${x.contact_phone?`<div><a href="tel:${esc(x.contact_phone)}">${esc(x.contact_phone)}</a></div>`:''}
+    ${x.description?`<div class="small">${esc(x.description)}</div>`:''}
+   </div>`
+  ).join(''):'<p class="small">'+t('listingEmpty')+'</p>';
+ }catch(e){el.innerHTML='<p class="small">'+esc(eT(e))+'</p>';}
 }
 
 async function loadBuyerRating(){
  if(!user||profile.role!=='buyer')return;
- const {data:r,error}=await db.from('buyer_rating_summary')
-  .select('score,updated_at').eq('buyer_id',user.id).maybeSingle();
- if(error)throw error;
- $('buyerRatingScore').textContent=(r?.score??100)+'/100';
- const {data:events,error:ee}=await db.from('buyer_rating_events')
-  .select('id,event_type,points,status,reason,created_at')
-  .eq('buyer_id',user.id).order('created_at',{ascending:false}).limit(30);
- if(ee)throw ee;
- const ids=(events||[]).map(x=>x.id);
- let appeals=[];
- if(ids.length){
-  const a=await db.from('buyer_rating_appeals')
-   .select('event_id,status,reason,review_note')
-   .in('event_id',ids);
-  if(a.error)throw a.error;
-  appeals=a.data||[];
- }
- $('buyerRatingEvents').innerHTML=events?.length?events.map(e=>{
-  const appeal=appeals.find(a=>a.event_id===e.id);
-  return `<div class="item">
-   <b>${esc(e.reason||e.event_type)}</b>
-   <div>${Number(e.points)>0?'+':''}${Number(e.points)} · ${esc(e.status)}</div>
-   <div class="small">${new Date(e.created_at).toLocaleString(loc())}</div>
-   ${appeal?`<div class="small">${t(appeal.status==='pending'?'appealPending':appeal.status==='accepted'?'appealAccepted':'appealRejected')}</div>${appeal.review_note?`<div class="small">${esc(appeal.review_note)}</div>`:''}`:
-    e.status==='applied'?`<textarea id="ratingReason-${esc(e.id)}" maxlength="1000" placeholder="${t('appealReason')}"></textarea><button class="secondary" onclick="submitRatingAppeal('${esc(e.id)}')">${t('appealSend')}</button>`:''}
-  </div>`;
- }).join(''):'<p class="small">'+t('ratingNoEvents')+'</p>';
+ try{
+  const {data:r,error}=await db.from('buyer_rating_summary')
+   .select('score,updated_at').eq('buyer_id',user.id).maybeSingle();
+  if(error)throw error;
+  $('buyerRatingScore').textContent=(r?.score??100)+'/100';
+  const {data:events,error:ee}=await db.from('buyer_rating_events')
+   .select('id,event_type,points,status,reason,created_at')
+   .eq('buyer_id',user.id).order('created_at',{ascending:false}).limit(30);
+  if(ee)throw ee;
+  const ids=(events||[]).map(x=>x.id);
+  let appeals=[];
+  if(ids.length){
+   const a=await db.from('buyer_rating_appeals')
+    .select('event_id,status,reason,review_note')
+    .in('event_id',ids);
+   if(a.error)throw a.error;
+   appeals=a.data||[];
+  }
+  $('buyerRatingEvents').innerHTML=events?.length?events.map(e=>{
+   const appeal=appeals.find(a=>a.event_id===e.id);
+   return `<div class="item">
+    <b>${esc(e.reason||e.event_type)}</b>
+    <div>${Number(e.points)>0?'+':''}${Number(e.points)} · ${esc(e.status)}</div>
+    <div class="small">${new Date(e.created_at).toLocaleString(loc())}</div>
+    ${appeal?`<div class="small">${t(appeal.status==='pending'?'appealPending':appeal.status==='accepted'?'appealAccepted':'appealRejected')}</div>${appeal.review_note?`<div class="small">${esc(appeal.review_note)}</div>`:''}`:
+     e.status==='applied'?`<textarea id="ratingReason-${esc(e.id)}" maxlength="1000" placeholder="${t('appealReason')}"></textarea><button class="secondary" onclick="submitRatingAppeal('${esc(e.id)}')">${t('appealSend')}</button>`:''}
+   </div>`;
+  }).join(''):'<p class="small">'+t('ratingNoEvents')+'</p>';
+ }catch(e){$('buyerRatingEvents').innerHTML='<p class="small">'+esc(eT(e))+'</p>';}
 }
 
 async function submitRatingAppeal(id){
@@ -876,28 +881,30 @@ async function submitRatingAppeal(id){
 
 async function loadShopAppeals(){
  const el=$('shopAppealsList');
- el.innerHTML='<p class="small">'+t('loading')+'</p>';
- const {data:a,error}=await db.from('buyer_rating_appeals')
-  .select('id,event_id,buyer_id,reason,created_at,status')
-  .eq('status','pending').order('created_at',{ascending:true});
- if(error)throw error;
- if(!a?.length){el.innerHTML='<p class="small">'+t('noAppeals')+'</p>';return;}
- const ids=a.map(x=>x.event_id);
- const {data:events,error:ee}=await db.from('buyer_rating_events')
-  .select('id,event_type,points,reason,shop_id').in('id',ids);
- if(ee)throw ee;
- const byId=Object.fromEntries((events||[]).map(x=>[x.id,x]));
- el.innerHTML=a.filter(x=>byId[x.event_id]?.shop_id===shop.id).map(x=>{
-  const ev=byId[x.event_id];
-  return `<div class="item">
-   <b>${esc(ev?.reason||ev?.event_type||'')}</b>
-   <div>${t('ratingTitle')}: ${Number(ev?.points||0)}</div>
-   <div>${esc(x.reason)}</div>
-   <div class="small">${new Date(x.created_at).toLocaleString(loc())}</div>
-   <button class="good" onclick="reviewRatingAppeal('${esc(x.id)}','accepted')">${t('appealAccept')}</button>
-   <button class="danger" onclick="reviewRatingAppeal('${esc(x.id)}','rejected')">${t('appealReject')}</button>
-  </div>`;
- }).join('')||'<p class="small">'+t('noAppeals')+'</p>';
+ try{
+  el.innerHTML='<p class="small">'+t('loading')+'</p>';
+  const {data:a,error}=await db.from('buyer_rating_appeals')
+   .select('id,event_id,buyer_id,reason,created_at,status')
+   .eq('status','pending').order('created_at',{ascending:true});
+  if(error)throw error;
+  if(!a?.length){el.innerHTML='<p class="small">'+t('noAppeals')+'</p>';return;}
+  const ids=a.map(x=>x.event_id);
+  const {data:events,error:ee}=await db.from('buyer_rating_events')
+   .select('id,event_type,points,reason,shop_id').in('id',ids);
+  if(ee)throw ee;
+  const byId=Object.fromEntries((events||[]).map(x=>[x.id,x]));
+  el.innerHTML=a.filter(x=>byId[x.event_id]?.shop_id===shop.id).map(x=>{
+   const ev=byId[x.event_id];
+   return `<div class="item">
+    <b>${esc(ev?.reason||ev?.event_type||'')}</b>
+    <div>${t('ratingTitle')}: ${Number(ev?.points||0)}</div>
+    <div>${esc(x.reason)}</div>
+    <div class="small">${new Date(x.created_at).toLocaleString(loc())}</div>
+    <button class="good" onclick="reviewRatingAppeal('${esc(x.id)}','accepted')">${t('appealAccept')}</button>
+    <button class="danger" onclick="reviewRatingAppeal('${esc(x.id)}','rejected')">${t('appealReject')}</button>
+   </div>`;
+  }).join('')||'<p class="small">'+t('noAppeals')+'</p>';
+ }catch(e){el.innerHTML='<p class="small">'+esc(eT(e))+'</p>';}
 }
 
 async function reviewRatingAppeal(id,decision){
