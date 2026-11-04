@@ -70,6 +70,28 @@ jobs:
           console.log('Validated ' + blocks.length + ' inline JavaScript block(s).');
           NODE
 
+      - name: Validate app markup
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const html = fs.readFileSync('index.html', 'utf8');
+          const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(x => x[1]);
+          const duplicates = ids.filter((id, i) => ids.indexOf(id) !== i);
+          const dict = html.match(/const L=\{([\s\S]*?)\n\};/);
+          if (!dict) throw new Error('Translation dictionary not found');
+          const keys = new Set([...dict[1].matchAll(/^\s*([A-Za-z_$][\w$]*)\s*:/gm)].map(x => x[1]));
+          const labels = [...html.matchAll(/data-[ip]="([^"]+)"/g)].map(x => x[1]);
+          const missingLabels = [...new Set(labels.filter(key => !keys.has(key)))];
+          const refs = [...html.matchAll(/\$\(['"]([^'"]+)['"]\)/g)].map(x => x[1]);
+          const missingRefs = [...new Set(refs.filter(id => !ids.includes(id)))];
+          const required = ['auth','app','shop','buyer','catalog','shopAppeals','sales','debts','payments','reports'];
+          const missingRequired = required.filter(id => !ids.includes(id));
+          if (duplicates.length || missingLabels.length || missingRefs.length || missingRequired.length) {
+            throw new Error(JSON.stringify({duplicates, missingLabels, missingRefs, missingRequired}));
+          }
+          console.log('Markup checks passed: unique IDs, translations, and element references.');
+          NODE
+
       - name: Generate package-lock.json
         run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
 
