@@ -669,7 +669,7 @@ async function reloadData(){
  }
 
  data.sales=r[0].data.map(x=>({
-  id:x.id,name:x.name,amount:Number(x.amount),
+  id:x.id,name:x.name,amount:Number(x.amount),debtId:x.debt_id||null,
   type:x.payment_type,date:x.created_at,
   pid:x.product_id||null,cost:Number(x.cost_total||0)
  }));
@@ -1081,8 +1081,8 @@ const removeItem=(kind,id)=>{
  });
 };
 
-const delBtn=(k,id)=>
- (k==='payments'?'':`<button class="good" onclick="editItem('${k}','${id}')">${t('edit')}</button> `)+
+const delBtn=(k,id)=>k==='payments'?'':
+ `<button class="good" onclick="editItem('${k}','${id}')">${t('edit')}</button> `+
  `<button class="danger" onclick="removeItem('${k}','${id}')">${t('del')}</button>`;
 
 const statusText=s=>t(
@@ -1169,7 +1169,7 @@ function renderAll(){
     <div class="small">${t('dueL')}: ${esc(x.due||t('unset'))} ${esc(x.note)}</div>
     ${x.linked?'':`<div class="small">${t('codeLabel')}: <b>${esc(x.code)}</b></div>`}
     ${left>0&&x.status==='confirmed'?remind(x.buyer,x.phone,left,x.due,x.linked?'':x.code):''}
-    ${delBtn('debts',x.id)}
+    ${x.status==='pending'&&!data.sales.some(s=>s.debtId===x.id)?delBtn('debts',x.id):''}
    </div>
   `;
  });
