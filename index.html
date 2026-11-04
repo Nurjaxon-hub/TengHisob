@@ -885,7 +885,7 @@ async function loadBuyerRating(){
     <div>${Number(e.points)>0?'+':''}${Number(e.points)} · ${esc(e.status)}</div>
     <div class="small">${new Date(e.created_at).toLocaleString(loc())}</div>
     ${appeal?`<div class="small">${t(appeal.status==='pending'?'appealPending':appeal.status==='accepted'?'appealAccepted':'appealRejected')}</div>${appeal.review_note?`<div class="small">${esc(appeal.review_note)}</div>`:''}`:
-     e.status==='applied'?`<textarea id="ratingReason-${esc(e.id)}" maxlength="1000" placeholder="${t('appealReason')}"></textarea><button class="secondary" onclick="submitRatingAppeal('${esc(e.id)}')">${t('appealSend')}</button>`:''}
+     e.status==='applied'&&Number(e.points)<0?`<textarea id="ratingReason-${esc(e.id)}" maxlength="1000" placeholder="${t('appealReason')}"></textarea><button class="secondary" onclick="submitRatingAppeal('${esc(e.id)}')">${t('appealSend')}</button>`:''}
    </div>`;
   }).join(''):'<p class="small">'+t('ratingNoEvents')+'</p>';
  }catch(e){$('buyerRatingEvents').innerHTML='<p class="small">'+esc(eT(e))+'</p>';}
