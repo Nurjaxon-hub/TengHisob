@@ -903,14 +903,22 @@ async function loadShopAppeals(){
   if(!a?.length){el.innerHTML='<p class="small">'+t('noAppeals')+'</p>';return;}
   const ids=a.map(x=>x.event_id);
   const {data:events,error:ee}=await db.from('buyer_rating_events')
-   .select('id,event_type,points,reason,shop_id').in('id',ids);
+   .select('id,event_type,points,reason,shop_id,debt_id').in('id',ids);
   if(ee)throw ee;
+  const debtIds=[...new Set((events||[]).map(x=>x.debt_id).filter(Boolean))];
+  let debtById={};
+  if(debtIds.length){
+   const dr=await db.from('debts').select('id,buyer_name,amount,due_date,status').in('id',debtIds);
+   if(dr.error)throw dr.error;
+   debtById=Object.fromEntries((dr.data||[]).map(x=>[x.id,x]));
+  }
   const byId=Object.fromEntries((events||[]).map(x=>[x.id,x]));
   el.innerHTML=a.filter(x=>byId[x.event_id]?.shop_id===shop.id).map(x=>{
    const ev=byId[x.event_id];
    return `<div class="item">
     <b>${esc(ev?.reason||ev?.event_type||'')}</b>
     <div>${t('ratingTitle')}: ${Number(ev?.points||0)}</div>
+    ${debtById[ev?.debt_id]?`<div>${esc(debtById[ev.debt_id].buyer_name||'')} · ${money(debtById[ev.debt_id].amount)} · ${esc(debtById[ev.debt_id].due_date||'')}</div>`:''}
     <div>${esc(x.reason)}</div>
     <div class="small">${new Date(x.created_at).toLocaleString(loc())}</div>
     <button class="good" onclick="reviewRatingAppeal('${esc(x.id)}','accepted')">${t('appealAccept')}</button>
