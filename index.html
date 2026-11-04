@@ -361,6 +361,7 @@ codeOk:['Qarz hisobingizga qo‘shildi.','Долг добавлен в ваш а
 edit:['Tahrirlash','Изменить'],
 editName:['Yangi nom / izoh:','Новое название / примечание:'],
 editVal:['Yangi summa (so‘m):','Новая сумма (сум):'],
+editDue:['Yangi to‘lov muddati (YYYY-MM-DD), bo‘sh qoldirish — muddatni olib tashlash:','Новый срок оплаты (YYYY-MM-DD), пусто — убрать срок:'],
 notifications:['Bildirishnomalar','Уведомления'],
 markRead:['O‘qildi deb belgilash','Отметить прочитанным'],
 noNotifications:['Hozircha bildirishnoma yo‘q.','Пока нет уведомлений.'],
@@ -543,7 +544,13 @@ const editItem=(kind,id)=>run(async()=>{
  if(!(v>0)||(!isD&&!nm.trim()))return alert(t('saleNeed'));
  let e;
  if(isD){
-  e=(await db.rpc('edit_debt',{p_id:id,p_amount:v,p_note:nm.trim()})).error;
+  const due=prompt(t('editDue'),x.due||'');
+  if(due===null)return;
+  const date=due.trim();
+  if(date&&!/^\\d{4}-\\d{2}-\\d{2}$/.test(date))return alert(t('editDue'));
+  e=(await db.rpc('edit_debt_details',{
+   p_id:id,p_amount:v,p_note:nm.trim(),p_due_date:date||null
+  })).error;
  }else if(isP){
   e=(await db.from('products').update({
    name:nm.trim(),selling_price:v,sale_price:v
