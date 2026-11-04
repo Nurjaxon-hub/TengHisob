@@ -89,6 +89,7 @@
 <label data-i="qty"></label><input id="saleQty" type="number" min="0.01" step="any" value="1" inputmode="decimal" oninput="pickProduct()">
 <label data-i="saleName"></label><input id="saleName" data-p="eg">
 <label data-i="amount"></label><input id="saleAmount" type="number" min="1" step="1" inputmode="numeric">
+<label data-i="saleCostLabel"></label><input id="saleCost" type="number" min="0" step="1" inputmode="numeric" value="0">
 <label data-i="payType"></label>
 <select id="saleType" onchange="$('saleDebt').classList.toggle('hidden',this.value!=='qarz')">
 <option value="naqd" data-i="cash"></option>
@@ -364,6 +365,7 @@ editName:['Yangi nom / izoh:','Новое название / примечани�
 editVal:['Yangi summa (so‘m):','Новая сумма (сум):'],
 editDue:['Yangi to‘lov muddati (YYYY-MM-DD), bo‘sh qoldirish — muddatni olib tashlash:','Новый срок оплаты (YYYY-MM-DD), пусто — убрать срок:'],
 editCost:['Yangi tannarx (so‘m):','Новая себестоимость (сум):'],
+saleCostLabel:['Savdoning jami tannarxi (so‘m)','Общая себестоимость продажи (сум)'],
 notifications:['Bildirishnomalar','Уведомления'],
 markRead:['O‘qildi deb belgilash','Отметить прочитанным'],
 noNotifications:['Hozircha bildirishnoma yo‘q.','Пока нет уведомлений.'],
@@ -531,6 +533,11 @@ function pickProduct(){
   const q=num('saleQty');
   $('saleName').value=p.name;
   $('saleAmount').value=q>0?p.price*q:'';
+  $('saleCost').value=q>0?p.cost*q:'';
+  $('saleCost').readOnly=true;
+ }else{
+  $('saleCost').readOnly=false;
+  if(!$('saleCost').value)$('saleCost').value=0;
  }
 }
 
@@ -1003,11 +1010,12 @@ async function makeDebt(buyer,phone,amount,due,note){
 const addSale=()=>run(async()=>{
  const name=val('saleName');
  const amount=num('saleAmount');
+ const manualCost=num('saleCost');
  const type=$('saleType').value;
  const buyer=val('saleBuyer');
  const phone=ph(val('salePhone'));
 
- if(!name||!(amount>0)||!Number.isFinite(amount))return alert(t('saleNeed'));
+ if(!name||!(amount>0)||!Number.isFinite(amount)||!(manualCost>=0)||!Number.isFinite(manualCost))return alert(t('saleNeed'));
  if(type==='qarz'&&!buyer)return alert(t('debtNeed'));
 
  const pr=data.products.find(p=>p.id===$('saleProduct').value);
@@ -1023,7 +1031,7 @@ const addSale=()=>run(async()=>{
   p_payment_type:type,
   p_product_id:pr?pr.id:null,
   p_quantity:pr?q:null,
-  p_cost_total:pr?pr.cost*q:0,
+  p_cost_total:pr?pr.cost*q:manualCost,
   p_buyer_name:type==='qarz'?buyer:null,
   p_buyer_phone:type==='qarz'?phone:null,
   p_due_date:val('saleDueDate')||null,
@@ -1037,6 +1045,7 @@ const addSale=()=>run(async()=>{
  lastCode=result?.claim_code||'';
 
  ['saleName','saleAmount','saleBuyer','salePhone','saleDueDate'].forEach(i=>$(i).value='');
+ $('saleCost').value=0;$('saleCost').readOnly=false;
  $('saleProduct').value='';
  $('saleQty').value=1;
  $('saleType').value='naqd';
