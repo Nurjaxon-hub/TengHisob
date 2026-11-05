@@ -4,10 +4,12 @@
   "private": true,
   "description": "TengHisob Android ilovasi",
   "scripts": {
-    "build:android": "npx cap sync android",
+    "build:web": "node scripts/build-web.mjs",
+    "android:init": "npm run build:web && npx cap add android",
+    "build:android": "npm run build:web && npx cap sync android",
     "android:open": "npx cap open android",
     "android:run": "npx cap run android",
-    "cap:sync": "npx cap sync"
+    "cap:sync": "npm run build:web && npx cap sync"
   },
   "dependencies": {
     "@capacitor/android": "6.2.1",
