@@ -357,3 +357,65 @@ input[type=checkbox]{display:inline-block;width:18px;height:18px;min-height:18px
   #notificationPanel h3{font-size:14px}
   #auth,#reset{padding:17px;border-radius:20px}
 }
+
+
+/* Yakuniy moslashuv va foydalanish qulayligi */
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+main{padding-left:max(13px,env(safe-area-inset-left));padding-right:max(13px,env(safe-area-inset-right))}
+button,input,select,textarea{max-width:100%;touch-action:manipulation}
+button{white-space:normal;line-height:1.35}
+button:disabled,.secondary:disabled,.primary:disabled{filter:saturate(.55);box-shadow:none}
+input:disabled,select:disabled,textarea:disabled{opacity:.58;background:#101d2a;color:#8194a5;cursor:not-allowed}
+input[readonly]{border-style:dashed;color:#b7c9d6}
+input[type=number]{font-variant-numeric:tabular-nums}
+input[type=search]::-webkit-search-cancel-button{-webkit-appearance:none}
+select option{background:#102238;color:#edf5f4}
+a{color:#83dfc0}
+a:active{opacity:.8}
+.page,.card,.item,.stat{min-width:0}
+.item .row{min-width:0}
+.item .row>*{min-width:0}
+#salesList .item,#expensesList .item,#productsList .item,#debtsList .item,#paymentsList .item,#buyerDebtsList .item{overflow:hidden}
+#status{overflow-wrap:anywhere}
+#status:empty{display:none}
+#authMsg:empty,#resetMsg:empty{display:none}
+#notificationsList:empty{display:none}
+#buyerRatingEvents:empty{display:none}
+#buyerDebtsList:empty{display:none}
+#shopCatalogList:empty,#customersList:empty,#shopAppealsList:empty{display:none}
+#saleDebt{padding:12px;margin:8px 0 2px;border:1px solid #31485b;border-radius:15px;background:#0b1c2c}
+#saleDebt label:first-child{margin-top:0}
+#saleDebt input:last-child{margin-bottom:0}
+#signupBox.hidden{display:none}
+#signupBox:not(.hidden){display:block}
+#languageSelect{max-width:145px}
+#app>.topline .danger{white-space:nowrap}
+#buyer>.row{min-width:0}
+#buyer>.row input{flex:1 1 120px}
+#buyer>.row button{flex:0 1 auto}
+#reportContent .stats .stat{overflow:hidden}
+#reportContent .stats .stat b{font-variant-numeric:tabular-nums}
+@media(max-width:360px){
+  main{padding-left:9px;padding-right:9px}
+  .card{padding:13px;border-radius:17px}
+  .row{gap:6px}
+  .row button{padding-left:9px;padding-right:9px}
+  #buyer>.row{flex-wrap:wrap}
+  #buyer>.row button{width:100%}
+  #app>.topline{align-items:flex-start}
+  #app>.topline .danger{font-size:10px}
+}
+@media(min-width:760px){
+  main{padding-left:18px;padding-right:18px}
+  #shop>.stats{gap:12px}
+  #shop>.nav{gap:11px}
+}
+@media(orientation:landscape) and (max-height:520px){
+  header{padding-bottom:25px}
+  main{padding-bottom:calc(45px + env(safe-area-inset-bottom))}
+  #notificationsList{max-height:220px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+}
