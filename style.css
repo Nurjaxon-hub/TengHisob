@@ -133,26 +133,6 @@ button:focus-visible,a.btn:focus-visible{outline:3px solid #36d7a5;outline-offse
 #notificationPanel{background:linear-gradient(145deg,#10263b,#0d1b2c)}
 #notificationPanel .row{align-items:center}
 #notificationPanel .row button{flex:0 0 auto}
-@media(max-width:380px){
- main{padding-left:10px;padding-right:10px}
- .card{padding:14px;border-radius:18px}
- .nav{gap:8px}
- .nav button{padding:10px;min-height:69px;font-size:12px}
- .nav button:before{width:34px;height:34px;margin-right:8px}
- .stats{gap:8px}
- .stat{padding:11px;min-height:86px}
- .row{gap:7px}
- header{padding-left:15px;padding-right:15px}
- header h1{font-size:26px}
-}
-@media(min-width:600px){
- header{padding-left:max(24px,calc((100% - 712px)/2));padding-right:max(24px,calc((100% - 712px)/2))}
- main{padding-bottom:50px}
-}
-@media(prefers-reduced-motion:reduce){
- *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
-}
-
 /* Premium interface refinement */
 ::selection{background:#1acb98;color:#041b16}
 header h1{display:flex;align-items:center;gap:10px}
@@ -184,11 +164,67 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  .card:hover{border-color:#304d64}
  .nav button:hover{transform:translateY(-2px)}
 }
+/* Dashboard: do‘kon egasi */
+#shop>h2{font-size:22px;letter-spacing:-.6px}
+#shop>#shopName{margin-top:3px}
+#shop>label{margin-top:12px}
+#shop>label[for],#shop>label{letter-spacing:.1px}
+#shop>button.secondary{min-height:42px}
+#shop>.stats{margin-top:20px}
+#shop>.stats:before{content:"UMUMIY KO‘RSATKICHLAR";grid-column:1/-1;color:#829caf;font-size:10px;font-weight:850;letter-spacing:1.25px;padding:0 3px 1px}
+#shop>.nav{padding:14px;margin-top:19px;border:1px solid #203b50;border-radius:21px;background:linear-gradient(145deg,#0d1e30,#0a1828)}
+#shop>.nav:before{content:"BO‘LIMLAR";grid-column:1/-1;color:#829caf;font-size:10px;font-weight:850;letter-spacing:1.25px;padding:0 2px 2px}
+#shop>.nav button{min-height:72px}
+#shop>.nav button:after{content:"›";margin-left:auto;color:#68869b;font-size:22px;font-weight:500}
+#shop>.nav button:before{width:36px;height:36px}
+/* Dashboard: xaridor */
+#buyer>h2{font-size:22px}
+#buyer>p.small{padding:12px 13px;border:1px solid #29465d;border-radius:13px;background:#10243a;color:#b3c6d4}
+#buyer>.card{padding:16px;border-radius:18px}
+#buyer>.card .topline{padding-bottom:12px;border-bottom:1px solid #354b61}
+#buyerRatingScore{display:inline-flex;align-items:center;justify-content:center;min-width:82px;padding:6px 11px;border:1px solid #7b6337;border-radius:12px;background:#392f20}
+#buyerRatingEvents{padding-top:8px}
+#buyer>button.secondary,#buyer>button.primary{width:100%;margin-top:10px}
+#buyer>.row{align-items:stretch;margin-top:7px}
+#buyer>.row input{min-width:0}
+#buyer>.row button{flex:0 0 auto;min-width:105px}
+#buyerDebtsList{margin-top:15px}
+#buyerDebtsList .item{margin:10px 0;padding:15px;border:1px solid #2b435b;border-radius:16px;background:linear-gradient(145deg,#142940,#0d1d2d)}
+#buyerDebtsList .item>b:first-child{display:block;margin-bottom:8px;color:#8de4c5;font-size:13px}
+#buyerDebtsList .item .tag{margin-top:5px}
+#buyerDebtsList .item label{margin-top:14px}
+#buyerDebtsList .item .row{gap:8px}
+#buyerDebtsList .item .row button{min-height:45px}
+#catalog .item,#shopAppealsList .item{padding:15px;border:1px solid #2a4158;border-radius:15px;background:#102238;margin:9px 0}
+#catalog .item:last-child,#shopAppealsList .item:last-child{border-bottom:1px solid #2a4158}
+#customersList .item{padding:15px;border:1px solid #2a4158;border-radius:15px;background:#102238;margin:9px 0}
+#notificationsList .item{padding:11px 2px}
+#notificationsList .item:first-child{padding-top:13px}
+#reset{border-color:#2b4a60}
 @media(max-width:380px){
+ main{padding-left:10px;padding-right:10px}
+ .card{padding:14px;border-radius:18px}
+ .nav{gap:8px}
+ .nav button{padding:10px;min-height:69px;font-size:12px}
+ .nav button:before{width:34px;height:34px;margin-right:8px}
+ .stats{gap:8px}
+ .stat{padding:11px;min-height:86px}
+ .row{gap:7px}
+ header{padding-left:15px;padding-right:15px}
+ header h1{font-size:26px}
  header h1:before{width:34px;height:34px}
  #auth{padding:17px}
+ #shop>.nav{padding:10px}
+ #shop>.nav button{min-height:66px}
+ #buyer>.row button{min-width:94px;padding-left:9px;padding-right:9px}
+}
+@media(min-width:600px){
+ header{padding-left:max(24px,calc((100% - 712px)/2));padding-right:max(24px,calc((100% - 712px)/2))}
+ main{padding-bottom:50px}
+ #shop>.stats{grid-template-columns:repeat(4,minmax(0,1fr))}
+ #shop>.nav{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(prefers-reduced-motion:reduce){
- .page{animation:none}
- .stat,.card,.nav button{transition:none}
+ *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+ .page,.stat,.card,.nav button{transition:none;animation:none}
 }
