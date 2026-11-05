@@ -496,3 +496,79 @@ body{padding-bottom:calc(86px + env(safe-area-inset-bottom))}
 @media(min-width:700px){
  .bottom-nav{left:50%;right:auto;transform:translateX(-50%);width:min(100%,800px);border-left:1px solid #29465b;border-right:1px solid #29465b;border-radius:18px 18px 0 0}
 }
+
+
+/* TengHisob — professional dashboard redesign */
+:root{--bg:#071321;--surface:#0d1d2d;--surface-2:#12283a;--line:#263f51;--green:#19c995;--muted:#91a8b8}
+body{background:#071321}
+header{padding-bottom:27px;background:linear-gradient(125deg,#071629 0%,#0b2940 72%,#0c493e 145%);box-shadow:none}
+header:before,header:after{display:none}
+header h1{font-size:25px;letter-spacing:-.7px}
+header h1:before{width:32px;height:32px;border-radius:9px;box-shadow:none}
+main{max-width:680px;margin:-12px auto 0;padding-left:16px;padding-right:16px}
+#app>.topline{margin-bottom:12px}
+.dashboard-page{padding:0;background:transparent;border:0;box-shadow:none;overflow:visible}
+.dashboard-heading{display:flex;align-items:center;justify-content:space-between;margin:7px 2px 17px}
+.dashboard-heading h2{margin:3px 0 0;font-size:24px;letter-spacing:-.8px}
+.dashboard-heading p,.profile-heading p{margin:2px 0 0;color:#829bad;font-size:12px}
+.eyebrow{color:#57c9a5;font-size:9px;font-weight:850;letter-spacing:1.7px}
+.dashboard-profile{display:grid;place-items:center;width:43px;height:43px;min-height:43px;padding:9px;border:1px solid #2a4859;border-radius:14px;background:#10283a;color:#a8d8c8}
+.dashboard-profile svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.balance-panel{position:relative;overflow:hidden;padding:20px 19px 18px;border:1px solid #236b59;border-radius:19px;background:linear-gradient(118deg,#0e3b36 0%,#0c302f 57%,#102b37 100%);box-shadow:0 12px 27px #0003}
+.balance-panel:after{content:"";position:absolute;right:-65px;top:-105px;width:210px;height:210px;border:1px solid #ffffff12;border-radius:50%;box-shadow:0 0 0 22px #ffffff05,0 0 0 46px #ffffff03;pointer-events:none}
+.balance-label{display:flex;align-items:center;gap:9px;color:#a2c8bd;font-size:10px;font-weight:800;letter-spacing:1.2px}
+.balance-dot{width:7px;height:7px;border-radius:50%;background:#25d5a1;box-shadow:0 0 0 4px #25d5a11c}
+.balance-value{position:relative;z-index:1;margin:9px 0 3px;color:#f2fff9;font-size:clamp(26px,7vw,36px);font-weight:850;letter-spacing:-1.3px;line-height:1.2;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.balance-foot{color:#91b8ac;font-size:11px}
+.dashboard-section-title{display:flex;align-items:center;justify-content:space-between;margin:22px 2px 11px}
+.dashboard-section-title h3{font-size:14px;font-weight:800;letter-spacing:-.15px}
+.dashboard-section-title>span{color:#7993a5;font-size:10px}
+.dashboard-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.metric-card{min-width:0;min-height:106px;padding:13px 14px;border:1px solid #263f51;border-radius:15px;background:#0d1e2e}
+.metric-name{display:block;color:#9bb0bf;font-size:11px;font-weight:650}
+.metric-card strong{display:block;margin-top:9px;color:#eff8f5;font-size:clamp(16px,4.5vw,21px);font-weight:820;letter-spacing:-.45px;line-height:1.25;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.metric-card small{color:#6f8799;font-size:9px}
+.metric-card.income{border-top:2px solid #19c995}
+.metric-card.income strong{color:#65dfb5}
+.metric-card.expense{border-top:2px solid #c66b7a}
+.metric-card.expense strong{color:#e99aa5}
+.metric-card.profit{border-top:2px solid #4c9a80}
+.metric-card.profit strong{color:#a3e5c9}
+.metric-card.debt{border-top:2px solid #b38a4b}
+.metric-card.debt strong{color:#e8c58d}
+.shortcuts-title{margin-top:24px}
+.quick-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.quick-action{display:flex;align-items:center;gap:10px;min-width:0;min-height:76px;padding:11px 10px;border:1px solid #263f51;border-radius:15px;background:#0e2031;color:#e6f2ef;text-align:left;box-shadow:none}
+.quick-action:active{transform:scale(.985);background:#142b3c}
+.quick-action.primary-action{grid-column:1/-1;min-height:68px;background:#10372f;border-color:#24624f}
+.quick-icon{display:grid;place-items:center;flex:0 0 35px;width:35px;height:35px;border:1px solid #2b5e53;border-radius:11px;background:#12382f;color:#68dcb5}
+.quick-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.quick-action>span:nth-child(2){display:block;min-width:0;flex:1}
+.quick-action b{display:block;font-size:11px;font-weight:780;line-height:1.35}
+.quick-action small{display:block;margin-top:3px;color:#8199a9;font-size:9px;line-height:1.35}
+.quick-action i{flex:0 0 auto;color:#688b8a;font-size:20px;font-style:normal}
+.dashboard-notifications{margin-top:19px;padding:14px 15px;border-color:#263f51;border-radius:16px;background:#0c1d2d;box-shadow:none}
+.dashboard-notifications>.row{align-items:center;padding-bottom:10px;border-bottom:1px solid #263f51}
+.dashboard-notifications h3{font-size:13px}
+.dashboard-notifications>.row button{min-height:33px;padding:6px 10px;font-size:10px}
+.dashboard-legacy-stats{display:none}
+.profile-page{padding:19px;border-radius:18px}
+.profile-heading{margin-bottom:18px}
+.profile-heading h2{margin:4px 0 0;font-size:22px}
+.profile-page label{margin-top:16px}
+.profile-page input,.profile-page textarea{background:#091a29}
+.profile-page>.secondary,.profile-page>.primary{width:100%;margin-top:9px}
+.profile-page .profile-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:20px;padding-top:17px;border-top:1px solid #263f51}
+.profile-page .profile-actions button{min-width:0}
+.profile-page .profile-actions .danger{grid-column:1/-1}
+.page:not(.dashboard-page){border-radius:18px}
+.page>h2{font-size:20px}
+.bottom-nav{left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;padding:7px 9px calc(7px + env(safe-area-inset-bottom));background:rgba(7,19,33,.98);border-top:1px solid #263f51;box-shadow:0 -8px 24px #0004;backdrop-filter:blur(16px)}
+.bottom-nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:53px;margin:0;padding:5px 2px;border:0;border-radius:10px;background:transparent;color:#8299aa;font-size:10px;font-weight:700;letter-spacing:.1px}
+.bottom-nav button svg{display:block;width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+.bottom-nav button.active{color:#5bd5ad;background:transparent}
+.bottom-nav button.active:after{content:"";position:absolute;bottom:calc(4px + env(safe-area-inset-bottom));width:18px;height:2px;border-radius:3px;background:#21c995}
+.bottom-nav button:focus-visible{outline:2px solid #38d7a8;outline-offset:-2px}
+body{padding-bottom:calc(77px + env(safe-area-inset-bottom))}
+@media(min-width:700px){.bottom-nav{left:50%;right:auto;transform:translateX(-50%);width:min(100%,680px);border-left:1px solid #263f51;border-right:1px solid #263f51;border-radius:15px 15px 0 0}}
+@media(max-width:390px){main{padding-left:12px;padding-right:12px}.dashboard-heading h2{font-size:21px}.balance-panel{padding:17px 15px}.metric-card{padding:11px}.quick-action{gap:7px;padding:9px}.quick-icon{flex-basis:31px;width:31px;height:31px}.quick-action b{font-size:10px}}
