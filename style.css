@@ -33,7 +33,7 @@ header p{position:relative;margin:0;color:#b5c9d9;font-size:12px}
 .langbox{position:relative;display:flex;justify-content:flex-end;align-items:center;gap:9px}
 .langbox label{color:#b7c9d8;font-size:11px;margin:0}
 .langbox select{width:auto;min-width:112px;min-height:36px;padding:7px 11px;border:1px solid #ffffff25;border-radius:11px;background:#ffffff12;color:#f3fffc;font-size:12px}
-.langbox select option{color:#172b42;background:#fff}
+.langbox select option{color:#edf5f4;background:#102238}
 main{width:100%;max-width:760px;margin:-17px auto 0;padding:0 13px 35px;padding-bottom:calc(90px + env(safe-area-inset-bottom));position:relative;z-index:2}
 .card{background:linear-gradient(155deg,#102239 0%,#0c1a2b 78%);padding:17px;margin-bottom:13px;border:1px solid #263d52;border-radius:21px;box-shadow:var(--shadow)}
 h2{margin:0 0 16px;font-size:19px;font-weight:850;letter-spacing:-.45px;color:#f0faf7}
