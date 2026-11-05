@@ -1,0 +1,48 @@
+name: TengHisob Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kodni yuklash
+        uses: actions/checkout@v4
+
+      - name: Node.js sozlash
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Java sozlash
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Paketlarni o'rnatish
+        run: npm ci
+
+      - name: Android loyihasini tayyorlash
+        run: npm run android:init
+
+      - name: APK yig'ish
+        run: |
+          cd android
+          ./gradlew assembleDebug
+
+      - name: APK faylini saqlash
+        uses: actions/upload-artifact@v4
+        with:
+          name: TengHisob-debug-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
