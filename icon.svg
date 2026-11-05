@@ -1,8 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#07162e"/>
-  <rect x="86" y="86" width="340" height="340" rx="82" fill="#087f60"/>
-  <path d="M166 190h180M166 256h180M166 322h180" fill="none" stroke="#fff" stroke-width="30" stroke-linecap="round"/>
-  <circle cx="166" cy="190" r="18" fill="#e9b94c"/>
-  <circle cx="166" cy="256" r="18" fill="#e9b94c"/>
-  <circle cx="166" cy="322" r="18" fill="#e9b94c"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="TengHisob">
+  <defs>
+    <linearGradient id="bg" x1="40" y1="20" x2="470" y2="500" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#173b57"/>
+      <stop offset="1" stop-color="#071321"/>
+    </linearGradient>
+    <linearGradient id="mark" x1="120" y1="95" x2="390" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#35e0b0"/>
+      <stop offset="1" stop-color="#087b60"/>
+    </linearGradient>
+    <filter id="shadow" x="55" y="50" width="410" height="420" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="15"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <circle cx="408" cy="92" r="95" fill="#29d6a5" opacity=".08"/>
+  <rect x="91" y="82" width="330" height="348" rx="88" fill="#020b14" opacity=".42" filter="url(#shadow)"/>
+  <rect x="91" y="78" width="330" height="348" rx="88" fill="url(#mark)"/>
+  <path d="M164 168h184" fill="none" stroke="#effff9" stroke-width="35" stroke-linecap="round"/>
+  <path d="M256 168v174" fill="none" stroke="#effff9" stroke-width="35" stroke-linecap="round"/>
+  <path d="M174 365h164" fill="none" stroke="#063e34" stroke-width="22" stroke-linecap="round" opacity=".8"/>
+  <path d="M174 397h164" fill="none" stroke="#063e34" stroke-width="22" stroke-linecap="round" opacity=".45"/>
+  <circle cx="366" cy="365" r="17" fill="#f7ca70"/>
 </svg>
