@@ -228,3 +228,55 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
  .page,.stat,.card,.nav button{transition:none;animation:none}
 }
+
+/* Savdo, xarajat, mahsulot, qarz va to‘lov oynalari */
+.page{position:relative;overflow:hidden}
+.page>h2{display:flex;align-items:center;gap:9px}
+.page>h2:before{content:"";display:inline-block;width:5px;height:23px;border-radius:8px;background:currentColor;box-shadow:0 0 15px currentColor}
+#sales,#expenses,#products,#debts,#payments,#reports,#customers,#catalog,#shopAppeals{scroll-margin-top:18px}
+#sales label,#expenses label,#products label,#debts label,#payments label{margin-top:15px}
+#sales input,#sales select,#expenses input,#products input,#debts input,#debts textarea,#payments input,#payments select{margin-bottom:3px}
+#saleDebt,#saleType{accent-color:#19c995}
+#saleDebt+label{display:inline-flex;align-items:center;gap:8px;margin:12px 0 4px}
+input[type=checkbox]{display:inline-block;width:18px;height:18px;min-height:18px;vertical-align:middle;accent-color:#19c995}
+#salesList,#expensesList,#productsList,#debtsList,#paymentsList,#customersList,#shopCatalogList,#shopAppealsList{margin-top:13px}
+#salesList:empty,#expensesList:empty,#productsList:empty,#debtsList:empty,#paymentsList:empty,#customersList:empty,#shopCatalogList:empty,#shopAppealsList:empty{display:none}
+#salesList .item,#expensesList .item,#productsList .item,#debtsList .item,#paymentsList .item{margin:9px 0;padding:14px;border:1px solid #294157;border-radius:15px;background:linear-gradient(145deg,#142940,#0d1d2d)}
+#salesList .item:last-child,#expensesList .item:last-child,#productsList .item:last-child,#debtsList .item:last-child,#paymentsList .item:last-child{border-bottom:1px solid #294157}
+#salesList .item button,#expensesList .item button,#productsList .item button,#debtsList .item button,#paymentsList .item button{min-height:36px;padding:7px 11px;font-size:11px}
+#debtsList .item{border-left:3px solid #f4b45e}
+#paymentsList .item{border-left:3px solid #66baff}
+#salesList .item{border-left:3px solid #19c995}
+#expensesList .item{border-left:3px solid #f16b7c}
+#productsList .item{border-left:3px solid #a58bfa}
+#repRange{margin-bottom:13px}
+#reportContent{padding-top:8px}
+#reportContent:empty{display:none}
+#reportContent .item{margin:8px 0;padding:12px;border:1px solid #294157;border-radius:13px;background:#102238}
+#customersList .item{border-left:3px solid #66baff}
+#catalog .item{border-left:3px solid #19c995}
+#shopAppealsList .item{border-left:3px solid #f4b45e}
+#saleBuyer,#debtBuyer,#paymentDebt{font-weight:650}
+#saleDueDate,#debtDate{color-scheme:dark}
+.page .row{margin-top:7px}
+.page .row button{white-space:normal}
+.page .notice{margin:10px 0}
+.page .tag{white-space:nowrap}
+#authMsg,#resetMsg{margin-top:10px;overflow-wrap:anywhere}
+#userLabel{max-width:70%;color:#c0d3df;font-size:12px;overflow-wrap:anywhere}
+#shopAddress,#shopPhone,#shopDescription{margin-bottom:7px}
+#listShopBtn{width:calc(100% - 34px);margin:10px 17px 0}
+#catalog .item .row,#customersList .item .row{align-items:center;flex-wrap:wrap}
+@media(min-width:600px){
+ .page{padding:22px}
+ .page .row{gap:12px}
+ .page .row>*{min-width:0}
+ #salesList .item,#expensesList .item,#productsList .item,#debtsList .item,#paymentsList .item{padding:17px}
+}
+@media(max-width:420px){
+ .page .row{flex-wrap:wrap;align-items:stretch}
+ .page .row>*{flex:1 1 120px}
+ .page .row button{flex:1 1 100px}
+ .page .item .row{flex-wrap:wrap}
+ .page .item .row button{flex:1 1 100px}
+}
