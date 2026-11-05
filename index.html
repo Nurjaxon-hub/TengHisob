@@ -47,31 +47,56 @@
 <button class="danger" onclick="logout()" data-i="logout"></button>
 </div>
 
-<section class="card" id="notificationPanel">
-<div class="row">
-<h3 data-i="notifications"></h3>
-<button class="secondary" onclick="loadNotifications()" data-i="refresh"></button>
-</div>
-<div id="notificationsList"></div>
+<section id="shop" class="page hidden dashboard-page">
+ <div class="dashboard-heading">
+  <div><span class="eyebrow">TENGHISOB</span><h2 id="dashboardShopName">Do‘kon</h2><p>Bugungi moliyaviy holat</p></div>
+  <button class="dashboard-profile" type="button" onclick="openPage('profile')" aria-label="Profil"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M4.8 20c.7-3.5 3.2-5.2 7.2-5.2s6.5 1.7 7.2 5.2"/></svg></button>
+ </div>
+ <section class="balance-panel">
+  <div class="balance-label"><span>JAMI BALANS</span><span class="balance-dot"></span></div>
+  <div id="dashBalance" class="balance-value">0 so‘m</div>
+  <div class="balance-foot">Tushum − xarajatlar</div>
+ </section>
+ <div class="dashboard-section-title"><h3>Bugungi ko‘rsatkichlar</h3><span id="dashboardDate"></span></div>
+ <div class="dashboard-metrics">
+  <article class="metric-card income"><span class="metric-name">Bugungi tushum</span><strong id="dashIncome">0</strong><small>so‘m</small></article>
+  <article class="metric-card expense"><span class="metric-name">Bugungi xarajat</span><strong id="dashExpense">0</strong><small>so‘m</small></article>
+  <article class="metric-card profit"><span class="metric-name">Sof foyda</span><strong id="dashProfit">0</strong><small>so‘m</small></article>
+  <article class="metric-card debt"><span class="metric-name">Olinadigan qarz</span><strong id="dashDebt">0</strong><small>so‘m</small></article>
+ </div>
+ <div class="dashboard-section-title shortcuts-title"><h3>Tezkor bo‘limlar</h3></div>
+ <div class="quick-actions">
+  <button type="button" class="quick-action primary-action" onclick="openPage('sales')"><span class="quick-icon"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><span><b>Savdo kiritish</b><small>Yangi savdoni yozish</small></span><i>›</i></button>
+  <button type="button" class="quick-action" onclick="openPage('debts')"><span class="quick-icon"><svg viewBox="0 0 24 24"><path d="M4 7h13m-4-4 4 4-4 4M20 17H7m4-4-4 4 4 4"/></svg></span><span><b>Qarzlar</b><small>Qarzlarni boshqarish</small></span><i>›</i></button>
+  <button type="button" class="quick-action" onclick="openPage('expenses')"><span class="quick-icon"><svg viewBox="0 0 24 24"><path d="M4 7h16M6 7l1 13h10l1-13M9 7V4h6v3M10 11v5m4-5v5"/></svg></span><span><b>Xarajatlar</b><small>Chiqimlarni qayd etish</small></span><i>›</i></button>
+  <button type="button" class="quick-action" onclick="openPage('products')"><span class="quick-icon"><svg viewBox="0 0 24 24"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4.5 7.8 7.5 4.3 7.5-4.3M12 12v9"/></svg></span><span><b>Mahsulotlar</b><small>Ombor va narxlar</small></span><i>›</i></button>
+  <button type="button" class="quick-action" onclick="openPage('payments')"><span class="quick-icon"><svg viewBox="0 0 24 24"><path d="M4 8h16v11H4zM4 8l2-3h12l2 3M8 13h4"/></svg></span><span><b>Qarz to‘lovlari</b><small>Qabul qilingan to‘lovlar</small></span><i>›</i></button>
+  <button type="button" class="quick-action" onclick="openPage('customers')"><span class="quick-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c.4-3.3 2.4-5 6-5s5.6 1.7 6 5M17 5.5a3 3 0 0 1 0 5.8M18 15c2 .5 3 2 3.2 4"/></svg></span><span><b>Xaridorlar</b><small>Mijozlar ro‘yxati</small></span><i>›</i></button>
+ </div>
+ <section id="notificationPanel" class="card dashboard-notifications">
+  <div class="row"><h3 data-i="notifications"></h3><button class="secondary" onclick="loadNotifications()" data-i="refresh"></button></div>
+  <div id="notificationsList"></div>
+ </section>
+ <div class="dashboard-legacy-stats" aria-hidden="true">
+  <b id="totalSales"></b><b id="totalExpenses"></b><b id="totalDebt"></b><b id="totalPaid"></b>
+ </div>
 </section>
 
-<section id="shop" class="card page hidden">
-<h2 data-i="shopOwner"></h2>
-<label data-i="shopName"></label><input id="shopName">
-<button class="secondary" onclick="saveShopName()" data-i="saveShop"></button>
-<label data-i="shopAddress"></label><input id="shopAddress" autocomplete="street-address">
-<label data-i="shopPhone"></label><input id="shopPhone" type="tel" placeholder="+998...">
-<label data-i="shopDescription"></label><textarea id="shopDescription" rows="2"></textarea>
-<button class="secondary" onclick="saveShopProfile()" data-i="saveShopProfile"></button>
-<button class="secondary" id="listShopBtn" onclick="toggleShopListing()" data-i="listingEnable"></button>
-<p class="small" data-i="listingInfo"></p>
-<div class="stats">
-<div class="stat"><span data-i="totSales"></span><b id="totalSales"></b></div>
-<div class="stat"><span data-i="expenses"></span><b id="totalExpenses"></b></div>
-<div class="stat"><span data-i="debtLeft"></span><b id="totalDebt"></b></div>
-<div class="stat"><span data-i="paidDebt"></span><b id="totalPaid"></b></div>
-</div>
-
+<section id="profile" class="card page hidden profile-page">
+ <div class="profile-heading"><span class="eyebrow">SOZLAMALAR</span><h2>Do‘kon profili</h2><p>Do‘kon ma’lumotlari va ko‘rinish sozlamalari</p></div>
+ <label data-i="shopName"></label><input id="shopName">
+ <button class="secondary" onclick="saveShopName()" data-i="saveShop"></button>
+ <label data-i="shopAddress"></label><input id="shopAddress" autocomplete="street-address">
+ <label data-i="shopPhone"></label><input id="shopPhone" type="tel" placeholder="+998...">
+ <label data-i="shopDescription"></label><textarea id="shopDescription" rows="2"></textarea>
+ <button class="primary" onclick="saveShopProfile()" data-i="saveShopProfile"></button>
+ <button class="secondary" id="listShopBtn" onclick="toggleShopListing()" data-i="listingEnable"></button>
+ <p class="small" data-i="listingInfo"></p>
+ <div class="profile-actions">
+  <button class="secondary" onclick="openPage('customers')">Xaridorlar</button>
+  <button class="secondary" onclick="openPage('shopAppeals')">E’tirozlar</button>
+  <button class="danger" onclick="logout()" data-i="logout"></button>
+ </div>
 </section>
 
 <section id="sales" class="card page hidden">
@@ -193,10 +218,10 @@
 
 <div id="status" class="notice" data-i="loading"></div>
 <nav id="bottomNav" class="bottom-nav hidden" aria-label="Asosiy menyu">
-<button type="button" data-page="sales" onclick="openPage('sales')" aria-label="Savdo"><span class="bottom-icon">＋</span><span>Savdo</span></button>
-<button type="button" data-page="debts" onclick="openPage('debts')" aria-label="Qarzlar"><span class="bottom-icon">↔</span><span>Qarzlar</span></button>
-<button type="button" data-page="reports" onclick="openPage('reports')" aria-label="Hisobot"><span class="bottom-icon">▥</span><span>Hisobot</span></button>
-<button type="button" data-page="shop" onclick="openPage('shop')" aria-label="Profil"><span class="bottom-icon">♙</span><span>Profil</span></button>
+ <button type="button" data-page="sales" onclick="openPage('sales')" aria-label="Savdo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5m0 14h16M7 15l4-4 3 2 5-6"/><path d="M15 7h4v4"/></svg><span>Savdo</span></button>
+ <button type="button" data-page="debts" onclick="openPage('debts')" aria-label="Qarzlar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h13m-4-4 4 4-4 4M20 17H7m4-4-4 4 4 4"/></svg><span>Qarzlar</span></button>
+ <button type="button" data-page="reports" onclick="openPage('reports')" aria-label="Hisobot"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5m0 14h16"/><path d="M8 16v-4m4 4V8m4 8v-6"/></svg><span>Hisobot</span></button>
+ <button type="button" data-page="profile" onclick="openPage('profile')" aria-label="Profil"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M4.8 20c.7-3.5 3.2-5.2 7.2-5.2s6.5 1.7 7.2 5.2"/></svg><span>Profil</span></button>
 </nav>
 </section>
 </main>
@@ -971,12 +996,13 @@ function openPage(id,push=true){
  document.querySelectorAll('.page').forEach(x=>x.classList.add('hidden'));
  $(id).classList.remove('hidden');
  if(id==='payments')renderPaymentOptions();
+ if(id==='shop')renderDashboard();
  if(id==='reports')renderReports();
  if(id==='buyer'){loadBuyerDebts();loadBuyerRating();}
  if(id==='catalog')loadShopCatalog();
  if(id==='shopAppeals')loadShopAppeals();
  document.querySelectorAll('#bottomNav button').forEach(b=>{
-  const active=b.dataset.page===id;
+  const active=b.dataset.page===id||(id==='shop'&&b.dataset.page==='sales');
   b.classList.toggle('active',active);
   if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');
  });
@@ -1186,6 +1212,30 @@ function renderPaymentOptions(){
  if(a.some(d=>d.id===old))s.value=old;
 }
 
+function renderDashboard(){
+ if(!shop)return;
+ const today=new Date().toLocaleDateString('sv');
+ const confirmed=data.debts.filter(d=>d.status==='confirmed'||d.status==='paid');
+ const confirmedIds=new Set(confirmed.map(d=>d.id));
+ const eligible=data.sales.filter(x=>x.type!=='qarz'||confirmedIds.has(x.debtId));
+ const todaySales=eligible.filter(x=>x.date&&new Date(x.date).toLocaleDateString('sv')===today);
+ const todayExpenses=data.expenses.filter(x=>x.date&&new Date(x.date).toLocaleDateString('sv')===today);
+ const todayPayments=data.payments.filter(x=>confirmedIds.has(x.debtId)&&x.date&&new Date(x.date).toLocaleDateString('sv')===today);
+ const income=todaySales.filter(x=>x.type!=='qarz').reduce((n,x)=>n+x.amount,0)+todayPayments.reduce((n,x)=>n+x.amount,0);
+ const expenses=todayExpenses.reduce((n,x)=>n+x.amount,0);
+ const profit=todaySales.reduce((n,x)=>n+x.amount-x.cost,0)-expenses;
+ const allCash=eligible.filter(x=>x.type!=='qarz').reduce((n,x)=>n+x.amount,0)+data.payments.filter(p=>confirmedIds.has(p.debtId)).reduce((n,x)=>n+x.amount,0);
+ const allExpenses=data.expenses.reduce((n,x)=>n+x.amount,0);
+ const debt=confirmed.reduce((n,d)=>n+remaining(d),0);
+ $('dashboardShopName').textContent=shop.shop_name||shop.name||'Do‘kon';
+ $('dashboardDate').textContent=new Date().toLocaleDateString(loc(),{day:'numeric',month:'short'});
+ $('dashBalance').textContent=money(allCash-allExpenses);
+ $('dashIncome').textContent=money(income);
+ $('dashExpense').textContent=money(expenses);
+ $('dashProfit').textContent=money(profit);
+ $('dashDebt').textContent=money(debt);
+}
+
 function renderAll(){
  const sum=(a,k)=>a.reduce((s,x)=>s+(Number(x[k])||0),0);
  const today=new Date().toLocaleDateString('sv');
@@ -1199,6 +1249,7 @@ function renderAll(){
  $('totalExpenses').textContent=money(sum(data.expenses,'amount'));
  $('totalDebt').textContent=money(confirmedDebts.reduce((s,d)=>s+remaining(d),0));
  $('totalPaid').textContent=money(sum(confirmedPayments,'amount'));
+ renderDashboard();
 
  list('salesList',data.sales,x=>`
   <div class="item">
