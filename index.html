@@ -159,6 +159,7 @@
 <button class="secondary" onclick="openPage('shop')" data-i="back"></button>
 </section>
 
+<section id="debtDetails" class="card page hidden debt-details-page"><h2>Qarz tafsilotlari</h2><div id="debtDetailContent"></div><button class="secondary" onclick="openPage('debts')">Orqaga</button></section>
 <section id="payments" class="card page hidden">
 <h2 data-i="payTitle"></h2>
 <label data-i="debt"></label><select id="paymentDebt"></select>
@@ -218,7 +219,8 @@
 
 <div id="status" class="notice" data-i="loading"></div>
 <nav id="bottomNav" class="bottom-nav hidden" aria-label="Asosiy menyu">
- <button type="button" data-page="sales" onclick="openPage('sales')" aria-label="Savdo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5m0 14h16M7 15l4-4 3 2 5-6"/><path d="M15 7h4v4"/></svg><span>Savdo</span></button>
+ <button type="button" data-page="shop" onclick="openPage('shop')" aria-label="Asosiy ekran"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>Asosiy ekran</span></button>
+ <button type="button" data-page="sales" onclick="openPage('sales')" aria-label="Savdo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 1.9-1.4L22 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg><span>Savdo</span></button>
  <button type="button" data-page="debts" onclick="openPage('debts')" aria-label="Qarzlar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h13m-4-4 4 4-4 4M20 17H7m4-4-4 4 4 4"/></svg><span>Qarzlar</span></button>
  <button type="button" data-page="reports" onclick="openPage('reports')" aria-label="Hisobot"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5m0 14h16"/><path d="M8 16v-4m4 4V8m4 8v-6"/></svg><span>Hisobot</span></button>
  <button type="button" data-page="profile" onclick="openPage('profile')" aria-label="Profil"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M4.8 20c.7-3.5 3.2-5.2 7.2-5.2s6.5 1.7 7.2 5.2"/></svg><span>Profil</span></button>
@@ -1002,7 +1004,7 @@ function openPage(id,push=true){
  if(id==='catalog')loadShopCatalog();
  if(id==='shopAppeals')loadShopAppeals();
  document.querySelectorAll('#bottomNav button').forEach(b=>{
-  const active=b.dataset.page===id||(id==='shop'&&b.dataset.page==='sales');
+  const active=b.dataset.page===id||(id==='debtDetails'&&b.dataset.page==='debts');
   b.classList.toggle('active',active);
   if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');
  });
@@ -1236,6 +1238,21 @@ function renderDashboard(){
  $('dashDebt').textContent=money(debt);
 }
 
+function openDebtDetails(id){
+ const d=data.debts.find(x=>x.id===id);if(!d)return;
+ const paid=paidFor(id),left=remaining(d);
+ const ps=data.payments.filter(p=>p.debtId===id).sort((a,b)=>new Date(b.date||b.created_at)-new Date(a.date||a.created_at));
+ const hs=data.debtHistory.filter(x=>x.debt_id===id).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+ let out='<div class="debt-detail-hero"><span class="detail-label">QOLGAN QARZ</span><strong>'+money(left)+'</strong><span class="detail-status">'+esc(statusText(d.status))+'</span></div>';
+ out+='<div class="debt-detail-grid">';
+ [['Jami qarz',money(d.amount)],['To‘langan',money(paid)],['Muddati',esc(d.due||'Belgilanmagan')],['Xaridor',esc(d.buyer)],['Telefon',esc(d.phone||'Kiritilmagan')],['Holati',esc(statusText(d.status))]].forEach(x=>out+='<div><span>'+x[0]+'</span><b>'+x[1]+'</b></div>');
+ out+='</div><div class="detail-section-title"><h3>To‘lovlar tarixi</h3><span>'+ps.length+' ta</span></div><div class="detail-history">';
+ out+=ps.length?ps.map(p=>'<div class="history-row"><span class="history-mark">✓</span><div><b>Qarz to‘lovi</b><small>'+new Date(p.date||p.created_at).toLocaleString(loc())+'</small></div><strong>'+money(p.amount)+'</strong></div>').join(''):'<p class="small">Hozircha to‘lovlar mavjud emas</p>';
+ out+='</div><div class="detail-section-title"><h3>Qarz o‘zgarishlari</h3><span>'+hs.length+' ta</span></div><div class="detail-history">';
+ out+=hs.length?hs.map(x=>'<div class="history-row"><span class="history-mark history-change">↻</span><div><b>'+esc(debtHistoryText(x))+'</b><small>'+new Date(x.created_at).toLocaleString(loc())+'</small></div></div>').join(''):'<p class="small">O‘zgarishlar tarixi mavjud emas</p>';
+ out+='</div>';
+ $('debtDetailContent').innerHTML=out;openPage('debtDetails');
+}
 function renderAll(){
  const sum=(a,k)=>a.reduce((s,x)=>s+(Number(x[k])||0),0);
  const today=new Date().toLocaleDateString('sv');
@@ -1291,6 +1308,7 @@ function renderAll(){
     <div><span class="tag">${esc(statusText(x.status))}</span> ${late?`<span class="tag red">${t('overdue')}</span>`:''}</div>
     ${x.response?`<div class="small">${t('buyerNote')}: ${esc(x.response)}</div>`:''}
     <div class="small">${t('dueL')}: ${esc(x.due||t('unset'))} ${esc(x.note)}</div>
+    <button type="button" class="debt-open-button" onclick="openDebtDetails('${esc(x.id)}')">Tafsilotlar va to‘lovlar tarixi <span>›</span></button>
     ${data.debtHistory.filter(h=>h.debt_id===x.id).length?`<div class="small"><b>${t('historyTitle')}:</b> ${data.debtHistory.filter(h=>h.debt_id===x.id).map(h=>esc(debtHistoryText(h))+' · '+new Date(h.created_at).toLocaleDateString(loc())).join(' | ')}</div>`:''}
     ${x.linked?'':`<div class="small">${t('codeLabel')}: <b>${esc(x.code)}</b></div>`}
     ${left>0&&x.status==='confirmed'?remind(x.buyer,x.phone,left,x.due,x.linked?'':x.code):''}
