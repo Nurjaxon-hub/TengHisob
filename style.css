@@ -152,3 +152,43 @@ button:focus-visible,a.btn:focus-visible{outline:3px solid #36d7a5;outline-offse
 @media(prefers-reduced-motion:reduce){
  *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
 }
+
+/* Premium interface refinement */
+::selection{background:#1acb98;color:#041b16}
+header h1{display:flex;align-items:center;gap:10px}
+header h1:before{content:"T";display:inline-flex;align-items:center;justify-content:center;width:37px;height:37px;border:1px solid #61e4bc66;border-radius:12px;background:linear-gradient(145deg,#1acb98,#087b60);color:#06241c;font-size:21px;font-weight:950;letter-spacing:-1px;box-shadow:0 5px 18px #12b88635}
+#auth,#reset{backdrop-filter:blur(14px)}
+#auth{padding:21px;background:linear-gradient(145deg,#122a40,#0b1a2a);border-color:#2b4a60}
+#authTitle{font-size:22px}
+#app>.topline{min-height:74px}
+#app>.topline .danger{flex:0 0 auto}
+#notificationPanel{border-color:#285044}
+#notificationPanel h3{display:flex;align-items:center;gap:8px}
+#notificationPanel h3:before{content:"";width:8px;height:8px;border-radius:50%;background:#20d39b;box-shadow:0 0 0 4px #20d39b20}
+.page{animation:pageEnter .24s ease both}
+@keyframes pageEnter{from{opacity:.35;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.stat{transition:border-color .18s ease,transform .18s ease}
+.stat:active{transform:scale(.985)}
+.item{padding:16px 2px}
+.item> b:first-child{font-size:14px}
+.item .small{color:#91a6b8}
+#buyer .card{background:linear-gradient(145deg,#172b46,#102238);border-color:#354c6c}
+#buyerRatingScore{color:#f6c86e;font-size:20px}
+#status{background:#102c2a;border-color:#245e50;color:#79dcb8}
+#status:empty{display:none}
+#reportContent .stat{background:linear-gradient(145deg,#142c43,#102137)}
+select{appearance:auto}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #38d7a8;outline-offset:2px}
+@media(hover:hover){
+ .card{transition:border-color .18s ease,box-shadow .18s ease}
+ .card:hover{border-color:#304d64}
+ .nav button:hover{transform:translateY(-2px)}
+}
+@media(max-width:380px){
+ header h1:before{width:34px;height:34px}
+ #auth{padding:17px}
+}
+@media(prefers-reduced-motion:reduce){
+ .page{animation:none}
+ .stat,.card,.nav button{transition:none}
+}
