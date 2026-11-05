@@ -280,3 +280,80 @@ input[type=checkbox]{display:inline-block;width:18px;height:18px;min-height:18px
  .page .item .row{flex-wrap:wrap}
  .page .item .row button{flex:1 1 100px}
 }
+
+
+/* Kirish, profil va bildirishnomalar — yakuniy dizayn */
+#auth,#reset{
+  width:100%;
+  max-width:520px;
+  margin:0 auto 16px;
+  padding:clamp(19px,5vw,27px);
+  border-radius:24px;
+  box-shadow:0 18px 48px #0007, inset 0 1px 0 #ffffff08;
+}
+#auth h2,#reset h2{margin-bottom:20px;font-size:23px;letter-spacing:-.7px}
+#auth label,#reset label{margin:15px 0 7px;color:#b5c8d5}
+#auth input,#auth select,#reset input{
+  min-height:49px;
+  border-radius:14px;
+  background:#081625;
+  border-color:#304a60;
+}
+#auth input:focus,#auth select:focus,#reset input:focus{
+  border-color:#20c99a;
+  box-shadow:0 0 0 4px #19c99518,0 5px 18px #0002;
+}
+#auth .primary,#reset .primary{min-height:49px;margin-top:20px;font-size:14px;letter-spacing:.1px}
+#auth .secondary{width:100%;margin-top:9px;min-height:44px;background:#172d43}
+#auth button[onclick="forgot()"]{border-color:transparent;background:transparent;color:#83d9bd;text-decoration:underline;text-underline-offset:3px}
+#authMsg,#resetMsg{padding:0 3px}
+#signupBox{padding:12px;margin:0 0 6px;border:1px solid #29475b;border-radius:16px;background:#0b1b2b}
+#signupBox label:first-child{margin-top:2px}
+#signupBox label{margin-top:12px}
+#signupBox input,#signupBox select{background:#071523}
+#app>.topline{
+  padding:14px 16px;
+  border:1px solid #29465b;
+  border-radius:18px;
+  background:linear-gradient(120deg,#142b42,#0d1d2e);
+  box-shadow:0 9px 24px #0003;
+}
+#app>.topline>div{min-width:0}
+#app>.topline .small{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#7f9caf}
+#app>.topline #userLabel{display:block;margin-top:3px;font-size:14px;color:#e6f4f0}
+#app>.topline .danger{min-height:39px;padding:8px 12px}
+#notificationPanel{padding:16px 17px;background:linear-gradient(145deg,#10283a,#0c1c2b)}
+#notificationPanel>.row{align-items:center;padding-bottom:12px;border-bottom:1px solid #294253}
+#notificationPanel>.row button{min-height:35px;padding:7px 11px;font-size:11px}
+#notificationsList{max-height:390px;overflow-y:auto;overscroll-behavior:contain}
+#notificationsList .item{padding:13px 11px;margin:7px 0;border:1px solid #2b4357;border-radius:13px;background:#102237}
+#notificationsList .item b{display:block;color:#e9f8f3;font-size:13px}
+#notificationsList .item>div:not(.small){margin-top:4px;color:#b8cad5;font-size:12px;line-height:1.5}
+#notificationsList .item .small{margin-top:7px;color:#7993a6;font-size:10px}
+#notificationsList .item button{min-height:33px;padding:6px 10px;font-size:10px}
+#shop>h2{margin-bottom:18px}
+#shop>#shopName{margin-top:0}
+#shop>#shopName+button{width:100%;margin-top:8px}
+#shop>#shopAddress,#shop>#shopPhone,#shop>#shopDescription{background:#091a29}
+#shop>#shopDescription{min-height:88px}
+#shop>#shopAddress+label{margin-top:17px}
+#shop>#shopDescription+button{width:100%;margin-top:9px}
+#shop>#listShopBtn{width:100%;margin:10px 0 0;min-height:46px}
+#shop>p.small[data-i="listingInfo"]{padding:10px 12px;border-left:2px solid #3d9c82;background:#0d2230;border-radius:0 10px 10px 0}
+#buyer .row input{min-height:47px}
+#buyer .row .good{min-height:47px}
+#buyerRatingEvents .item{padding:10px 0;border-bottom:1px solid #2c4258}
+#buyerRatingEvents .item:last-child{border-bottom:0}
+#status{margin-top:12px;box-shadow:0 5px 18px #0002}
+@media(min-width:600px){
+  #auth,#reset{margin-top:5px;padding:28px}
+  #notificationPanel{padding:19px 21px}
+  #notificationsList{max-height:440px}
+}
+@media(max-width:380px){
+  #app>.topline{padding:12px}
+  #app>.topline .danger{padding:7px 9px;font-size:11px}
+  #notificationPanel{padding:13px}
+  #notificationPanel h3{font-size:14px}
+  #auth,#reset{padding:17px;border-radius:20px}
+}
