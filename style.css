@@ -419,3 +419,53 @@ a:active{opacity:.8}
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
 }
+
+
+/* Yakuniy vizual yaxlitlik */
+:focus{scroll-margin-block:24px}
+::placeholder{opacity:1}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:#091625}
+::-webkit-scrollbar-thumb{background:#29445a;border:2px solid #091625;border-radius:20px}
+::-webkit-scrollbar-thumb:hover{background:#3a6278}
+::selection{background:#1acb98;color:#041b16}
+input:invalid:not(:placeholder-shown),select:invalid,textarea:invalid{border-color:#a94d60}
+input:valid:not(:placeholder-shown){border-color:#294157}
+button:focus-visible{box-shadow:0 0 0 4px #19c99525}
+button.good:hover{background:#174b40;border-color:#2c8b72}
+button.danger:hover{background:#4b2937;border-color:#895064}
+button.secondary:hover{background:#203c56;border-color:#3b5d78}
+.primary:active{filter:brightness(.94)}
+.tag,.notice{overflow-wrap:anywhere}
+#app>.topline,#notificationPanel,.page,.card{backface-visibility:hidden}
+#shop .stats .stat{position:relative;overflow:hidden}
+#shop .stats .stat:after{content:"";position:absolute;right:-20px;top:-25px;width:76px;height:76px;border:1px solid #ffffff0b;border-radius:50%;pointer-events:none}
+#shop .stats .stat b{font-variant-numeric:tabular-nums;letter-spacing:-.35px}
+.nav button{min-width:0;overflow-wrap:anywhere}
+.nav button:focus-visible{outline-offset:3px}
+.page .item .tag{display:inline-block;max-width:100%;white-space:normal}
+#buyer .card{border-color:#2d4a60;background:linear-gradient(145deg,#142b42,#0c1b2b)}
+#buyerRatingScore{color:#6de0b7;font-size:20px;font-variant-numeric:tabular-nums}
+#buyerDebtsList .item{margin:10px 0;padding:14px;border:1px solid #294157;border-radius:15px;background:linear-gradient(145deg,#142940,#0d1d2d)}
+#buyerDebtsList .item .tag{margin-top:3px}
+#buyerDebtsList .item .row{gap:8px}
+#buyerDebtsList .item .row button{min-height:42px}
+#buyerDebtsList .item textarea{margin-top:5px;background:#091827}
+#shopCatalogList .item,#shopAppealsList .item{margin:9px 0;padding:14px;border:1px solid #294157;border-radius:15px;background:#102238}
+#status:not(:empty){border-color:#286b59}
+@media(hover:hover){
+ .card{transition:border-color .18s ease,box-shadow .18s ease}
+ .card:hover{border-color:#304d64}
+ .stat:hover{transform:translateY(-2px);border-color:#3b6474}
+}
+@media(max-width:420px){
+ #buyerDebtsList .item .row button{flex:1 1 130px}
+ #notificationPanel>.row{gap:7px}
+ #notificationPanel>.row button{flex-shrink:0}
+ .tag{padding:4px 7px}
+}
+@media(min-width:900px){
+ body{padding-bottom:20px}
+ main{max-width:800px}
+ header{border-radius:0 0 34px 34px}
+}
