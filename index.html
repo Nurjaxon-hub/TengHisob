@@ -1187,8 +1187,9 @@ function renderAll(){
  const confirmedDebts=data.debts.filter(d=>d.status==='confirmed'||d.status==='paid');
  const confirmedIds=new Set(confirmedDebts.map(d=>d.id));
  const confirmedPayments=data.payments.filter(p=>confirmedIds.has(p.debtId));
+ const confirmedSales=data.sales.filter(x=>x.type!=='qarz'||confirmedIds.has(x.debtId));
 
- $('totalSales').textContent=money(sum(data.sales,'amount'));
+ $('totalSales').textContent=money(sum(confirmedSales,'amount'));
  $('totalExpenses').textContent=money(sum(data.expenses,'amount'));
  $('totalDebt').textContent=money(confirmedDebts.reduce((s,d)=>s+remaining(d),0));
  $('totalPaid').textContent=money(sum(confirmedPayments,'amount'));
@@ -1288,10 +1289,10 @@ function renderReports(){
  const f=a=>from?a.filter(x=>x.date&&new Date(x.date)>=from):a;
  const s=a=>a.reduce((n,x)=>n+x.amount,0);
 
- const S=f(data.sales);
- const E=f(data.expenses);
  const confirmedDebts=data.debts.filter(d=>d.status==='confirmed'||d.status==='paid');
  const confirmedIds=new Set(confirmedDebts.map(d=>d.id));
+ const S=f(data.sales.filter(x=>x.type!=='qarz'||confirmedIds.has(x.debtId)));
+ const E=f(data.expenses);
  const confirmedPayments=data.payments.filter(p=>confirmedIds.has(p.debtId));
  const P=f(confirmedPayments);
 
