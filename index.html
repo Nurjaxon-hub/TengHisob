@@ -779,6 +779,9 @@ function subscribeRealtime(){
    if(shop&&$('shopAppeals')&&!$('shopAppeals').classList.contains('hidden'))loadShopAppeals();
    if(!shop)loadBuyerRating();
   })
+  .on('postgres_changes',{event:'*',schema:'public',table:'sales'},()=>{if(shop)reloadData();})
+  .on('postgres_changes',{event:'*',schema:'public',table:'products'},()=>{if(shop)reloadData();})
+  .on('postgres_changes',{event:'*',schema:'public',table:'expenses'},()=>{if(shop)reloadData();})
   .subscribe();
 }
 
