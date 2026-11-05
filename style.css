@@ -128,6 +128,11 @@ button:focus-visible,a.btn:focus-visible{outline:3px solid #36d7a5;outline-offse
 #shop{border:0;background:transparent;padding:0;box-shadow:none}
 #shop>h2{padding:15px 17px 0;margin-bottom:12px}
 #shop>#shopName,#shop>label,#shop>button.secondary{margin-left:17px;width:calc(100% - 34px)}
+#shop>input:not(#shopName),#shop>textarea{margin-left:17px;width:calc(100% - 34px)}
+#shop>.small{margin-left:17px;width:calc(100% - 34px)}
+#shop>.nav{margin-left:17px;margin-right:17px}
+#shop>.nav button{min-width:0}
+
 #shop>.stats{padding:0 2px}
 #shop>.nav{margin-top:16px}
 #notificationPanel{background:linear-gradient(145deg,#10263b,#0d1b2c)}
