@@ -218,7 +218,8 @@
 
 <div id="status" class="notice" data-i="loading"></div>
 <nav id="bottomNav" class="bottom-nav hidden" aria-label="Asosiy menyu">
- <button type="button" data-page="sales" onclick="openPage('sales')" aria-label="Savdo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5m0 14h16M7 15l4-4 3 2 5-6"/><path d="M15 7h4v4"/></svg><span>Savdo</span></button>
+ <button type="button" data-page="shop" onclick="openPage('shop')" aria-label="Asosiy ekran"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>Asosiy ekran</span></button>
+ <button type="button" data-page="sales" onclick="openPage('sales')" aria-label="Savdo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 1.9-1.4L22 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg><span>Savdo</span></button>
  <button type="button" data-page="debts" onclick="openPage('debts')" aria-label="Qarzlar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h13m-4-4 4 4-4 4M20 17H7m4-4-4 4 4 4"/></svg><span>Qarzlar</span></button>
  <button type="button" data-page="reports" onclick="openPage('reports')" aria-label="Hisobot"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5m0 14h16"/><path d="M8 16v-4m4 4V8m4 8v-6"/></svg><span>Hisobot</span></button>
  <button type="button" data-page="profile" onclick="openPage('profile')" aria-label="Profil"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M4.8 20c.7-3.5 3.2-5.2 7.2-5.2s6.5 1.7 7.2 5.2"/></svg><span>Profil</span></button>
@@ -1002,7 +1003,7 @@ function openPage(id,push=true){
  if(id==='catalog')loadShopCatalog();
  if(id==='shopAppeals')loadShopAppeals();
  document.querySelectorAll('#bottomNav button').forEach(b=>{
-  const active=b.dataset.page===id||(id==='shop'&&b.dataset.page==='sales');
+  const active=b.dataset.page===id;
   b.classList.toggle('active',active);
   if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');
  });
