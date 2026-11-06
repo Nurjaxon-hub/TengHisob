@@ -125,18 +125,18 @@
 <button class="secondary" onclick="openPage('shop')" data-i="back"></button>
 </section>
 
-<section id="products" class="card page hidden">
-<h2 data-i="products"></h2>
-<label data-i="prodName"></label><input id="productName">
-<div class="row">
-<div><label data-i="cost"></label><input id="productCost" type="number" min="0" step="1" inputmode="numeric"></div>
-<div><label data-i="price"></label><input id="productPrice" type="number" min="1" step="1" inputmode="numeric"></div>
-</div>
-<label data-i="qty"></label><input id="productQty" type="number" min="0" step="any" inputmode="decimal">
-<button class="primary" onclick="addProduct()" data-i="saveProd"></button>
-<input data-s="productsList" data-p="search" oninput="renderAll()" style="margin-top:14px">
-<div id="productsList"></div>
-<button class="secondary" onclick="openPage('shop')" data-i="back"></button>
+<section id="products" class="card page hidden feature-page products-page">
+ <div class="feature-heading"><div><span class="eyebrow">OMBOR NAZORATI</span><h2 data-i="products"></h2><p>Mahsulotlar, tannarx va sotuv narxlarini boshqaring</p></div><span class="feature-heading-icon blue">▦</span></div>
+ <div class="feature-summary product-summary"><div><span>Mahsulotlar soni</span><b id="productsScreenCount">0 ta</b></div><span class="summary-trend">● Ombor ma’lumotlari</span></div>
+ <div class="feature-form">
+  <label data-i="prodName"></label><input id="productName">
+  <div class="form-grid"><div><label data-i="cost"></label><input id="productCost" type="number" min="0" step="1" inputmode="numeric"></div><div><label data-i="price"></label><input id="productPrice" type="number" min="1" step="1" inputmode="numeric"></div></div>
+  <label data-i="qty"></label><input id="productQty" type="number" min="0" step="any" inputmode="decimal">
+  <button class="primary feature-submit" onclick="addProduct()" data-i="saveProd"></button>
+ </div>
+ <div class="feature-list-heading"><h3>Mahsulotlar ro‘yxati</h3><span>Narx va qoldiq</span></div>
+ <input data-s="productsList" data-p="search" oninput="renderAll()" class="feature-search">
+ <div id="productsList" class="feature-list"></div>
 </section>
 
 <section id="debts" class="card page hidden feature-page debts-page">
@@ -169,10 +169,11 @@
  <button class="primary feature-submit" onclick="exportCSV()" data-i="exportCsv"></button>
 </section>
 
-<section id="customers" class="card page hidden">
-<h2 data-i="customers"></h2>
-<div id="customersList"></div>
-<button class="secondary" onclick="openPage('shop')" data-i="back"></button>
+<section id="customers" class="card page hidden feature-page customers-page">
+ <div class="feature-heading"><div><span class="eyebrow">MIJOZLAR BAZASI</span><h2 data-i="customers"></h2><p>Xaridorlar va ular bilan hisob-kitoblar</p></div><span class="feature-heading-icon">♙</span></div>
+ <div class="feature-summary customer-summary"><div><span>Faol xaridorlar</span><b id="customersScreenCount">0 ta</b></div><span class="summary-trend">● Tasdiqlangan qarzlar asosida</span></div>
+ <div class="feature-list-heading"><h3>Xaridorlar ro‘yxati</h3><span>Qarz qoldig‘i bo‘yicha</span></div>
+ <div id="customersList" class="feature-list"></div>
 </section>
 
 <section id="shopAppeals" class="card page hidden">
@@ -1242,6 +1243,9 @@ function renderAll(){
  $('debtScreenTotal').textContent=money(confirmedDebts.reduce((s,d)=>s+remaining(d),0));
  $('debtScreenPaid').textContent=money(sum(confirmedPayments,'amount'));
  $('paymentsScreenTotal').textContent=money(sum(confirmedPayments,'amount'));
+ $('productsScreenCount').textContent=data.products.length+' ta';
+ const customerKeys=new Set(confirmedDebts.map(d=>ph(d.phone)||d.buyer.toLowerCase()));
+ $('customersScreenCount').textContent=customerKeys.size+' ta';
  renderDashboard();
 
  list('salesList',data.sales,x=>`
