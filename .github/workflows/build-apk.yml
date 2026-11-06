@@ -13,7 +13,6 @@ on:
       - "manifest.json"
       - "sw.js"
       - "icon.svg"
-      - ".github/workflows/build-apk.yml"
 
 permissions:
   contents: write
