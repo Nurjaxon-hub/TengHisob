@@ -1209,6 +1209,32 @@ function renderPaymentOptions(){
  if(a.some(d=>d.id===old))s.value=old;
 }
 
+function openDebtDetails(id){
+ const d=data.debts.find(x=>x.id===id);
+ if(!d)return;
+ const paid=paidFor(id),left=remaining(d);
+ const history=data.payments.filter(p=>p.debtId===id).sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
+ const changes=data.debtHistory.filter(x=>x.debt_id===id);
+ const late=d.due&&d.due<new Date().toLocaleDateString('sv')&&left>0;
+ let html='<div class="debt-detail-hero"><div class="debt-detail-person"><span class="detail-avatar">'+esc((d.buyer||'?').slice(0,1).toUpperCase())+'</span><div><small>XARIDOR</small><h2>'+esc(d.buyer)+'</h2><span>'+esc(d.phone||'Telefon raqami kiritilmagan')+'</span></div></div>';
+ html+='<div class="debt-detail-amount"><small>QOLGAN QARZ</small><b>'+money(left)+' so‘m</b><span class="detail-status">'+esc(statusText(d.status))+(late?' · '+t('overdue'):'')+'</span></div></div>';
+ html+='<div class="debt-detail-grid"><div><small>Jami qarz</small><b>'+money(d.amount)+'</b></div><div><small>To‘langan</small><b>'+money(paid)+'</b></div></div>';
+ html+='<div class="debt-detail-info"><div><span>Qarz berilgan sana</span><b>'+(d.date?new Date(d.date).toLocaleDateString(loc()):'—')+'</b></div><div><span>Muddat</span><b>'+esc(d.due||'Belgilanmagan')+'</b></div><div><span>Izoh</span><b>'+esc(d.note||'—')+'</b></div></div>';
+ html+='<div class="feature-list-heading"><h3>To‘lovlar tarixi</h3><span>'+history.length+' ta yozuv</span></div><div class="feature-list">';
+ html+=history.length?history.map(p=>'<div class="item payment-history-row"><span class="payment-check">✓</span><div><b>'+money(p.amount)+' so‘m</b><small>'+(p.date?new Date(p.date).toLocaleString(loc()):'Sana ko‘rsatilmagan')+'</small></div></div>').join(''):'<p class="small">Hozircha to‘lovlar yo‘q</p>';
+ html+='</div><div class="feature-list-heading"><h3>Qarz o‘zgarishlari</h3><span>'+changes.length+' ta yozuv</span></div><div class="feature-list">';
+ html+=changes.length?changes.map(x=>'<div class="item"><b>'+esc(debtHistoryText(x))+'</b><div class="small">'+new Date(x.created_at).toLocaleString(loc())+'</div></div>').join(''):'<p class="small">O‘zgarishlar tarixi mavjud emas</p>';
+ html+='</div>';
+ if(d.status==='confirmed'&&left>0)html+='<button class="primary feature-submit" data-debt-id="'+esc(d.id)+'" onclick="openDebtPayment(this.dataset.debtId)">To‘lov qayd etish</button>';
+ $('debtDetailContent').innerHTML=html;
+ openPage('debtDetail');
+}
+
+function openDebtPayment(id){
+ openPage('payments');
+ if($('paymentDebt'))$('paymentDebt').value=id;
+ $('paymentAmount')?.focus();
+}
 function renderDashboard(){
  if(!shop)return;
  const today=new Date().toLocaleDateString('sv');
@@ -1292,6 +1318,7 @@ function renderAll(){
     <div>${t('debt')}: ${money(x.amount)} · ${t('paidL')}: ${money(paidFor(x.id))}</div>
     ${x.buyerId&&data.ratings[x.buyerId]!==undefined?`<div><span class="tag">${t('ratingLabel')}: ${data.ratings[x.buyerId]}/100</span></div>`:''}
     <b>${t('leftL')}: ${money(left)}</b>
+    <button class="secondary debt-detail-link" onclick="openDebtDetails('${esc(x.id)}')">Batafsil ko‘rish <span>›</span></button>
     <div><span class="tag">${esc(statusText(x.status))}</span> ${late?`<span class="tag red">${t('overdue')}</span>`:''}</div>
     ${x.response?`<div class="small">${t('buyerNote')}: ${esc(x.response)}</div>`:''}
     <div class="small">${t('dueL')}: ${esc(x.due||t('unset'))} ${esc(x.note)}</div>
