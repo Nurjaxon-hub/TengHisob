@@ -1,0 +1,40 @@
+name: TengHisob validation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repositoryni yuklash
+        uses: actions/checkout@v4
+
+      - name: Node.js 20 ni sozlash
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Bog'liqliklarni tekshirib o'rnatish
+        run: npm ci
+
+      - name: Service Worker sintaksisini tekshirish
+        run: node --check sw.js
+
+      - name: Web ilovani yig'ish
+        run: npm run build:web
+
+      - name: Yig'ilgan fayllarni tekshirish
+        run: |
+          test -s www/index.html
+          test -s www/style.css
+          test -s www/sw.js
+          test -s www/manifest.json
+          test -s www/icon.svg
