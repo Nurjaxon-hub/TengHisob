@@ -25,7 +25,9 @@ jobs:
           cache: npm
 
       - name: Bog'liqliklarni tekshirib o'rnatish
-        run: npm ci
+        run: |
+          npm install --package-lock-only --ignore-scripts
+          npm ci
 
       - name: Service Worker sintaksisini tekshirish
         run: node --check sw.js
