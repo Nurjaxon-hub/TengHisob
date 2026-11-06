@@ -83,45 +83,37 @@
  <div class="dashboard-hidden-metrics" aria-hidden="true"><span id="dashBalance">0</span><span id="dashExpense">0</span><span id="dashProfit">0</span></div>
 </section>
 
-<section id="profile" class="card page hidden profile-page">
- <div class="profile-heading"><span class="eyebrow">SOZLAMALAR</span><h2>Do‘kon profili</h2><p>Do‘kon ma’lumotlari va ko‘rinish sozlamalari</p></div>
+<section id="profile" class="card page hidden profile-page feature-page">
+ <div class="profile-cover"><div class="profile-avatar">N</div><div class="profile-cover-copy"><span class="eyebrow">SHAXSIY KABINET</span><h2>Do‘kon profili</h2><p>Ma’lumotlar va ilova sozlamalari</p></div><span class="profile-gear">⚙</span></div>
+ <div class="profile-section-title">Do‘kon ma’lumotlari</div>
  <label data-i="shopName"></label><input id="shopName">
  <button class="secondary" onclick="saveShopName()" data-i="saveShop"></button>
  <label data-i="shopAddress"></label><input id="shopAddress" autocomplete="street-address">
  <label data-i="shopPhone"></label><input id="shopPhone" type="tel" placeholder="+998...">
  <label data-i="shopDescription"></label><textarea id="shopDescription" rows="2"></textarea>
- <button class="primary" onclick="saveShopProfile()" data-i="saveShopProfile"></button>
+ <button class="primary feature-submit" onclick="saveShopProfile()" data-i="saveShopProfile"></button>
+ <div class="profile-section-title">Do‘kon ko‘rinishi</div>
  <button class="secondary" id="listShopBtn" onclick="toggleShopListing()" data-i="listingEnable"></button>
  <p class="small" data-i="listingInfo"></p>
- <div class="profile-actions">
-  <button class="secondary" onclick="openPage('customers')">Xaridorlar</button>
-  <button class="secondary" onclick="openPage('shopAppeals')">E’tirozlar</button>
-  <button class="danger" onclick="logout()" data-i="logout"></button>
- </div>
+ <div class="profile-actions"><button class="secondary" onclick="openPage('customers')">Xaridorlar</button><button class="secondary" onclick="openPage('shopAppeals')">E’tirozlar</button><button class="danger" onclick="logout()" data-i="logout"></button></div>
 </section>
 
-<section id="sales" class="card page hidden">
-<h2 data-i="addSale"></h2>
-<label data-i="product"></label><select id="saleProduct" onchange="pickProduct()"></select>
-<div id="saleQuantityBox" class="hidden"><label data-i="qty"></label><input id="saleQty" type="number" min="0.01" step="any" value="1" inputmode="decimal" oninput="pickProduct()"></div>
-<label data-i="saleName"></label><input id="saleName" data-p="eg">
-<label data-i="amount"></label><input id="saleAmount" type="number" min="1" step="1" inputmode="numeric">
-<label data-i="saleCostLabel"></label><input id="saleCost" type="number" min="0" step="1" inputmode="numeric" value="0">
-<label data-i="payType"></label>
-<select id="saleType" onchange="$('saleDebt').classList.toggle('hidden',this.value!=='qarz')">
-<option value="naqd" data-i="cash"></option>
-<option value="karta" data-i="card"></option>
-<option value="qarz" data-i="credit"></option>
-</select>
-<div id="saleDebt" class="hidden">
-<label data-i="buyerName"></label><input id="saleBuyer">
-<label data-i="phone"></label><input id="salePhone" type="tel" placeholder="+998...">
-<label data-i="due"></label><input id="saleDueDate" type="date">
-</div>
-<button class="primary" onclick="addSale()" data-i="saveSale"></button>
-<input data-s="salesList" data-p="search" oninput="renderAll()" style="margin-top:14px">
-<div id="salesList"></div>
-<button class="secondary" onclick="openPage('shop')" data-i="back"></button>
+<section id="sales" class="card page hidden feature-page sales-page">
+ <div class="feature-heading"><div><span class="eyebrow">SAVDO BO‘LIMI</span><h2 data-i="addSale"></h2><p>Har bir savdoni tez va aniq qayd eting</p></div><span class="feature-heading-icon">↗</span></div>
+ <div class="feature-summary sales-summary"><div><span>Jami savdo</span><b id="salesScreenTotal">0 so‘m</b></div><span class="summary-trend">● Hisob-kitoblar yangilanadi</span></div>
+ <div class="feature-form">
+  <label data-i="product"></label><select id="saleProduct" onchange="pickProduct()"></select>
+  <div id="saleQuantityBox" class="hidden"><label data-i="qty"></label><input id="saleQty" type="number" min="0.01" step="any" value="1" inputmode="decimal" oninput="pickProduct()"></div>
+  <label data-i="saleName"></label><input id="saleName" data-p="eg">
+  <div class="form-grid"><div><label data-i="amount"></label><input id="saleAmount" type="number" min="1" step="1" inputmode="numeric"></div><div><label data-i="saleCostLabel"></label><input id="saleCost" type="number" min="0" step="1" inputmode="numeric" value="0"></div></div>
+  <label data-i="payType"></label>
+  <select id="saleType" onchange="$('saleDebt').classList.toggle('hidden',this.value!=='qarz')"><option value="naqd" data-i="cash"></option><option value="karta" data-i="card"></option><option value="qarz" data-i="credit"></option></select>
+  <div id="saleDebt" class="hidden debt-extra"><div class="form-grid"><div><label data-i="buyerName"></label><input id="saleBuyer"></div><div><label data-i="phone"></label><input id="salePhone" type="tel" placeholder="+998..."></div></div><label data-i="due"></label><input id="saleDueDate" type="date"></div>
+  <button class="primary feature-submit" onclick="addSale()" data-i="saveSale"></button>
+ </div>
+ <div class="feature-list-heading"><h3>So‘nggi savdolar</h3><span>Tarix bo‘yicha</span></div>
+ <input data-s="salesList" data-p="search" oninput="renderAll()" class="feature-search">
+ <div id="salesList" class="feature-list"></div>
 </section>
 
 <section id="expenses" class="card page hidden">
@@ -147,39 +139,34 @@
 <button class="secondary" onclick="openPage('shop')" data-i="back"></button>
 </section>
 
-<section id="debts" class="card page hidden">
-<h2 data-i="debtTitle"></h2>
-<label data-i="buyerName"></label><input id="debtBuyer">
-<label data-i="phone"></label><input id="debtPhone" type="tel" placeholder="+998...">
-<label data-i="debtAmt"></label><input id="debtAmount" type="number" min="1" step="1" inputmode="numeric">
-<label data-i="due"></label><input id="debtDate" type="date">
-<label data-i="note"></label><input id="debtNote">
-<button class="primary" onclick="addDebt()" data-i="saveDebt"></button>
-<input data-s="debtsList" data-p="search" oninput="renderAll()" style="margin-top:14px">
-<div id="debtsList"></div>
-<button class="secondary" onclick="openPage('shop')" data-i="back"></button>
+<section id="debts" class="card page hidden feature-page debts-page">
+ <div class="feature-heading"><div><span class="eyebrow">MIJOZLAR HISOBI</span><h2 data-i="debtTitle"></h2><p>Qarzlarni nazorat qiling va to‘lovlarni kuzating</p></div><span class="feature-heading-icon blue">◉</span></div>
+ <div class="debt-overview"><article><span>Jami qarzlar</span><b id="debtScreenTotal">0 so‘m</b></article><article><span>Qaytarilgan</span><b id="debtScreenPaid">0 so‘m</b></article></div>
+ <div class="feature-form">
+  <div class="form-grid"><div><label data-i="buyerName"></label><input id="debtBuyer"></div><div><label data-i="phone"></label><input id="debtPhone" type="tel" placeholder="+998..."></div></div>
+  <label data-i="debtAmt"></label><input id="debtAmount" type="number" min="1" step="1" inputmode="numeric">
+  <label data-i="due"></label><input id="debtDate" type="date">
+  <label data-i="note"></label><input id="debtNote">
+  <button class="primary feature-submit" onclick="addDebt()" data-i="saveDebt"></button>
+ </div>
+ <div class="feature-list-heading"><h3>Qarzlar ro‘yxati</h3><span>Holati bo‘yicha</span></div>
+ <input data-s="debtsList" data-p="search" oninput="renderAll()" class="feature-search">
+ <div id="debtsList" class="feature-list"></div>
 </section>
 
-<section id="payments" class="card page hidden">
-<h2 data-i="payTitle"></h2>
-<label data-i="debt"></label><select id="paymentDebt"></select>
-<label data-i="paidAmt"></label><input id="paymentAmount" type="number" min="1" step="1" inputmode="numeric">
-<button class="primary" onclick="addPayment()" data-i="savePay"></button>
-<div id="paymentsList"></div>
-<button class="secondary" onclick="openPage('shop')" data-i="back"></button>
+<section id="payments" class="card page hidden feature-page payments-page">
+ <div class="feature-heading"><div><span class="eyebrow">TO‘LOVLAR</span><h2 data-i="payTitle"></h2><p>Qabul qilingan to‘lovlarni qayd eting</p></div><span class="feature-heading-icon violet">▣</span></div>
+ <div class="feature-summary payment-summary"><div><span>Jami qabul qilingan</span><b id="paymentsScreenTotal">0 so‘m</b></div><span class="summary-trend">● To‘lovlar tarixi bilan bog‘langan</span></div>
+ <div class="feature-form"><label data-i="debt"></label><select id="paymentDebt"></select><label data-i="paidAmt"></label><input id="paymentAmount" type="number" min="1" step="1" inputmode="numeric"><button class="primary feature-submit" onclick="addPayment()" data-i="savePay"></button></div>
+ <div class="feature-list-heading"><h3>To‘lovlar tarixi</h3><span>Eng so‘nggilari</span></div>
+ <div id="paymentsList" class="feature-list"></div>
 </section>
 
-<section id="reports" class="card page hidden">
-<h2 data-i="reports"></h2>
-<select id="repRange" onchange="renderReports()">
-<option value="1" data-i="rToday"></option>
-<option value="7" data-i="r7"></option>
-<option value="30" data-i="r30"></option>
-<option value="0" data-i="rAll" selected></option>
-</select>
-<div id="reportContent"></div>
-<button class="primary" onclick="exportCSV()" data-i="exportCsv"></button>
-<button class="secondary" onclick="openPage('shop')" data-i="back"></button>
+<section id="reports" class="card page hidden feature-page reports-page">
+ <div class="feature-heading"><div><span class="eyebrow">MOLIYAVIY TAHLIL</span><h2 data-i="reports"></h2><p>Daromad va xarajatlaringiz bir joyda</p></div><span class="feature-heading-icon">▥</span></div>
+ <div class="report-filter"><span>Hisobot davri</span><select id="repRange" onchange="renderReports()"><option value="1" data-i="rToday"></option><option value="7" data-i="r7"></option><option value="30" data-i="r30"></option><option value="0" data-i="rAll" selected></option></select></div>
+ <div id="reportContent" class="report-content"></div>
+ <button class="primary feature-submit" onclick="exportCSV()" data-i="exportCsv"></button>
 </section>
 
 <section id="customers" class="card page hidden">
@@ -1251,6 +1238,10 @@ function renderAll(){
  $('totalExpenses').textContent=money(sum(data.expenses,'amount'));
  $('totalDebt').textContent=money(confirmedDebts.reduce((s,d)=>s+remaining(d),0));
  $('totalPaid').textContent=money(sum(confirmedPayments,'amount'));
+ $('salesScreenTotal').textContent=money(sum(confirmedSales,'amount'));
+ $('debtScreenTotal').textContent=money(confirmedDebts.reduce((s,d)=>s+remaining(d),0));
+ $('debtScreenPaid').textContent=money(sum(confirmedPayments,'amount'));
+ $('paymentsScreenTotal').textContent=money(sum(confirmedPayments,'amount'));
  renderDashboard();
 
  list('salesList',data.sales,x=>`
@@ -1364,16 +1355,12 @@ function renderReports(){
  const stock=data.products.reduce((n,p)=>n+(p.price-p.cost)*p.quantity,0);
  const st=(k,v)=>`<div class="stat"><span>${t(k)}</span><b>${money(v)}</b></div>`;
 
+ const maxBar=Math.max(sales,exp,paid,1);
+ const bar=(label,value,cls)=>`<div class="report-bar-row"><div><span>${label}</span><b>${money(value)}</b></div><i><em class="${cls}" style="width:${Math.max(2,Math.round(value/maxBar*100))}%"></em></i></div>`;
  $('reportContent').innerHTML=`
-  <div class="stats">
-   ${st('totSales',sales)}
-   ${st('expenses',exp)}
-   ${st('debtLeft',debt)}
-   ${st('paidDebt',paid)}
-   ${st('netCash',cashIn+paid-exp)}
-   ${st('realProfit',real)}
-   ${st('stockProfit',stock)}
-  </div>
+  <div class="report-hero"><span>SOF FOYDA</span><b>${money(real)}</b><small>Tanlangan davr uchun</small><div class="report-hero-grid"><div><span>Jami savdo</span><b>${money(sales)}</b></div><div><span>Xarajatlar</span><b>${money(exp)}</b></div></div></div>
+  <div class="report-chart"><h3>Asosiy ko‘rsatkichlar</h3>${bar('Savdo',sales,'green')}${bar('Xarajatlar',exp,'orange')}${bar('To‘lovlar',paid,'blue')}</div>
+  <div class="stats report-stats">${st('debtLeft',debt)}${st('paidDebt',paid)}${st('netCash',cashIn+paid-exp)}${st('stockProfit',stock)}</div>
   <p class="small">${t('repNote')}</p>
  `;
 }
