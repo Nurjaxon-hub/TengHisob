@@ -925,6 +925,7 @@ async function loadBuyerRating(){
    .select('score,updated_at').eq('buyer_id',user.id).maybeSingle();
   if(error)throw error;
   $('buyerRatingScore').textContent=(r?.score??100)+'/100';
+  $('buyerRatingBar').style.width=Math.max(0,Math.min(100,Number(r?.score??100)))+'%';
   const {data:events,error:ee}=await db.from('buyer_rating_events')
    .select('id,event_type,points,status,reason,created_at')
    .eq('buyer_id',user.id).order('created_at',{ascending:false}).limit(30);
