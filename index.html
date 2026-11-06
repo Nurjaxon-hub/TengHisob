@@ -84,18 +84,36 @@
 </section>
 
 <section id="profile" class="card page hidden profile-page feature-page">
- <div class="profile-cover"><div class="profile-avatar">N</div><div class="profile-cover-copy"><span class="eyebrow">SHAXSIY KABINET</span><h2>Do‘kon profili</h2><p>Ma’lumotlar va ilova sozlamalari</p></div><span class="profile-gear">⚙</span></div>
- <div class="profile-section-title">Do‘kon ma’lumotlari</div>
- <label data-i="shopName"></label><input id="shopName">
- <button class="secondary" onclick="saveShopName()" data-i="saveShop"></button>
- <label data-i="shopAddress"></label><input id="shopAddress" autocomplete="street-address">
- <label data-i="shopPhone"></label><input id="shopPhone" type="tel" placeholder="+998...">
- <label data-i="shopDescription"></label><textarea id="shopDescription" rows="2"></textarea>
- <button class="primary feature-submit" onclick="saveShopProfile()" data-i="saveShopProfile"></button>
- <div class="profile-section-title">Do‘kon ko‘rinishi</div>
- <button class="secondary" id="listShopBtn" onclick="toggleShopListing()" data-i="listingEnable"></button>
- <p class="small" data-i="listingInfo"></p>
- <div class="profile-actions"><button class="secondary" onclick="openPage('customers')">Xaridorlar</button><button class="secondary" onclick="openPage('shopAppeals')">E’tirozlar</button><button class="danger" onclick="logout()" data-i="logout"></button></div>
+ <div class="feature-heading profile-main-heading">
+  <div><span class="eyebrow">SHAXSIY KABINET</span><h2>Profil</h2><p>Do‘koningiz va hisob sozlamalari</p></div>
+  <span class="feature-heading-icon">⚙</span>
+ </div>
+ <div class="profile-identity">
+  <div class="profile-avatar-large">N</div>
+  <div class="profile-identity-copy"><span class="eyebrow">DO‘KON EGASI</span><b id="profileUserName">Hisob egasi</b><small id="profileShopName">Do‘kon nomi</small></div>
+  <span class="profile-verified">✓</span>
+ </div>
+ <div class="profile-section-title"><span>▣</span> Do‘kon ma’lumotlari</div>
+ <div class="profile-form-card">
+  <label data-i="shopName"></label><input id="shopName">
+  <button class="secondary" onclick="saveShopName()" data-i="saveShop"></button>
+  <div class="profile-form-divider"></div>
+  <label data-i="shopAddress"></label><input id="shopAddress" autocomplete="street-address">
+  <label data-i="shopPhone"></label><input id="shopPhone" type="tel" placeholder="+998...">
+  <label data-i="shopDescription"></label><textarea id="shopDescription" rows="2"></textarea>
+  <button class="primary feature-submit" onclick="saveShopProfile()" data-i="saveShopProfile"></button>
+ </div>
+ <div class="profile-section-title"><span>◉</span> Do‘kon ko‘rinishi</div>
+ <div class="profile-listing-card">
+  <div class="profile-listing-icon">⌂</div><div class="profile-listing-copy"><b>Xaridorlar katalogida</b><p data-i="listingInfo"></p></div>
+  <button class="profile-listing-toggle" id="listShopBtn" onclick="toggleShopListing()" data-i="listingEnable"></button>
+ </div>
+ <div class="profile-section-title"><span>▤</span> Boshqaruv</div>
+ <div class="profile-menu">
+  <button onclick="openPage('customers')"><span class="profile-menu-icon blue">♙</span><span><b>Xaridorlar</b><small>Mijozlar va qarz qoldiqlari</small></span><i>›</i></button>
+  <button onclick="openPage('shopAppeals')"><span class="profile-menu-icon violet">!</span><span><b>E’tirozlar</b><small>Xaridorlar murojaatlari</small></span><i>›</i></button>
+ </div>
+ <button class="danger profile-logout" onclick="logout()" data-i="logout"></button>
 </section>
 
 <section id="sales" class="card page hidden feature-page sales-page">
@@ -182,33 +200,36 @@
  <div id="customersList" class="feature-list"></div>
 </section>
 
-<section id="shopAppeals" class="card page hidden">
-<h2 data-i="appealsTitle"></h2>
-<div id="shopAppealsList"></div>
-<button class="secondary" onclick="openPage('shop')" data-i="back"></button>
+<section id="shopAppeals" class="card page hidden feature-page appeals-page">
+ <div class="feature-heading"><div><span class="eyebrow">REYTING NAZORATI</span><h2 data-i="appealsTitle"></h2><p>Xaridorlardan kelgan murojaatlarni ko‘rib chiqing</p></div><span class="feature-heading-icon violet">!</span></div>
+ <div class="appeals-info"><span>i</span><p>Har bir e’tirozni dalillar asosida ko‘rib chiqing. Qaror xaridor reytingiga ta’sir qiladi.</p></div>
+ <div id="shopAppealsList" class="appeals-list"></div>
+ <button class="secondary feature-submit" onclick="openPage('shop')" data-i="back"></button>
 </section>
 
-<section id="catalog" class="card page hidden">
-<h2 data-i="catalogTitle"></h2>
-<div id="shopCatalogList"></div>
-<button class="secondary" onclick="openPage('buyer')" data-i="back"></button>
+<section id="catalog" class="card page hidden feature-page catalog-page">
+ <div class="feature-heading"><div><span class="eyebrow">HAMKOR DO‘KONLAR</span><h2 data-i="catalogTitle"></h2><p>Ro‘yxatdan o‘tgan do‘konlar va aloqa ma’lumotlari</p></div><span class="feature-heading-icon blue">▦</span></div>
+ <div class="catalog-intro"><span>⌕</span><div><b>O‘zingizga kerakli do‘konni toping</b><small>Manzil va telefon raqamlarini ko‘ring</small></div></div>
+ <div id="shopCatalogList" class="catalog-list"></div>
+ <button class="secondary feature-submit catalog-back" onclick="openPage('buyer')" data-i="back"></button>
 </section>
 
-<section id="buyer" class="card page hidden">
-<h2 data-i="buyer"></h2>
-<p class="small" data-i="buyerInfo"></p>
-<div class="card">
-<div class="topline"><b data-i="ratingTitle"></b><b id="buyerRatingScore">100/100</b></div>
-<div id="buyerRatingEvents"></div>
-</div>
-<button class="secondary" onclick="openPage('catalog')" data-i="catalogTitle"></button>
-<button class="primary" onclick="loadBuyerDebts()" data-i="refresh"></button>
-<label data-i="codeIn"></label>
-<div class="row">
-<input id="claimCode" autocapitalize="characters">
-<button class="good" onclick="claimCode()" data-i="addByCode"></button>
-</div>
-<div id="buyerDebtsList"></div>
+<section id="buyer" class="card page hidden feature-page buyer-page">
+ <div class="feature-heading"><div><span class="eyebrow">XARIDOR KABINETI</span><h2 data-i="buyer"></h2><p>Do‘konlar bilan hisob-kitoblaringiz</p></div><span class="feature-heading-icon blue">♙</span></div>
+ <div class="buyer-rating-hero">
+  <div class="buyer-rating-top"><div><span>UMUMIY REYTING</span><b id="buyerRatingScore">100/100</b></div><span class="buyer-rating-mark">★</span></div>
+  <div class="buyer-rating-track"><span id="buyerRatingBar"></span></div>
+  <p>O‘z vaqtida to‘langan qarzlar reytingingizni oshiradi</p>
+ </div>
+ <div class="buyer-shortcuts">
+  <button onclick="openPage('catalog')"><span class="buyer-shortcut-icon">▦</span><b>Do‘konlar</b><small>Do‘konlar katalogi</small></button>
+  <button onclick="$('claimCode').focus()"><span class="buyer-shortcut-icon green">＋</span><b>Qarz qo‘shish</b><small>Kod orqali bog‘lash</small></button>
+ </div>
+ <div class="buyer-section-heading"><div><h3>Reyting tarixi</h3><p>O‘zgarishlar va e’tirozlar</p></div><span class="buyer-section-symbol">↗</span></div>
+ <div id="buyerRatingEvents" class="buyer-events-list"></div>
+ <div class="buyer-section-heading buyer-debts-heading"><div><h3>Mening qarzlarim</h3><p>Do‘konlar bilan tasdiqlangan hisob-kitoblar</p></div><button class="buyer-refresh" onclick="loadBuyerDebts()">↻</button></div>
+ <div class="buyer-code-card"><div class="buyer-code-copy"><b>Qarz kodini kiriting</b><small>Do‘kon bergan kod orqali qarzni hisobingizga ulang</small></div><div class="buyer-code-input"><input id="claimCode" autocapitalize="characters" placeholder="Masalan: TH-123456"><button class="good" onclick="claimCode()" data-i="addByCode"></button></div></div>
+ <div id="buyerDebtsList" class="buyer-debts-list"></div>
 </section>
 
 <div id="status" class="notice" data-i="loading"></div>
@@ -645,6 +666,7 @@ async function startApp(){
  shop=null;
 
  if(profile.role==='shop'){
+  $('profileUserName').textContent=profile.full_name||user.email||'Do‘kon egasi';
   const {data:ex,error:se}=await db.from('shops').select('*').eq('owner_id',user.id).limit(1);
   if(se)throw se;
   shop=ex?.[0]||null;
@@ -661,6 +683,8 @@ async function startApp(){
   $('shopAddress').value=shop.address||'';
   $('shopPhone').value=shop.contact_phone||'';
   $('shopDescription').value=shop.description||'';
+  $('profileShopName').textContent=shop.shop_name||shop.name||'Do‘kon nomi';
+  $('profileUserName').textContent=profile.full_name||user.email||'Do‘kon egasi';
   $('listShopBtn').dataset.i=shop.is_listed?'listingDisable':'listingEnable';
   tr();
  }
