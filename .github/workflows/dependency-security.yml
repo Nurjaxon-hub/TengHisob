@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Kodni yuklash
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Node.js sozlash
         uses: actions/setup-node@v4
