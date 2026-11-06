@@ -1,0 +1,87 @@
+name: TengHisob dependency security upgrade
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'package.json'
+
+permissions:
+  contents: write
+
+jobs:
+  upgrade-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kodni yuklash
+        uses: actions/checkout@v4
+
+      - name: Node.js sozlash
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Java sozlash
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Yangilangan bog'liqliklar uchun lockfile yaratish
+        run: npm install --package-lock-only --ignore-scripts
+
+      - name: Toza o'rnatishni tekshirish
+        run: npm ci
+
+      - name: Yuqori va o'ta yuqori xavfsizlik zaifliklarini tekshirish
+        run: npm audit --audit-level=high
+
+      - name: JavaScript sintaksisini tekshirish
+        run: |
+          node --check sw.js
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import { spawnSync } from 'node:child_process';
+          const html = fs.readFileSync('index.html', 'utf8');
+          const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)]
+            .filter(([, attrs, body]) => !/\bsrc\s*=/.test(attrs) && body.trim());
+          if (!scripts.length) throw new Error('Inline JavaScript topilmadi');
+          for (const [, , body] of scripts) {
+            const check = spawnSync(process.execPath, ['--check', '-'], {input: body, encoding: 'utf8'});
+            if (check.status !== 0) {
+              process.stderr.write(check.stderr || 'JavaScript sintaksis xatosi');
+              process.exit(check.status ?? 1);
+            }
+          }
+          NODE
+
+      - name: Web ilovani yig'ish
+        run: npm run build:web
+
+      - name: Android loyihasini yaratish
+        run: npm run android:init
+
+      - name: Android APK yig'ish
+        run: |
+          cd android
+          ./gradlew assembleDebug
+
+      - name: APK faylini saqlash
+        uses: actions/upload-artifact@v4
+        with:
+          name: TengHisob-Capacitor-7-debug-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Yangi lockfile ni GitHub ga saqlash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: refresh lockfile for patched Capacitor"
+            git push origin HEAD:main
+          fi
