@@ -9,23 +9,21 @@ const FILES_TO_CACHE = [
 ];
 
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(FILES_TO_CACHE))
-      .then(() => self.skipWaiting())
-  );
+  const installTask = caches.open(CACHE_NAME)
+    .then(cache => cache.addAll(FILES_TO_CACHE))
+    .then(() => self.skipWaiting());
+  event.waitUntil(installTask);
 });
 
 self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys
-          .filter(key => key.startsWith('tenghisob-') && key !== CACHE_NAME)
-          .map(key => caches.delete(key))
-      )
-    ).then(() => self.clients.claim())
-  );
+  const activateTask = caches.keys().then(keys =>
+    Promise.all(
+      keys
+        .filter(key => key.startsWith('tenghisob-') && key !== CACHE_NAME)
+        .map(key => caches.delete(key))
+    )
+  ).then(() => self.clients.claim());
+  event.waitUntil(activateTask);
 });
 
 self.addEventListener('fetch', event => {
@@ -37,24 +35,24 @@ self.addEventListener('fetch', event => {
   if (url.origin !== self.location.origin) return;
 
   if (request.mode === 'navigate') {
+    const navigation = fetch(request).then(response => {
+      if (response.ok) {
+        const copy = response.clone();
+        return caches.open(CACHE_NAME)
+          .then(cache => cache.put('./index.html', copy))
+          .then(() => response);
+      }
+      return response;
+    });
+    event.waitUntil(navigation.then(() => undefined).catch(() => undefined));
     event.respondWith(
-      fetch(request)
-        .then(response => {
-          if (response.ok) {
-            const copy = response.clone();
-            event.waitUntil(
-              caches.open(CACHE_NAME).then(cache => cache.put('./index.html', copy))
-            );
-          }
-          return response;
-        })
-        .catch(async () => {
-          const cached = await caches.match('./index.html');
-          return cached || new Response('Internet aloqasi mavjud emas.', {
-            status: 503,
-            headers: {'Content-Type': 'text/plain; charset=utf-8'}
-          });
-        })
+      navigation.catch(async () => {
+        const cached = await caches.match('./index.html');
+        return cached || new Response('Internet aloqasi mavjud emas.', {
+          status: 503,
+          headers: {'Content-Type': 'text/plain; charset=utf-8'}
+        });
+      })
     );
     return;
   }
@@ -69,18 +67,15 @@ self.addEventListener('fetch', event => {
     return response;
   });
 
+  event.waitUntil(networkUpdate.then(() => undefined).catch(() => undefined));
   event.respondWith(
-    caches.match(request).then(cached => {
-      if (cached) {
-        event.waitUntil(networkUpdate.catch(() => undefined));
-        return cached;
-      }
-      return networkUpdate.catch(() =>
+    caches.match(request).then(cached => cached || networkUpdate).catch(() =>
+      networkUpdate.catch(() =>
         new Response('Internet aloqasi mavjud emas.', {
           status: 503,
           headers: {'Content-Type': 'text/plain; charset=utf-8'}
         })
-      );
-    })
+      )
+    )
   );
 });
