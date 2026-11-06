@@ -28,6 +28,31 @@ jobs:
       - name: Service Worker sintaksisini tekshirish
         run: node --check sw.js
 
+      - name: HTML ichidagi JavaScript sintaksisini tekshirish
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import { spawnSync } from 'node:child_process';
+
+          const html = fs.readFileSync('index.html', 'utf8');
+          const scripts = [...html.matchAll(/<script\\b([^>]*)>([\\s\\S]*?)<\\/script>/gi)]
+            .filter(([, attributes, body]) => !/\\bsrc\\s*=/.test(attributes) && body.trim());
+
+          if (!scripts.length) throw new Error('Inline JavaScript topilmadi');
+
+          for (const [, , body] of scripts) {
+            const result = spawnSync(process.execPath, ['--check', '-'], {
+              input: body,
+              encoding: 'utf8'
+            });
+            if (result.status !== 0) {
+              process.stderr.write(result.stderr || 'JavaScript sintaksis xatosi');
+              process.exit(result.status ?? 1);
+            }
+          }
+          console.log('Inline JavaScript sintaksisi to‘g‘ri.');
+          NODE
+
       - name: Web ilovani yig'ish
         run: npm run build:web
 
