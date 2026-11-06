@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tenghisob-v9';
+const CACHE_NAME = 'tenghisob-v10';
 
 const FILES_TO_CACHE = [
   './',
@@ -10,9 +10,10 @@ const FILES_TO_CACHE = [
 
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(FILES_TO_CACHE))
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(FILES_TO_CACHE))
+      .then(() => self.skipWaiting())
   );
-  self.skipWaiting();
 });
 
 self.addEventListener('activate', event => {
@@ -23,9 +24,8 @@ self.addEventListener('activate', event => {
           .filter(key => key.startsWith('tenghisob-') && key !== CACHE_NAME)
           .map(key => caches.delete(key))
       )
-    )
+    ).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
 self.addEventListener('fetch', event => {
@@ -42,38 +42,45 @@ self.addEventListener('fetch', event => {
         .then(response => {
           if (response.ok) {
             const copy = response.clone();
-            caches.open(CACHE_NAME).then(cache =>
-              cache.put('./index.html', copy)
+            event.waitUntil(
+              caches.open(CACHE_NAME).then(cache => cache.put('./index.html', copy))
             );
           }
           return response;
         })
-        .catch(async () =>
-          (await caches.match('./index.html')) ||
-          new Response('Internet aloqasi mavjud emas.', {
+        .catch(async () => {
+          const cached = await caches.match('./index.html');
+          return cached || new Response('Internet aloqasi mavjud emas.', {
             status: 503,
             headers: {'Content-Type': 'text/plain; charset=utf-8'}
-          })
-        )
+          });
+        })
     );
     return;
   }
 
+  const networkUpdate = fetch(request).then(response => {
+    if (response.ok) {
+      const copy = response.clone();
+      return caches.open(CACHE_NAME)
+        .then(cache => cache.put(request, copy))
+        .then(() => response);
+    }
+    return response;
+  });
+
   event.respondWith(
     caches.match(request).then(cached => {
-      const network = fetch(request).then(response => {
-        if (response.ok) {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
-        }
-        return response;
-      });
-      return cached || network;
-    }).catch(() =>
-      new Response('Internet aloqasi mavjud emas.', {
-        status: 503,
-        headers: {'Content-Type': 'text/plain; charset=utf-8'}
-      })
-    )
+      if (cached) {
+        event.waitUntil(networkUpdate.catch(() => undefined));
+        return cached;
+      }
+      return networkUpdate.catch(() =>
+        new Response('Internet aloqasi mavjud emas.', {
+          status: 503,
+          headers: {'Content-Type': 'text/plain; charset=utf-8'}
+        })
+      );
+    })
   );
 });
