@@ -83,5 +83,6 @@ jobs:
           git add package-lock.json
           if ! git diff --cached --quiet; then
             git commit -m "chore: refresh lockfile for patched Capacitor"
+            git pull --rebase origin main
             git push origin HEAD:main
           fi
