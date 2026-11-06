@@ -916,3 +916,44 @@ body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
 .products-page .feature-list .item{padding:13px 7px!important}
 .products-page .feature-list .item>b:first-child{font-size:13px;color:#eff9f6}
 .products-page .feature-list .item .tag{display:inline-block;margin-top:5px;background:#103c37;color:#3ce0ad}
+
+
+/* Sales history, sale creation and debt detail screens */
+.sales-add-button{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 12px;font-size:13px}
+.sales-add-button span{font-size:19px;line-height:1}
+.sale-add-page .feature-form{padding:15px}
+.sale-add-page .feature-form .feature-submit{width:100%}
+.detail-back{display:flex;align-items:center;gap:8px;min-height:35px;margin:0 0 12px;padding:4px 0;background:transparent;color:#a9c7d2;font-size:12px}
+.detail-back:first-letter{font-size:24px}
+.debt-detail-hero{padding:16px;border:1px solid #1a5365;border-radius:16px;background:linear-gradient(135deg,#103d4a,#0a2c42 70%,#0b3b39)}
+.debt-detail-person{display:flex;align-items:center;gap:11px;padding-bottom:13px;border-bottom:1px solid #285466}
+.detail-avatar{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;border:1px solid #377d91;border-radius:50%;background:linear-gradient(145deg,#285a83,#173b5d);color:#f2fbff;font-size:18px;font-weight:850}
+.debt-detail-person small,.debt-detail-amount small{display:block;color:#8fb4c3;font-size:9px;letter-spacing:.8px}
+.debt-detail-person h2{margin:2px 0!important;padding:0!important;border:0!important;font-size:15px!important}
+.debt-detail-person span:not(.detail-avatar){font-size:10px;color:#a6c0cc}
+.debt-detail-amount{display:flex;flex-direction:column;gap:4px;padding-top:13px}
+.debt-detail-amount b{font-size:25px;letter-spacing:-.5px;color:#ff6979}
+.detail-status{font-size:10px;color:#a9c6d0}
+.debt-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+.debt-detail-grid>div{display:flex;flex-direction:column;gap:7px;padding:12px;border:1px solid #19475e;border-radius:12px;background:#0b293f}
+.debt-detail-grid small{font-size:10px;color:#93b0bf}
+.debt-detail-grid b{font-size:15px;color:#eff9f6}
+.debt-detail-info{margin-top:11px;padding:3px 12px;border:1px solid #17445b;border-radius:12px;background:#092339}
+.debt-detail-info>div{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid #173b50}
+.debt-detail-info>div:last-child{border-bottom:0}
+.debt-detail-info span{font-size:10px;color:#94afbd}
+.debt-detail-info b{max-width:58%;font-size:10px;text-align:right;color:#e4f2ef;overflow-wrap:anywhere}
+.debt-detail-link{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:34px;margin:9px 0 3px;padding:6px 10px;border:1px solid #1c5364;background:#0b2c41;color:#b6e5d9;font-size:10px}
+.debt-detail-link span{font-size:16px}
+.payment-history-row{display:flex;align-items:center;gap:10px}
+.payment-check{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#0d5947;color:#45e5b3;font-weight:900}
+.payment-history-row>div{display:flex;flex-direction:column;gap:4px}
+.payment-history-row small{font-size:9px;color:#90aebd}
+.debt-detail-page .feature-list-heading{margin-top:17px}
+.expenses-page,.catalog-page,.buyer-page,.appeals-page{padding:15px!important;border:1px solid #174057!important;border-radius:17px!important;background:linear-gradient(150deg,#0b263d,#071d30)!important}
+#expenses>h2,#catalog>h2,#buyer>h2,#shopAppeals>h2{font-size:18px;border-bottom:1px solid #173e54;padding-bottom:11px}
+#expenses>button,#catalog>button,#buyer>button,#shopAppeals>button{margin-top:9px}
+#buyer .card{padding:13px;border:1px solid #19485d;border-radius:13px;background:#0a293d}
+#buyerRatingScore{color:#35dfab}
+#buyerDebtsList .item,#shopCatalogList .item,#shopAppealsList .item{padding:13px 5px;border-bottom:1px solid #173b51}
+#expensesList .item{padding:12px 5px;border-bottom:1px solid #173b51}
