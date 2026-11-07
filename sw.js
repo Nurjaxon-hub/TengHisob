@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tenghisob-v10';
+const CACHE_NAME = 'tenghisob-v11';
 
 const FILES_TO_CACHE = [
   './',
