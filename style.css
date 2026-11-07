@@ -114,13 +114,11 @@ a.btn{display:flex;align-items:center;justify-content:center;min-height:40px;mar
 #status{margin-top:12px}
 button:focus-visible,a.btn:focus-visible{outline:3px solid #36d7a5;outline-offset:2px}
 #sales h2{color:#65dfb5}
-#expenses h2{color:#ff899b}
 #products h2{color:#bba8ff}
 #debts h2{color:#ffd083}
 #payments h2{color:#8fcaff}
 #reports h2{color:#bba8ff}
 #sales{border-top:3px solid #19c995}
-#expenses{border-top:3px solid #f16b7c}
 #products{border-top:3px solid #a58bfa}
 #debts{border-top:3px solid #f4b45e}
 #payments{border-top:3px solid #66baff}
@@ -1052,3 +1050,8 @@ body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
  .buyer-shortcuts button{padding:10px 8px;column-gap:7px}
  .buyer-code-input button{min-width:74px;padding-left:8px;padding-right:8px}
 }
+
+/* Xarajatlar ekranini umumiy dizayn bilan birlashtirish */
+.quick-action.expense-action{grid-column:2}
+.quick-action.expense-action .quick-icon{background:#123f3b;color:#4ce2b2}
+.expenses-page .expense-summary{border-color:#17634f;background:linear-gradient(110deg,#0d4038,#0b2d39)}
